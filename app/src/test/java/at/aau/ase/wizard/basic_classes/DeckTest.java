@@ -1,4 +1,4 @@
 package at.aau.ase.wizard.basic_classes;
 
-public class Game {
+public class DeckTest {
 }

@@ -1,4 +1,4 @@
 package at.aau.ase.wizard.basic_classes;
 
-public class Block {
+public enum Color {
 }
