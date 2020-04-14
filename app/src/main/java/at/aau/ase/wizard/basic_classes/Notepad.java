@@ -1,11 +1,19 @@
 package at.aau.ase.wizard.basic_classes;
 
-import java.util.List;
 
-public class Block {
-    List<Player> players;
+public class Notepad {
+    private static short round;
 
-    public Block(){
 
+    public Notepad(){
+
+    }
+
+    public static short getRound() {
+        return round;
+    }
+
+    public static void setRound(short round) {
+        Notepad.round = round;
     }
 }
