@@ -39,34 +39,31 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Log.i("ERROR:", "Not a textmessage: "+basemessage.toString());
             }
-            runOnUiThread(() -> {tv_res.setText(basemessage.toString());});
+            runOnUiThread(() -> {
+                tv_res.setText(basemessage.toString());
+            });
         });
-        new NetworkThread().start();
+        new ConnectionThread().start();
     }
 
     private void startServer() {
-
         MessageThread t = new MessageThread();
-
         t.start();
-
     }
 
     private void startClient() {
-        // todo
+        tv_res.setText("Click other button to send request");
     }
+
     class MessageThread extends Thread {
         public void run() {
             String msg = "Some String";
             client.sendMessage(new TextMessage(msg));
             Log.i("REQUEST SEND", msg);
-
         }
-
-
     }
 
-    class NetworkThread extends Thread {
+    class ConnectionThread extends Thread {
         public void run () {
             try {
                 client.connect(hostname);
