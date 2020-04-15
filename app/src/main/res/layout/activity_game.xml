@@ -4,47 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    android:background="#197331"
+    tools:context=".GameActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/game_textView_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="@string/home_textView_title"
+        android:text="@string/game_textView_title"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/home_btn_play"
+        android:id="@+id/game_btn_shuffleCards"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="128dp"
-        android:onClick="openLobbyActivity"
-        android:text="@string/home_btn_play"
+        android:layout_marginBottom="16dp"
+        android:text="@string/game_btn_shuffleCards"
+        app:layout_constraintBottom_toTopOf="@+id/game_btn_dealOutCards"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/home_btn_settings"
+        android:id="@+id/game_btn_dealOutCards"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/home_btn_settings"
+        android:layout_marginBottom="32dp"
+        android:text="@string/game_btn_dealOutCards"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_btn_play" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/home_btn_howToPlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/home_btn_howToPlay"
+    <TextView
+        android:id="@+id/game_textView_serverResponse"
+        android:layout_width="356dp"
+        android:layout_height="74dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_btn_settings" />
+        app:layout_constraintTop_toBottomOf="@+id/game_textView_title" />
 </androidx.constraintlayout.widget.ConstraintLayout>

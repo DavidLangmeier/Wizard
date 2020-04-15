@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="@string/lobby_text_title"
+        android:text="@string/lobby_textView_title"
         android:textSize="30sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -32,7 +32,7 @@
         android:id="@+id/lobby_btn_startClient"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="@string/lobby_btn_startClient"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
@@ -44,19 +44,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
-        android:text="@string/lobby_text_serverResponse"
+        android:layout_marginTop="32dp"
+        android:text="@string/lobby_textView_serverResponse"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lobby_btn_startClient" />
 
     <TextView
-        android:id="@+id/lobby_text_serverResponse"
+        android:id="@+id/lobby_text_serverResponseDisplay"
         android:layout_width="213dp"
         android:layout_height="117dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/lobby_text_serverResponseLabel"
         app:layout_constraintTop_toBottomOf="@+id/lobby_btn_startClient" />
+
+    <Button
+        android:id="@+id/lobby_btn_ToGameScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="@string/lobby_btn_toGameScreen"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
