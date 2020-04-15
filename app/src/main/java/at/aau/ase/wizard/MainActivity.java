@@ -35,9 +35,9 @@ public class MainActivity extends AppCompatActivity {
         client.registerClass(TextMessage.class);
         client.registerCallback(basemessage -> {
             if (basemessage instanceof TextMessage) {
-                Log.i("Received:", basemessage.toString());
+                Log.i("SERVER RESPONSE:", basemessage.toString());
             } else {
-                Log.i("Error:", "Not a textmessage: "+basemessage.toString());
+                Log.i("ERROR:", "Not a textmessage: "+basemessage.toString());
             }
         });
         new NetworkThread().start();
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            client.sendMessage(new TextMessage("some request"));
+            client.sendMessage(new TextMessage(strings[0]));
             return "Request send";
         }
 
@@ -68,9 +68,9 @@ public class MainActivity extends AppCompatActivity {
         public void run () {
             try {
                 client.connect(hostname);
-                Log.i("info:", "Connection to server "+hostname+" successful");
+                Log.i("SERVER CONNECTION:", "Connection to server "+hostname+" successful");
             } catch (IOException e) {
-                Log.e("error:", "Could not connect to server "+hostname);
+                Log.e("SERVER CONNECTION:", "Could not connect to server "+hostname);
                 e.printStackTrace();
             }
         }
