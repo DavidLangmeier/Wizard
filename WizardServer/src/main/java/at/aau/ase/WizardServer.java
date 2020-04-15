@@ -1,9 +1,9 @@
-package at.aau.ase.wizard;
+package at.aau.ase;
 
 import java.io.IOException;
 
-import at.aau.ase.wizard.networking.kryonet.NetworkServerKryo;
-import at.aau.ase.wizard.networking.dto.TextMessage;
+import at.aau.ase.androidnetworkwrapper.networking.kryonet.NetworkServerKryo;
+import at.aau.ase.androidnetworkwrapper.networking.dto.TextMessage;
 
 public class WizardServer {
     public static  void main(String[] args) {

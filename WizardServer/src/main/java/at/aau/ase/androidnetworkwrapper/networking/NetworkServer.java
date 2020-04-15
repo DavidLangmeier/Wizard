@@ -1,18 +1,17 @@
-package at.aau.ase.wizard.networking;
+package at.aau.ase.androidnetworkwrapper.networking;
 
 import java.io.IOException;
 
-import at.aau.ase.wizard.networking.dto.BaseMessage;
+import at.aau.ase.androidnetworkwrapper.networking.dto.BaseMessage;
 
-public interface NetworkClient {
+public interface NetworkServer {
 
     /**
-     * Connects to a host.
+     * Starts the Server.
      *
-     * @param host
      * @throws IOException
      */
-    void connect(String host) throws IOException;
+    void start() throws IOException;
 
     /**
      * Registers a callback which gets called if a message is received.
@@ -22,10 +21,10 @@ public interface NetworkClient {
     void registerCallback(Callback<BaseMessage> callback);
 
     /**
-     * Sends a message to the server.
+     * Sends a message to all clients.
      *
      * @param message
      */
-    void sendMessage(BaseMessage message);
+    void broadcastMessage(BaseMessage message);
 
 }

@@ -1,4 +1,4 @@
-package at.aau.ase.wizard.networking.kryonet;
+package at.aau.ase.androidnetworkwrapper.networking.kryonet;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -6,9 +6,9 @@ import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
 
-import at.aau.ase.wizard.networking.Callback;
-import at.aau.ase.wizard.networking.NetworkServer;
-import at.aau.ase.wizard.networking.dto.BaseMessage;
+import at.aau.ase.androidnetworkwrapper.networking.Callback;
+import at.aau.ase.androidnetworkwrapper.networking.NetworkServer;
+import at.aau.ase.androidnetworkwrapper.networking.dto.BaseMessage;
 
 public class NetworkServerKryo implements NetworkServer, KryoNetComponent {
     private Server server;
@@ -24,7 +24,7 @@ public class NetworkServerKryo implements NetworkServer, KryoNetComponent {
 
     public void start() throws IOException {
         server.start();
-        server.bind(NetworkConstants.TCP_PORT, NetworkConstants.UDP_PORT);
+        server.bind(NetworkConstants.TCP_PORT);
 
         server.addListener(new Listener() {
             public void received(Connection connection, Object object) {

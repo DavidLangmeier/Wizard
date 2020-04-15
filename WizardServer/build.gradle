@@ -14,7 +14,7 @@ targetCompatibility = "8"
 
 jar {
     manifest {
-        attributes 'Main-Class': 'at.aau.ase.wizard.WizardServer'
+        attributes 'Main-Class': 'at.aau.ase.WizardServer'
   }  
   from {
     configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
