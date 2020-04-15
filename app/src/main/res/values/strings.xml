@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Wizard</string>
+    <string name="home_text_title">WIZARD</string>
+    <string name="home_btn_play">PLAY</string>
+    <string name="home_btn_settings">SETTINGS</string>
+    <string name="home_btn_howToPlay">HOW TO PLAY</string>
     <string name="lobby_text_title">LOBBY</string>
     <string name="lobby_text_serverResponse">Server Response: </string>
     <string name="lobby_btn_startServer">START SERVER</string>

@@ -5,13 +5,13 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class LobbyActivity extends AppCompatActivity {
     Button btnServer, btnClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_lobby);
 
         btnServer = findViewById(R.id.lobby_btn_startServer);
         btnServer.setOnClickListener(v -> startServer());
