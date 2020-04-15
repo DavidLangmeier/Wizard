@@ -1,4 +1,4 @@
-package at.aau.ase.wizard.networking.kryonet;
+package at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet;
 
 public interface KryoNetComponent {
 

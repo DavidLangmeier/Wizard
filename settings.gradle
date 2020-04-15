@@ -1,2 +1,4 @@
 include ':app'
-rootProject.name='AndroidNetworkWrapper'
+rootProject.name='Wizard'
+include ':WizardServer'
+include ':libnetwork'

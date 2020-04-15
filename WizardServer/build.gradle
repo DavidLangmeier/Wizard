@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // https://mvnrepository.com/artifact/com.esotericsoftware/kryonet
+    // implementation 'com.esotericsoftware:kryonet:2.22.0-RC1'
+    implementation project(':libnetwork')
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'at.aau.ase.WizardServer'
+  }  
+  from {
+    configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+}

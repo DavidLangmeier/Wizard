@@ -1,4 +1,4 @@
-package at.aau.ase.wizard.networking.dto;
+package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto;
 
 public class TextMessage extends BaseMessage {
 
