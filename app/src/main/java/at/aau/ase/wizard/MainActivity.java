@@ -14,7 +14,8 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkClientKryo;
 
 public class MainActivity extends AppCompatActivity {
-    Button btnServer, btnClient;
+    Button btnServer = null;
+    Button btnClient = null;
     String hostname = "se2-demo.aau.at";
     NetworkClientKryo client = null;
     TextView tv_res = null;
