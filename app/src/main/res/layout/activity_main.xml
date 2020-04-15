@@ -39,10 +39,10 @@
         app:layout_constraintVertical_bias="0.70" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textView_res"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Antword Server "
+        android:text="Answer Server "
         app:layout_constraintBottom_toTopOf="@+id/buttonServer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
