@@ -1,6 +1,7 @@
 package at.aau.ase;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkServerKryo;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.TextMessage;
@@ -20,7 +21,9 @@ public class WizardServer {
                 server.broadcastMessage(
                         new TextMessage("Hi client, I'm the server and I'm waiting for requests!\nDid you say: "
                                 + ((TextMessage) basemessage).text
-                                + "?"
+                                + "\nat "
+                                + LocalDateTime.now().toString()
+                                + " ?"
                         ));
             }
             else {
