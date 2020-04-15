@@ -44,24 +44,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startServer() {
-        new ServerRequestTask().execute("Some request");    }
+
+        MessageThread t = new MessageThread();
+
+        t.start();
+
+    }
 
     private void startClient() {
         // todo
     }
+    class MessageThread extends Thread {
+        public void run() {
+            String msg = "Some String";
+            client.sendMessage(new TextMessage(msg));
+            Log.i("REQUEST SEND", msg);
 
-    class ServerRequestTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-            client.sendMessage(new TextMessage(strings[0]));
-            return "Request send";
         }
 
-        @Override
-        protected void onPostExecute(String taskRes) {
-            tv_res.setText(taskRes);
-        }
+
     }
 
     class NetworkThread extends Thread {
