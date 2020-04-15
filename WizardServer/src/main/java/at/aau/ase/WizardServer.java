@@ -17,12 +17,17 @@ public class WizardServer {
         server.registerCallback(basemessage -> {
             if (basemessage instanceof TextMessage) {
                 System.out.println(basemessage.toString());
-                server.broadcastMessage(new TextMessage("Received: "+ basemessage.toString()));
+                server.broadcastMessage(
+                        new TextMessage("Hi client, I'm the server and I'm waiting for requests!\nDid you say: "
+                                + ((TextMessage) basemessage).text
+                                + "?"
+                        ));
             }
             else {
-                System.out.println("Not a Textmessage!");
-                server.broadcastMessage(new TextMessage("Received: Not a Textmessage"));
+                System.out.println("Received message is not a Textmessage!");
+                server.broadcastMessage(new TextMessage("Please send a Textmessage!"));
             }
         });
+        System.out.println("Server started and Callback registered. Listening ...");
     }
 }
