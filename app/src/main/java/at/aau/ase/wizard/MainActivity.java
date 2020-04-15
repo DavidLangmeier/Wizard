@@ -34,13 +34,17 @@ public class MainActivity extends AppCompatActivity {
         client = new NetworkClientKryo();
         client.registerClass(TextMessage.class);
         client.registerCallback(basemessage -> {
+            String res = null;
             if (basemessage instanceof TextMessage) {
                 Log.i("SERVER RESPONSE:", basemessage.toString());
+                res = ((TextMessage) basemessage).text;
             } else {
                 Log.i("ERROR:", "Not a textmessage: "+basemessage.toString());
+                res = "Response is not a TextMessage";
             }
+            String finalRes = res;
             runOnUiThread(() -> {
-                tv_res.setText(basemessage.toString());
+                tv_res.setText(finalRes);
             });
         });
         new ConnectionThread().start();
