@@ -6,7 +6,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // https://mvnrepository.com/artifact/com.esotericsoftware/kryonet
-    implementation 'com.esotericsoftware:kryonet:2.22.0-RC1'
+    // implementation 'com.esotericsoftware:kryonet:2.22.0-RC1'
+    implementation project(':libnetwork')
 }
 
 sourceCompatibility = "8"

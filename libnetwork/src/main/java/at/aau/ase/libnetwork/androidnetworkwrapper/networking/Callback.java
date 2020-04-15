@@ -1,4 +1,4 @@
-package at.aau.ase.androidnetworkwrapper.networking;
+package at.aau.ase.libnetwork.androidnetworkwrapper.networking;
 
 /**
  * Used for callbacks.

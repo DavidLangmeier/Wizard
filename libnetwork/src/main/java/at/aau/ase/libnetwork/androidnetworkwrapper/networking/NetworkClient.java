@@ -1,8 +1,8 @@
-package at.aau.ase.androidnetworkwrapper.networking;
-
-import at.aau.ase.androidnetworkwrapper.networking.dto.BaseMessage;
+package at.aau.ase.libnetwork.androidnetworkwrapper.networking;
 
 import java.io.IOException;
+
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.BaseMessage;
 
 public interface NetworkClient {
 
