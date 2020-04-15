@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Log.i("ERROR:", "Not a textmessage: "+basemessage.toString());
             }
+            runOnUiThread(() -> {tv_res.setText(basemessage.toString());});
         });
         new NetworkThread().start();
     }
