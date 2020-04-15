@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Wizard</string>
+    <string name="lobby_text_title">LOBBY</string>
+    <string name="lobby_text_serverResponse">Server Response: </string>
+    <string name="lobby_btn_startServer">START SERVER</string>
+    <string name="lobby_btn_startClient">START CLIENT</string>
 </resources>

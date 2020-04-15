@@ -7,45 +7,56 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/lobby_text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Connection Site"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="64dp"
+        android:text="@string/lobby_text_title"
+        android:textSize="30sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonServer"
+        android:id="@+id/lobby_btn_startServer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Start Server"
-        app:layout_constraintBottom_toTopOf="@+id/buttonClient"
+        android:layout_marginTop="128dp"
+        android:text="@string/lobby_btn_startServer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/buttonClient"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Client"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.70" />
+        app:layout_constraintTop_toBottomOf="@+id/lobby_text_title" />
+
+    <Button
+        android:id="@+id/lobby_btn_startClient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/lobby_btn_startClient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lobby_btn_startServer" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/lobby_text_serverResponseLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Antword Server "
-        app:layout_constraintBottom_toTopOf="@+id/buttonServer"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="64dp"
+        android:text="@string/lobby_text_serverResponse"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/lobby_btn_startClient" />
+
+    <TextView
+        android:id="@+id/lobby_text_serverResponse"
+        android:layout_width="213dp"
+        android:layout_height="117dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lobby_text_serverResponseLabel"
+        app:layout_constraintTop_toBottomOf="@+id/lobby_btn_startClient" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

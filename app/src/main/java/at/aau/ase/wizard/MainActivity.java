@@ -13,9 +13,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnServer = findViewById(R.id.buttonServer);
+        btnServer = findViewById(R.id.lobby_btn_startServer);
         btnServer.setOnClickListener(v -> startServer());
-        btnClient = findViewById(R.id.buttonClient);
+        btnClient = findViewById(R.id.lobby_btn_startClient);
         btnClient.setOnClickListener(v -> startClient());
     }
 
