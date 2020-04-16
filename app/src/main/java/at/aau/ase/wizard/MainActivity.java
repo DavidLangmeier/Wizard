@@ -1,6 +1,5 @@
 package at.aau.ase.wizard;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -44,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
                 res = "Response is not a TextMessage";
             }
             String finalRes = res;
-            runOnUiThread(() -> {
-                tv_res.setText(finalRes);
-            });
+            runOnUiThread(() ->
+                tv_res.setText(finalRes)
+            );
         });
         new ConnectionThread().start();
     }
@@ -61,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class MessageThread extends Thread {
+        @Override
         public void run() {
             String msg = "Some String";
             client.sendMessage(new TextMessage(msg));
@@ -69,13 +69,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class ConnectionThread extends Thread {
+        @Override
         public void run () {
             try {
                 client.connect(hostname);
                 Log.i("SERVER CONNECTION:", "Connection to server "+hostname+" successful");
             } catch (IOException e) {
-                Log.e("SERVER CONNECTION:", "Could not connect to server "+hostname);
-                e.printStackTrace();
+                Log.e("SERVER CONNECTION:", "Could not connect to server "+hostname, e);
             }
         }
     }
