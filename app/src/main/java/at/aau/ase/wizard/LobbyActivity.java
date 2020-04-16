@@ -1,5 +1,6 @@
 package at.aau.ase.wizard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -12,9 +13,10 @@ import java.io.IOException;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkClientKryo;
 
-public class MainActivity extends AppCompatActivity {
-    Button btnServer = null;
-    Button btnClient = null;
+public class LobbyActivity extends AppCompatActivity {
+    Button btnServer;
+    Button btnClient;
+    Button btnToGameScreen;
     String hostname = "se2-demo.aau.at";
     NetworkClientKryo client = null;
     TextView tv_res = null;
@@ -22,14 +24,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_lobby);
 
-        btnServer = findViewById(R.id.buttonServer);
+        btnServer = findViewById(R.id.lobby_btn_startServer);
         btnServer.setOnClickListener(v -> startServer());
-        btnClient = findViewById(R.id.buttonClient);
+        btnClient = findViewById(R.id.lobby_btn_startClient);
         btnClient.setOnClickListener(v -> startClient());
+        btnToGameScreen = (findViewById(R.id.lobby_btn_ToGameScreen));
+        btnToGameScreen.setOnClickListener(v -> openGameActivity());
 
-        tv_res = findViewById(R.id.textView_res);
+        tv_res = findViewById(R.id.lobby_text_serverResponseDisplay);
 
         client = new NetworkClientKryo();
         client.registerClass(TextMessage.class);
@@ -44,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             }
             String finalRes = res;
             runOnUiThread(() ->
-                tv_res.setText(finalRes)
+                    tv_res.setText(finalRes)
             );
         });
         new ConnectionThread().start();
@@ -52,11 +56,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void startServer() {
         MessageThread t = new MessageThread();
-        t.start();
-    }
+        t.start();    }
 
     private void startClient() {
         tv_res.setText("Click other button to send request");
+    }
+
+    private void openGameActivity() {
+        startActivity(new Intent(this, GameActivity.class));
     }
 
     class MessageThread extends Thread {
