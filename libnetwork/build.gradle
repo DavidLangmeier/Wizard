@@ -1,0 +1,10 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // https://mvnrepository.com/artifact/com.esotericsoftware/kryonet
+    implementation 'com.esotericsoftware:kryonet:2.22.0-RC1'
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"

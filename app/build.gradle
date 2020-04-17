@@ -49,5 +49,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
     // https://mvnrepository.com/artifact/com.esotericsoftware/kryonet
-    implementation 'com.esotericsoftware:kryonet:2.22.0-RC1'
+    // implementation 'com.esotericsoftware:kryonet:2.22.0-RC1'
+    implementation project(':libnetwork')
 }

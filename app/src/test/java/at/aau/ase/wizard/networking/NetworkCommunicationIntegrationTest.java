@@ -7,10 +7,12 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import at.aau.ase.wizard.networking.dto.TextMessage;
-import at.aau.ase.wizard.networking.kryonet.KryoNetComponent;
-import at.aau.ase.wizard.networking.kryonet.NetworkClientKryo;
-import at.aau.ase.wizard.networking.kryonet.NetworkServerKryo;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.NetworkServer;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.NetworkClient;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.TextMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.KryoNetComponent;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkClientKryo;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkServerKryo;
 
 public class NetworkCommunicationIntegrationTest {
     private static final String REQUEST_TEST = "request test";
