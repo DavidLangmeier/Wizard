@@ -4,6 +4,11 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value;
+
 import static org.junit.Assert.assertEquals;
 
 public class HandTest {
