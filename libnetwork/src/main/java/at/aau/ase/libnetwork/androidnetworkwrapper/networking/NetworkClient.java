@@ -2,7 +2,7 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking;
 
 import java.io.IOException;
 
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.BaseMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
 
 public interface NetworkClient {
 

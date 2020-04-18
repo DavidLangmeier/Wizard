@@ -1,4 +1,4 @@
-package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto;
+package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects;
 
 import java.util.ArrayList;
 
