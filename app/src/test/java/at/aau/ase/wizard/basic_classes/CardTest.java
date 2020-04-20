@@ -7,6 +7,7 @@ import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value.*;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.*;
 
+
 public class CardTest {
 
     private Card blueThirteen = new Card(BLUE, THIRTEEN);

@@ -74,4 +74,12 @@ public class HandTest {
         assertEquals(false, hand.dealCard((new Card(Color.WIZARD, Value.WIZARD)), gameDesk));
 
     }
+    @Test
+    public void testCardPicture(){
+        Card card1 = new Card(Color.BLUE, Value.EIGHT);
+
+       String test= card1.getPictureFileId();
+        System.out.println(test);
+
+    }
 }
