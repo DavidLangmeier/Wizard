@@ -3,18 +3,10 @@ package at.aau.ase.wizard.basic_classes;
 import org.junit.Assert;
 import org.junit.Test;
 
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value;
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color.*;
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value.*;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.*;
 
-import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color.BLUE;
-import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color.GREEN;
-import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color.RED;
-import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color.YELLOW;
-import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value.ONE;
-import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value.SEVEN;
-import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value.TEN;
-import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value.THIRTEEN;
 
 public class CardTest {
 

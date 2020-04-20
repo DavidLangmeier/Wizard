@@ -4,7 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import java.util.Arrays;
 
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
+
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.*;
+
 
 public class NotepadTest {
     @Test
