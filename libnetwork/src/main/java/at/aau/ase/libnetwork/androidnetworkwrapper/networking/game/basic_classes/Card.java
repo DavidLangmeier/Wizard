@@ -7,7 +7,7 @@ public class Card {
     private final Value value;
 
 
-    Card(Color color, Value value){
+    public Card(Color color, Value value){
         this.color = color;
         this.value = value;
     }
