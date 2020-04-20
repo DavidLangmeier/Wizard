@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.NetworkServer;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.NetworkClient;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.TextMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.KryoNetComponent;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkClientKryo;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkServerKryo;

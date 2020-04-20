@@ -1,4 +1,4 @@
-package at.aau.ase.wizard.basic_classes;
+package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes;
 
 
 import java.util.concurrent.atomic.AtomicInteger;

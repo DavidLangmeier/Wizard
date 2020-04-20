@@ -1,4 +1,4 @@
-package at.aau.ase.wizard.basic_classes;
+package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes;
 
 
 public class Card {
@@ -7,7 +7,7 @@ public class Card {
     private final Value value;
 
 
-    Card(Color color, Value value){
+    public Card(Color color, Value value){
         this.color = color;
         this.value = value;
     }
