@@ -36,7 +36,7 @@ public class GameActivity extends AppCompatActivity {
         iv_showCardjpg = (ImageView) findViewById(R.id.im_firstCard);
 
         //hardcoded Karten zum Testen ++++++++++++++++++++++++++ server Antwort Eintragen++++++++++++++++++++++++++++++++++++++++
-        Card card1 = new Card(Color.RED, Value.ELEVEN);
+        Card card1 = new Card(Color.GREEN, Value.ELEVEN);
 
         int id = getResources().getIdentifier(card1.getPictureFileId(), "drawable", getPackageName());
         String str_id = Integer.toString(id);
