@@ -3,7 +3,7 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classe
 
 public class Notepad {
     private static short round = 0;
-    short[][] pointsPerPlayerPerRound;
+    public short[][] pointsPerPlayerPerRound;
 
     //to use later
     short[][] betTricksPerPlayerPerRound;

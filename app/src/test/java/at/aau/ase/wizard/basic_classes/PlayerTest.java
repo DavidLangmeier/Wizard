@@ -6,6 +6,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
+
 public class PlayerTest {
 
     Player p1;
