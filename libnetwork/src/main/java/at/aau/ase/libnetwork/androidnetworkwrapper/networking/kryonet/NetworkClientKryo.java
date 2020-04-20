@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.Callback;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.NetworkClient;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.BaseMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
 
 public class NetworkClientKryo implements NetworkClient, KryoNetComponent {
     private Client client;

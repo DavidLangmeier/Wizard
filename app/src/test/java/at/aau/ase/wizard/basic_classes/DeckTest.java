@@ -2,6 +2,8 @@ package at.aau.ase.wizard.basic_classes;
 
 import org.junit.Test;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
+
 import static org.junit.Assert.*;
 
 public class DeckTest {

@@ -7,9 +7,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import at.aau.ase.wizard.basic_classes.Card;
-import at.aau.ase.wizard.basic_classes.Color;
-import at.aau.ase.wizard.basic_classes.Value;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value;
+
 
 public class GameActivity extends AppCompatActivity {
     private Button btnShuffle, btnDeal;
@@ -35,7 +36,7 @@ public class GameActivity extends AppCompatActivity {
         iv_showCardjpg = (ImageView) findViewById(R.id.im_firstCard);
 
         //hardcoded Karten zum Testen ++++++++++++++++++++++++++ server Antwort Eintragen++++++++++++++++++++++++++++++++++++++++
-        Card card1 = new Card(Color.BLUE, Value.ELEVEN);
+        Card card1 = new Card(Color.RED, Value.ELEVEN);
 
         int id = getResources().getIdentifier(card1.getPictureFileId(), "drawable", getPackageName());
         String str_id = Integer.toString(id);

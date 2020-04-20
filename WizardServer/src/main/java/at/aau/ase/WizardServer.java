@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkServerKryo;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.TextMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 
 public class WizardServer {
     public static  void main(String[] args) {

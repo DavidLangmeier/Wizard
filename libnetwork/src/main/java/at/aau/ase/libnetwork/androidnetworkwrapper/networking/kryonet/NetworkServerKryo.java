@@ -7,7 +7,7 @@ import com.esotericsoftware.kryonet.Server;
 import java.io.IOException;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.Callback;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.NetworkServer;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.BaseMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
 
 public class NetworkServerKryo implements NetworkServer, KryoNetComponent {
     private Server server;
