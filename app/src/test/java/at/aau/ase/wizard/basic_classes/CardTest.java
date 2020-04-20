@@ -3,8 +3,9 @@ package at.aau.ase.wizard.basic_classes;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static at.aau.ase.wizard.basic_classes.Color.*;
-import static at.aau.ase.wizard.basic_classes.Value.*;
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color.*;
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value.*;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.*;
 
 public class CardTest {
 
