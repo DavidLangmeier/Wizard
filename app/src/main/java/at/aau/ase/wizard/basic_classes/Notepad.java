@@ -5,6 +5,10 @@ public class Notepad {
     private static short round = 0;
     short[][] pointsPerPlayerPerRound;
 
+    //to use later
+    short[][] betTricksPerPlayerPerRound;
+    short[][] tookTricksPerPlayerPerRound;
+
     public Notepad(short numberOfPlayers) {
         switch(numberOfPlayers){
             case 3:

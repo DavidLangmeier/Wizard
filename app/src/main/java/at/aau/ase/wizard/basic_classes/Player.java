@@ -1,6 +1,5 @@
 package at.aau.ase.wizard.basic_classes;
 
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Player {
@@ -39,7 +38,7 @@ public class Player {
     }
 
     public short getTookTricks() {
-        return tookTricks;
+        return this.tookTricks;
     }
 
     public static short getBetTricks() {
@@ -47,6 +46,6 @@ public class Player {
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 }
