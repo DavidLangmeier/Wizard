@@ -7,9 +7,15 @@ public class Card {
     private final Value value;
 
 
-    Card(Color color, Value value){
+    public Card(Color color, Value value) {
         this.color = color;
         this.value = value;
+    }
+//To find out the ID für Drafwable: jps combination  Color &Zero & Name
+    public String getPictureFileId() {
+        String fileIDPicture="";
+        fileIDPicture=color.getColorName().toLowerCase()+"0"+value.getValueName().toLowerCase();
+        return fileIDPicture;
     }
 
 
@@ -23,7 +29,7 @@ public class Card {
 
     public String toString() {
         String str = "";
-            str += color.getColorName() + " " + value.getValueName();
+        str += color.getColorName() + " " + value.getValueName();
         return str;
     }
 }

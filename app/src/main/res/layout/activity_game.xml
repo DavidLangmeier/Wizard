@@ -48,4 +48,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/game_textView_title" />
+
+    <EditText
+        android:id="@+id/etn_showCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="cardShow"
+        app:layout_constraintBottom_toTopOf="@+id/game_btn_shuffleCards"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/im_firstCard"
+        android:layout_width="166dp"
+        android:layout_height="247dp"
+        app:layout_constraintBottom_toTopOf="@+id/etn_showCard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/game_textView_serverResponse" />
 </androidx.constraintlayout.widget.ConstraintLayout>
