@@ -69,4 +69,15 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/game_textView_serverResponse" />
+
+    <ImageView
+        android:id="@+id/iv_kartendeck"
+        android:layout_width="91dp"
+        android:layout_height="139dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/game_textView_serverResponse"
+        app:srcCompat="@drawable/z0hintergrund" />
 </androidx.constraintlayout.widget.ConstraintLayout>
