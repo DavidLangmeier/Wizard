@@ -18,11 +18,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/lobby_btn_startServer"
+        android:id="@+id/lobby_btn_testServer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
-        android:text="@string/lobby_btn_startServer"
+        android:text="@string/lobby_btn_testServer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lobby_btn_startServer" />
+        app:layout_constraintTop_toBottomOf="@+id/lobby_btn_testServer" />
 
     <TextView
         android:id="@+id/lobby_text_serverResponseLabel"
