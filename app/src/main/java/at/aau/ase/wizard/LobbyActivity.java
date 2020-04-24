@@ -14,12 +14,12 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.T
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkClientKryo;
 
 public class LobbyActivity extends AppCompatActivity {
-    Button btnServer;
-    Button btnClient;
-    Button btnToGameScreen;
-    String hostname = "se2-demo.aau.at";
-    NetworkClientKryo client = null;
-    TextView tv_res = null;
+    private Button btnServer;
+    private Button btnClient;
+    private Button btnToGameScreen;
+    private String hostname = "se2-demo.aau.at";
+    private NetworkClientKryo client = null;
+    private TextView tvServerResponse = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +33,9 @@ public class LobbyActivity extends AppCompatActivity {
         btnToGameScreen = (findViewById(R.id.lobby_btn_ToGameScreen));
         btnToGameScreen.setOnClickListener(v -> openGameActivity());
 
-        tv_res = findViewById(R.id.lobby_text_serverResponseDisplay);
+        tvServerResponse = findViewById(R.id.lobby_text_serverResponseDisplay);
     }
-
+  
     private void startServer() {
         MessageThread t = new MessageThread();
         t.start();    }
@@ -54,7 +54,7 @@ public class LobbyActivity extends AppCompatActivity {
             }
             String finalRes = res;
             runOnUiThread(() ->
-                    tv_res.setText(finalRes)
+                    tvServerResponse.setText(finalRes)
             );
         });
         new ConnectionThread().start();

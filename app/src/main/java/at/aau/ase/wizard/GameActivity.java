@@ -13,10 +13,11 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 
 public class GameActivity extends AppCompatActivity {
-    private Button btnShuffle, btnDeal;
-    String et_showCard;
-    TextView tv_valuecolorcard;
-    ImageView iv_showCardjpg;
+    private Button btnShuffle;
+    private Button btnDeal;
+    private String etShowCard;
+    private TextView tvValueColorCard;
+    private ImageView ivShowCardJpg;
 
 
 
@@ -31,20 +32,18 @@ public class GameActivity extends AppCompatActivity {
         btnDeal.setOnClickListener(v -> dealCards());
 
         //Text View witch show the value und color of the card
-        tv_valuecolorcard = findViewById(R.id.etn_showCard);
+        tvValueColorCard = findViewById(R.id.etn_showCard);
         //ImageView
-        iv_showCardjpg = (ImageView) findViewById(R.id.im_firstCard);
+        ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
 
         //hardcoded Karten zum Testen ++++++++++++++++++++++++++ server Antwort Eintragen++++++++++++++++++++++++++++++++++++++++
         Card card1 = new Card(Color.GREEN, Value.ELEVEN);
 
         int id = getResources().getIdentifier(card1.getPictureFileId(), "drawable", getPackageName());
-        String str_id = Integer.toString(id);
-      // tv_valuecolorcard.setText(str_id);
         if(id==0){//if the pictureID is false show Error Logo
-            iv_showCardjpg.setImageResource((R.drawable.z0error));
+            ivShowCardJpg.setImageResource((R.drawable.z0error));
         }else {//show Card
-            iv_showCardjpg.setImageResource(id);
+            ivShowCardJpg.setImageResource(id);
         }
     }
 
