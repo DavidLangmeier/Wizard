@@ -9,7 +9,7 @@
     <string name="home_btn_howToPlay">HOW TO PLAY</string>
     <string name="lobby_textView_title">LOBBY</string>
     <string name="lobby_textView_serverResponse">Server Response: </string>
-    <string name="lobby_btn_startServer">START SERVER</string>
+    <string name="lobby_btn_testServer">TEST SERVER</string>
     <string name="lobby_btn_startClient">START CLIENT</string>
     <string name="lobby_btn_toGameScreen">TO GAME SCREEN</string>
 </resources>

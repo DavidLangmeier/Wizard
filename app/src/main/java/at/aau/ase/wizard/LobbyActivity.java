@@ -26,7 +26,7 @@ public class LobbyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
 
-        btnServer = findViewById(R.id.lobby_btn_startServer);
+        btnServer = findViewById(R.id.lobby_btn_testServer);
         btnServer.setOnClickListener(v -> startServer());
         btnClient = findViewById(R.id.lobby_btn_startClient);
         btnClient.setOnClickListener(v -> startClient());
@@ -34,7 +34,13 @@ public class LobbyActivity extends AppCompatActivity {
         btnToGameScreen.setOnClickListener(v -> openGameActivity());
 
         tvServerResponse = findViewById(R.id.lobby_text_serverResponseDisplay);
+    }
+  
+    private void startServer() {
+        MessageThread t = new MessageThread();
+        t.start();    }
 
+    private void startClient() {
         client = new NetworkClientKryo();
         client.registerClass(TextMessage.class);
         client.registerCallback(basemessage -> {
@@ -52,14 +58,6 @@ public class LobbyActivity extends AppCompatActivity {
             );
         });
         new ConnectionThread().start();
-    }
-
-    private void startServer() {
-        MessageThread t = new MessageThread();
-        t.start();    }
-
-    private void startClient() {
-        tvServerResponse.setText("Click other button to send request");
     }
 
     private void openGameActivity() {
