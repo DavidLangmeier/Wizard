@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Wizard</string>
+    <string name="game_textView_title">GAME SCREEN</string>
+    <string name="game_btn_shuffleCards">SHUFFLE CARDS</string>
+    <string name="game_btn_dealOutCards">DEAL OUT CARDS</string>
+    <string name="home_textView_title">WIZARD</string>
+    <string name="home_btn_play">PLAY</string>
+    <string name="home_btn_settings">SETTINGS</string>
+    <string name="home_btn_howToPlay">HOW TO PLAY</string>
+    <string name="lobby_textView_title">LOBBY</string>
+    <string name="lobby_textView_serverResponse">Server Response: </string>
+    <string name="lobby_btn_testServer">TEST SERVER</string>
+    <string name="lobby_btn_startClient">START CLIENT</string>
+    <string name="lobby_btn_toGameScreen">TO GAME SCREEN</string>
 </resources>

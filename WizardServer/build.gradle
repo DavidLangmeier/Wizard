@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // https://mvnrepository.com/artifact/com.esotericsoftware/kryonet
+    // implementation 'com.esotericsoftware:kryonet:2.22.0-RC1'
+    implementation project(':libnetwork')
+    testImplementation 'junit:junit:4.12'
+    // https://mvnrepository.com/artifact/com.esotericsoftware.minlog/minlog
+    compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
+
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled(true)
+        html.enabled(true)
+    }
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'at.aau.ase.WizardServer'
+  }  
+  from {
+    configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+}
