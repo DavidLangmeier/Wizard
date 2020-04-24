@@ -1,12 +1,10 @@
-package at.aau.ase.wizard.basic_classes;
+package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes;
 
-import android.app.FragmentManager;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 public class PlayerTest {
 

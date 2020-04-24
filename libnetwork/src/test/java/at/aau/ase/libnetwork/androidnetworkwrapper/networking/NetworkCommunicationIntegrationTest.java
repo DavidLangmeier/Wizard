@@ -1,4 +1,4 @@
-package at.aau.ase.wizard.networking;
+package at.aau.ase.libnetwork.androidnetworkwrapper.networking;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -7,8 +7,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.NetworkServer;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.NetworkClient;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.KryoNetComponent;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkClientKryo;

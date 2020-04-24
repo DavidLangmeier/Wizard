@@ -3,6 +3,7 @@ package at.aau.ase;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+import static com.esotericsoftware.minlog.Log.*;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkServerKryo;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 
@@ -13,11 +14,11 @@ public class WizardServer {
         try {
             server.start();
         } catch (IOException e) {
-            e.printStackTrace();
+            error("Server start failed", e);
         }
         server.registerCallback(basemessage -> {
             if (basemessage instanceof TextMessage) {
-                System.out.println(basemessage.toString());
+                info(basemessage.toString());
                 server.broadcastMessage(
                         new TextMessage("Hi client, I'm the server and I'm waiting for requests!\nDid you say: "
                                 + ((TextMessage) basemessage).text
@@ -27,10 +28,10 @@ public class WizardServer {
                         ));
             }
             else {
-                System.out.println("Received message is not a Textmessage!");
+                info("Received message is not a Textmessage!");
                 server.broadcastMessage(new TextMessage("Please send a Textmessage!"));
             }
         });
-        System.out.println("Server started and Callback registered. Listening ...");
+        info("Server started and Callback registered. Listening ...");
     }
 }
