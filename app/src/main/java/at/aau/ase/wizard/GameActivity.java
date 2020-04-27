@@ -1,11 +1,20 @@
 package at.aau.ase.wizard;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
@@ -16,9 +25,9 @@ public class GameActivity extends AppCompatActivity {
     private Button btnShuffle;
     private Button btnDeal;
     private String etShowCard;
-    private TextView tvValueColorCard;
-    private ImageView ivShowCardJpg;
 
+    private ImageView ivShowCardJpg;
+    private ViewPager2 viewPager2;
 
 
     @Override
@@ -30,9 +39,37 @@ public class GameActivity extends AppCompatActivity {
         btnShuffle.setOnClickListener(v -> shuffleCards());
         btnDeal = (Button) findViewById(R.id.game_btn_dealOutCards);
         btnDeal.setOnClickListener(v -> dealCards());
+        viewPager2 = findViewById(R.id.viewPagerImageSlieder);
+        //List of Images from drawable
+        List<SliderItem> sliderItems = new ArrayList<>();
+        sliderItems.add(new SliderItem(R.drawable.blue0eight));
+        sliderItems.add(new SliderItem(R.drawable.red0eight));
+        sliderItems.add(new SliderItem(R.drawable.green0eight));
+        sliderItems.add(new SliderItem(R.drawable.yellow0eight));
+        sliderItems.add(new SliderItem(R.drawable.blue0one));
+        sliderItems.add(new SliderItem(R.drawable.red0one));
+        sliderItems.add(new SliderItem(R.drawable.green0one));
+        sliderItems.add(new SliderItem(R.drawable.yellow0one));
 
-        //Text View witch show the value und color of the card
-        tvValueColorCard = findViewById(R.id.etn_showCard);
+
+        viewPager2.setAdapter(new SliderAdapter(sliderItems, viewPager2));
+
+        viewPager2.setClipToPadding(false);
+        viewPager2.setClipChildren(false);
+        viewPager2.setOffscreenPageLimit(10);
+        viewPager2.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_ALWAYS);
+
+        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+        compositePageTransformer.addTransformer(new MarginPageTransformer(0));
+        compositePageTransformer.addTransformer(new ViewPager2.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                float r = 1 - Math.abs(position);
+                page.setScaleY(0.85f + r * 0.15f);
+            }
+        });
+        viewPager2.setPageTransformer(compositePageTransformer);
+
         //ImageView
         ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
 
@@ -40,18 +77,18 @@ public class GameActivity extends AppCompatActivity {
         Card card1 = new Card(Color.GREEN, Value.ELEVEN);
 
         int id = getResources().getIdentifier(card1.getPictureFileId(), "drawable", getPackageName());
-        if(id==0){//if the pictureID is false show Error Logo
+        if (id == 0) {//if the pictureID is false show Error Logo
             ivShowCardJpg.setImageResource((R.drawable.z0error));
-        }else {//show Card
+        } else {//show Card
             ivShowCardJpg.setImageResource(id);
         }
     }
 
-    private void shuffleCards () {
+    private void shuffleCards() {
         // TODO
     }
 
-    private void dealCards () {
+    private void dealCards() {
         // TODO
     }
 

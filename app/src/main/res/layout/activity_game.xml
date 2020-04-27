@@ -7,6 +7,22 @@
     android:background="#197331"
     tools:context=".GameActivity">
 
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerImageSlieder"
+        android:layout_width="415dp"
+        android:layout_height="147dp"
+        android:paddingStart="150dp"
+        android:paddingEnd="150dp"
+        app:layout_constraintBottom_toTopOf="@+id/game_btn_shuffleCards"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/game_textView_serverResponse"
+        app:layout_constraintVertical_bias="0.957">
+
+
+    </androidx.viewpager2.widget.ViewPager2>
+
     <TextView
         android:id="@+id/game_textView_title"
         android:layout_width="wrap_content"
@@ -49,24 +65,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/game_textView_title" />
 
-    <EditText
-        android:id="@+id/etn_showCard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="cardShow"
-        app:layout_constraintBottom_toTopOf="@+id/game_btn_shuffleCards"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/im_firstCard"
-        android:layout_width="166dp"
-        android:layout_height="247dp"
-        app:layout_constraintBottom_toTopOf="@+id/etn_showCard"
+        android:layout_width="131dp"
+        android:layout_height="126dp"
+        app:layout_constraintBottom_toTopOf="@+id/game_btn_shuffleCards"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.934"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/game_textView_serverResponse" />
+        app:layout_constraintTop_toBottomOf="@+id/game_textView_serverResponse"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
