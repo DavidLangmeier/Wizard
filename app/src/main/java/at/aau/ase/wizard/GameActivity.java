@@ -1,14 +1,20 @@
 package at.aau.ase.wizard;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.CharacterPickerDialog;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,32 +34,52 @@ public class GameActivity extends AppCompatActivity {
 
     private ImageView ivShowCardJpg;
     private ViewPager2 viewPager2;
+    private TextView tv_showTextTrumpf;
+
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_game);
 
         btnShuffle = (Button) findViewById(R.id.game_btn_shuffleCards);
         btnShuffle.setOnClickListener(v -> shuffleCards());
         btnDeal = (Button) findViewById(R.id.game_btn_dealOutCards);
         btnDeal.setOnClickListener(v -> dealCards());
+
+        tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
+
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
+
         //List of Images from drawable
         List<SliderItem> sliderItems = new ArrayList<>();
-        sliderItems.add(new SliderItem(R.drawable.blue0eight));
-        sliderItems.add(new SliderItem(R.drawable.red0eight));
-        sliderItems.add(new SliderItem(R.drawable.green0eight));
-        sliderItems.add(new SliderItem(R.drawable.yellow0eight));
         sliderItems.add(new SliderItem(R.drawable.blue0one));
+        sliderItems.add(new SliderItem(R.drawable.blue0seven));
+        sliderItems.add(new SliderItem(R.drawable.blue0eight));
+        sliderItems.add(new SliderItem(R.drawable.blue0eleven));
         sliderItems.add(new SliderItem(R.drawable.red0one));
+        sliderItems.add(new SliderItem(R.drawable.red0three));
+        sliderItems.add(new SliderItem(R.drawable.red0eight));
+        sliderItems.add(new SliderItem(R.drawable.red0eleven));
         sliderItems.add(new SliderItem(R.drawable.green0one));
+        sliderItems.add(new SliderItem(R.drawable.green0eight));
+        sliderItems.add(new SliderItem(R.drawable.green0nine));
         sliderItems.add(new SliderItem(R.drawable.yellow0one));
+        sliderItems.add(new SliderItem(R.drawable.yellow0six));
+        sliderItems.add(new SliderItem(R.drawable.yellow0eight));
+        sliderItems.add(new SliderItem(R.drawable.wizard0tree));
+        sliderItems.add(new SliderItem(R.drawable.jester0one));
+
+
 
 
         viewPager2.setAdapter(new SliderAdapter(sliderItems, viewPager2));
 
+//Damit mehrere nebeneinander sichbar sind ------------------------------------
         viewPager2.setClipToPadding(false);
         viewPager2.setClipChildren(false);
         viewPager2.setOffscreenPageLimit(10);
@@ -70,6 +96,8 @@ public class GameActivity extends AppCompatActivity {
         });
         viewPager2.setPageTransformer(compositePageTransformer);
 
+
+//ende der sichtbarkeit von mehreren hintereinander ----------------------------------------
         //ImageView
         ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
 
@@ -82,6 +110,19 @@ public class GameActivity extends AppCompatActivity {
         } else {//show Card
             ivShowCardJpg.setImageResource(id);
         }
+        ivShowCardJpg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
+                ivShowCardJpg.startAnimation(aniRotateClk);
+                if (tv_showTextTrumpf.getVisibility() == View.VISIBLE) {
+                    tv_showTextTrumpf.setVisibility(View.INVISIBLE);
+                } else {
+                    tv_showTextTrumpf.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
     }
 
     private void shuffleCards() {
