@@ -46,7 +46,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
         holder.setImage(sliderItems.get(position));
 
-        //Hintergrundfarbe bei Auswählen Bild
+        //Hintergrundfarbe bei Auswählen Bild  GELB
         if(selectedICard==position){
             holder.imageView.setBackgroundColor(Color.parseColor("#fcdb19"));
         }else{

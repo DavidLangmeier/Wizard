@@ -36,7 +36,42 @@ public class GameActivity extends AppCompatActivity {
     private ViewPager2 viewPager2;
     private TextView tv_showTextTrumpf;
 
+    List<SliderItem> sliderItems; //Zeigt scrollHand
 
+    //Test karten
+    ArrayList<Card> playerCards;
+
+    public void createTestPlayerCards() {
+        playerCards.add(new Card(Color.BLUE, Value.FIVE));
+        playerCards.add(new Card(Color.RED, Value.FIVE));
+        playerCards.add(new Card(Color.GREEN, Value.FIVE));
+        playerCards.add(new Card(Color.YELLOW, Value.FIVE));
+
+        playerCards.add(new Card(Color.BLUE, Value.NINE));
+        playerCards.add(new Card(Color.RED, Value.EIGHT));
+        playerCards.add(new Card(Color.GREEN, Value.FIVE));
+        playerCards.add(new Card(Color.YELLOW, Value.ONE));
+    }
+
+    //------------Metode SPIEILKARTEN  vom Server Anzeigen in spielhand//--------------------------
+    public void addCardsToSlideView(ArrayList<Card> pp_playerCards) {
+        playerCards = pp_playerCards;
+
+        sliderItems.clear(); //Clear wennn neue Carten von Server geschickt werden
+
+
+        for (int i = 0; i < pp_playerCards.size(); i++) {
+            //umwandlung Color.Red, Value.Five in drawable picture alternativ (sliderItems.add(new SliderItem(R.drawable.red0eight));
+            int id = getResources().getIdentifier(pp_playerCards.get(i).getPictureFileId(), "drawable", getPackageName());
+
+            if (id == 0) {//if the pictureID is false show Error Logo zero
+                sliderItems.add(new SliderItem((R.drawable.z0error)));
+            } else {//show Card
+                sliderItems.add(new SliderItem(id));
+            }
+        }
+        viewPager2.setAdapter(new SliderAdapter(sliderItems, viewPager2));
+    }
 
 
 
@@ -45,6 +80,8 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_game);
+
+        playerCards = new ArrayList<>();
 
         btnShuffle = (Button) findViewById(R.id.game_btn_shuffleCards);
         btnShuffle.setOnClickListener(v -> shuffleCards());
@@ -56,30 +93,14 @@ public class GameActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
 
         //List of Images from drawable
-        List<SliderItem> sliderItems = new ArrayList<>();
-        sliderItems.add(new SliderItem(R.drawable.blue0one));
-        sliderItems.add(new SliderItem(R.drawable.blue0seven));
-        sliderItems.add(new SliderItem(R.drawable.blue0eight));
-        sliderItems.add(new SliderItem(R.drawable.blue0eleven));
-        sliderItems.add(new SliderItem(R.drawable.red0one));
-        sliderItems.add(new SliderItem(R.drawable.red0three));
-        sliderItems.add(new SliderItem(R.drawable.red0eight));
-        sliderItems.add(new SliderItem(R.drawable.red0eleven));
-        sliderItems.add(new SliderItem(R.drawable.green0one));
-        sliderItems.add(new SliderItem(R.drawable.green0eight));
-        sliderItems.add(new SliderItem(R.drawable.green0nine));
-        sliderItems.add(new SliderItem(R.drawable.yellow0one));
-        sliderItems.add(new SliderItem(R.drawable.yellow0six));
-        sliderItems.add(new SliderItem(R.drawable.yellow0eight));
-        sliderItems.add(new SliderItem(R.drawable.wizard0tree));
-        sliderItems.add(new SliderItem(R.drawable.jester0one));
+        sliderItems = new ArrayList<>();
 
+        createTestPlayerCards();
 
+        addCardsToSlideView(playerCards);
+        // addCardsToSlideView(playerCards); Test of nicht doppelt
 
-
-        viewPager2.setAdapter(new SliderAdapter(sliderItems, viewPager2));
-
-//Damit mehrere nebeneinander sichbar sind ------------------------------------
+        //Damit mehrere nebeneinander sichbar sind
         viewPager2.setClipToPadding(false);
         viewPager2.setClipChildren(false);
         viewPager2.setOffscreenPageLimit(10);
@@ -96,12 +117,12 @@ public class GameActivity extends AppCompatActivity {
         });
         viewPager2.setPageTransformer(compositePageTransformer);
 
-
-//ende der sichtbarkeit von mehreren hintereinander ----------------------------------------
+        //ende der sichtbarkeit von mehreren hintereinander ----------------------------------------
         //ImageView
         ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
 
-        //hardcoded Karten zum Testen ++++++++++++++++++++++++++ server Antwort Eintragen++++++++++++++++++++++++++++++++++++++++
+        //------------Metode TRUMP  vom Server Anzeigen in am Rand//--------------------------------
+        //
         Card card1 = new Card(Color.GREEN, Value.ELEVEN);
 
         int id = getResources().getIdentifier(card1.getPictureFileId(), "drawable", getPackageName());
@@ -127,6 +148,11 @@ public class GameActivity extends AppCompatActivity {
 
     private void shuffleCards() {
         // TODO
+        playerCards.clear();
+        playerCards.add(new Card(Color.WIZARD, Value.WIZARD));
+        playerCards.add(new Card(Color.JESTER, Value.JESTER));
+
+        addCardsToSlideView(playerCards);
     }
 
     private void dealCards() {
@@ -134,3 +160,4 @@ public class GameActivity extends AppCompatActivity {
     }
 
 }
+
