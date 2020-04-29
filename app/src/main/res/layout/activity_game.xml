@@ -7,6 +7,24 @@
     android:background="#197331"
     tools:context=".GameActivity">
 
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerImageSlieder"
+        android:layout_width="417dp"
+        android:layout_height="126dp"
+        android:paddingStart="160dp"
+        android:paddingEnd="158dp"
+        app:layout_constraintBottom_toTopOf="@+id/game_btn_shuffleCards"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/game_textView_serverResponse"
+        app:layout_constraintVertical_bias="0.957"></androidx.viewpager2.widget.ViewPager2>
+<!--test  tesat aera -->
+    <!--test  tesat aera -->
+    <!--test  tesat aera -->
+    <!--test  tesat aera -->
+
+
     <TextView
         android:id="@+id/game_textView_title"
         android:layout_width="wrap_content"
@@ -26,16 +44,18 @@
         android:text="@string/game_btn_shuffleCards"
         app:layout_constraintBottom_toTopOf="@+id/game_btn_dealOutCards"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.371"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/game_btn_dealOutCards"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="36dp"
         android:text="@string/game_btn_dealOutCards"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.38"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -49,24 +69,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/game_textView_title" />
 
-    <EditText
-        android:id="@+id/etn_showCard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="cardShow"
-        app:layout_constraintBottom_toTopOf="@+id/game_btn_shuffleCards"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/im_firstCard"
-        android:layout_width="166dp"
-        android:layout_height="247dp"
-        app:layout_constraintBottom_toTopOf="@+id/etn_showCard"
+        android:layout_width="57dp"
+        android:layout_height="59dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/etn_Vorhersage"
+        android:layout_width="103dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="16dp"
+        android:digits="0123456789"
+        android:ems="10"
+        android:hint="@string/str_vorhersage"
+        android:inputType="number"
+        android:maxLength="2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.937"
+        app:layout_constraintStart_toEndOf="@+id/game_btn_shuffleCards"
+        app:layout_constraintTop_toBottomOf="@+id/viewPagerImageSlieder" />
+
+    <TextView
+        android:id="@+id/tv_trumpftext"
+        android:layout_width="78dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="55dp"
+        android:text="11 Green"
+        android:textColor="#FFFF00"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/im_firstCard"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/game_textView_serverResponse" />
+        app:layout_constraintTop_toBottomOf="@+id/viewPagerImageSlieder" />
 </androidx.constraintlayout.widget.ConstraintLayout>
