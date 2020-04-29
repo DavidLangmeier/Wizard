@@ -19,25 +19,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value;
 
 
 public class GameActivity extends AppCompatActivity {
     private Button btnShuffle;
     private Button btnDeal;
     private String etShowCard;
+    private String textTrumpCard;
 
     private ImageView ivShowCardJpg;
     private ViewPager2 viewPager2;
     private TextView tv_showTextTrumpf;
 
     List<SliderItem> sliderItems; //Zeigt scrollHand
-
-    //Test karten
-    ArrayList<Card> playerCards;
 
     //Test PlayerHand
     Hand playerHand = new Hand();
@@ -68,8 +64,10 @@ public class GameActivity extends AppCompatActivity {
         int id = getResources().getIdentifier(trumpHand.getCards().get(0).getPictureFileId(), "drawable", getPackageName());
         if (id == 0) {//if the pictureID is false show Error Logo
             ivShowCardJpg.setImageResource((R.drawable.z0error));
+
         } else {//show Card
             ivShowCardJpg.setImageResource(id);
+            tv_showTextTrumpf.setText(trumpHand.getCards().get(0).toString());
         }
     }
 
@@ -101,7 +99,6 @@ public class GameActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_game);
 
-        playerCards = new ArrayList<>();
 
         btnShuffle = (Button) findViewById(R.id.game_btn_shuffleCards);
         btnShuffle.setOnClickListener(v -> shuffleCards());
