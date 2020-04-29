@@ -54,7 +54,7 @@ public class GameActivity extends AppCompatActivity {
     //deafault deal for 10 Playercards and 1 Trumpcard
     public void create10testPlayerCards(Deck deck) {
         playerHand.clear();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i < 11; i++) { //skip first card that is going to be trumpcard
             playerHand.add(deck.getCards().get(i));
         }
         addCardsToSlideView(playerHand.getCards());
@@ -63,7 +63,7 @@ public class GameActivity extends AppCompatActivity {
 
     public void dealTrumpCard(){
         trumpHand.clear();
-        playerHand.dealCard(playerHand.getCards().get(0), trumpHand);
+        deck.dealCard(deck.getCards().get(0), trumpHand);
 
         int id = getResources().getIdentifier(trumpHand.getCards().get(0).getPictureFileId(), "drawable", getPackageName());
         if (id == 0) {//if the pictureID is false show Error Logo
