@@ -1,17 +1,13 @@
 package at.aau.ase.wizard;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.CharacterPickerDialog;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -24,6 +20,8 @@ import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value;
 
 
@@ -41,7 +39,21 @@ public class GameActivity extends AppCompatActivity {
     //Test karten
     ArrayList<Card> playerCards;
 
-    public void createTestPlayerCards() {
+    //Test PlayerHand
+    Hand playerHand = new Hand();
+
+    //test Deck
+    Deck deck = new Deck();
+
+
+    public void create10testPlayerCards(Deck deck) {
+        playerHand.clear();
+        for (int i = 0; i < 10; i++) {
+            playerHand.add(deck.getCards().get(i));
+        }
+        addCardsToSlideView(playerHand.getCards());
+
+        /*
         playerCards.add(new Card(Color.BLUE, Value.FIVE));
         playerCards.add(new Card(Color.RED, Value.FIVE));
         playerCards.add(new Card(Color.GREEN, Value.FIVE));
@@ -51,11 +63,12 @@ public class GameActivity extends AppCompatActivity {
         playerCards.add(new Card(Color.RED, Value.EIGHT));
         playerCards.add(new Card(Color.GREEN, Value.FIVE));
         playerCards.add(new Card(Color.YELLOW, Value.ONE));
+        */
     }
 
     //------------Metode SPIEILKARTEN  vom Server Anzeigen in spielhand//--------------------------
     public void addCardsToSlideView(ArrayList<Card> pp_playerCards) {
-        playerCards = pp_playerCards;
+        playerHand.setCards(pp_playerCards);
 
         sliderItems.clear(); //Clear wennn neue Carten von Server geschickt werden
 
@@ -95,10 +108,6 @@ public class GameActivity extends AppCompatActivity {
         //List of Images from drawable
         sliderItems = new ArrayList<>();
 
-        createTestPlayerCards();
-
-        addCardsToSlideView(playerCards);
-        // addCardsToSlideView(playerCards); Test of nicht doppelt
 
         //Damit mehrere nebeneinander sichbar sind
         viewPager2.setClipToPadding(false);
@@ -147,12 +156,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void shuffleCards() {
-        // TODO
-        playerCards.clear();
-        playerCards.add(new Card(Color.WIZARD, Value.WIZARD));
-        playerCards.add(new Card(Color.JESTER, Value.JESTER));
-
-        addCardsToSlideView(playerCards);
+        deck.shuffle();
+        create10testPlayerCards(deck);
     }
 
     private void dealCards() {
