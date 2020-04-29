@@ -42,28 +42,35 @@ public class GameActivity extends AppCompatActivity {
     //Test PlayerHand
     Hand playerHand = new Hand();
 
+    //Test table
+    Hand table = new Hand();
+
+    //Test Trump hand
+    Hand trumpHand = new Hand();
+
     //test Deck
     Deck deck = new Deck();
 
-
+    //deafault deal for 10 Playercards and 1 Trumpcard
     public void create10testPlayerCards(Deck deck) {
         playerHand.clear();
         for (int i = 0; i < 10; i++) {
             playerHand.add(deck.getCards().get(i));
         }
         addCardsToSlideView(playerHand.getCards());
+        dealTrumpCard();
+    }
 
-        /*
-        playerCards.add(new Card(Color.BLUE, Value.FIVE));
-        playerCards.add(new Card(Color.RED, Value.FIVE));
-        playerCards.add(new Card(Color.GREEN, Value.FIVE));
-        playerCards.add(new Card(Color.YELLOW, Value.FIVE));
+    public void dealTrumpCard(){
+        trumpHand.clear();
+        playerHand.dealCard(playerHand.getCards().get(0), trumpHand);
 
-        playerCards.add(new Card(Color.BLUE, Value.NINE));
-        playerCards.add(new Card(Color.RED, Value.EIGHT));
-        playerCards.add(new Card(Color.GREEN, Value.FIVE));
-        playerCards.add(new Card(Color.YELLOW, Value.ONE));
-        */
+        int id = getResources().getIdentifier(trumpHand.getCards().get(0).getPictureFileId(), "drawable", getPackageName());
+        if (id == 0) {//if the pictureID is false show Error Logo
+            ivShowCardJpg.setImageResource((R.drawable.z0error));
+        } else {//show Card
+            ivShowCardJpg.setImageResource(id);
+        }
     }
 
     //------------Metode SPIEILKARTEN  vom Server Anzeigen in spielhand//--------------------------
@@ -130,38 +137,26 @@ public class GameActivity extends AppCompatActivity {
         //ImageView
         ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
 
-        //------------Metode TRUMP  vom Server Anzeigen in am Rand//--------------------------------
-        //
-        Card card1 = new Card(Color.GREEN, Value.ELEVEN);
-
-        int id = getResources().getIdentifier(card1.getPictureFileId(), "drawable", getPackageName());
-        if (id == 0) {//if the pictureID is false show Error Logo
-            ivShowCardJpg.setImageResource((R.drawable.z0error));
-        } else {//show Card
-            ivShowCardJpg.setImageResource(id);
-        }
-        ivShowCardJpg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
-                ivShowCardJpg.startAnimation(aniRotateClk);
-                if (tv_showTextTrumpf.getVisibility() == View.VISIBLE) {
-                    tv_showTextTrumpf.setVisibility(View.INVISIBLE);
-                } else {
-                    tv_showTextTrumpf.setVisibility(View.VISIBLE);
-                }
-
+        //Animation for display Trumpcard as Text
+        ivShowCardJpg.setOnClickListener(v -> {
+            Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
+            ivShowCardJpg.startAnimation(aniRotateClk);
+            if (tv_showTextTrumpf.getVisibility() == View.VISIBLE) {
+                tv_showTextTrumpf.setVisibility(View.INVISIBLE);
+            } else {
+                tv_showTextTrumpf.setVisibility(View.VISIBLE);
             }
+
         });
     }
 
     private void shuffleCards() {
-        deck.shuffle();
-        create10testPlayerCards(deck);
+        //TODO
     }
 
     private void dealCards() {
-        // TODO
+        deck.shuffle();
+        create10testPlayerCards(deck);
     }
 
 }
