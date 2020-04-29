@@ -1,17 +1,13 @@
 package at.aau.ase.wizard;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.CharacterPickerDialog;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -23,14 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 
 
 public class GameActivity extends AppCompatActivity {
     private Button btnShuffle;
     private Button btnDeal;
     private String etShowCard;
+    private String textTrumpCard;
 
     private ImageView ivShowCardJpg;
     private ViewPager2 viewPager2;
@@ -38,24 +35,45 @@ public class GameActivity extends AppCompatActivity {
 
     List<SliderItem> sliderItems; //Zeigt scrollHand
 
-    //Test karten
-    ArrayList<Card> playerCards;
+    //Test PlayerHand
+    Hand playerHand = new Hand();
 
-    public void createTestPlayerCards() {
-        playerCards.add(new Card(Color.BLUE, Value.FIVE));
-        playerCards.add(new Card(Color.RED, Value.FIVE));
-        playerCards.add(new Card(Color.GREEN, Value.FIVE));
-        playerCards.add(new Card(Color.YELLOW, Value.FIVE));
+    //Test table
+    Hand table = new Hand();
 
-        playerCards.add(new Card(Color.BLUE, Value.NINE));
-        playerCards.add(new Card(Color.RED, Value.EIGHT));
-        playerCards.add(new Card(Color.GREEN, Value.FIVE));
-        playerCards.add(new Card(Color.YELLOW, Value.ONE));
+    //Test Trump hand
+    Hand trumpHand = new Hand();
+
+    //test Deck
+    Deck deck = new Deck();
+
+    //deafault deal for 10 Playercards and 1 Trumpcard
+    public void create10testPlayerCards(Deck deck) {
+        playerHand.clear();
+        for (int i = 1; i < 11; i++) { //skip first card that is going to be trumpcard
+            playerHand.add(deck.getCards().get(i));
+        }
+        addCardsToSlideView(playerHand.getCards());
+        dealTrumpCard();
+    }
+
+    public void dealTrumpCard(){
+        trumpHand.clear();
+        deck.dealCard(deck.getCards().get(0), trumpHand);
+
+        int id = getResources().getIdentifier(trumpHand.getCards().get(0).getPictureFileId(), "drawable", getPackageName());
+        if (id == 0) {//if the pictureID is false show Error Logo
+            ivShowCardJpg.setImageResource((R.drawable.z0error));
+
+        } else {//show Card
+            ivShowCardJpg.setImageResource(id);
+            tv_showTextTrumpf.setText(trumpHand.getCards().get(0).toString());
+        }
     }
 
     //------------Metode SPIEILKARTEN  vom Server Anzeigen in spielhand//--------------------------
     public void addCardsToSlideView(ArrayList<Card> pp_playerCards) {
-        playerCards = pp_playerCards;
+        playerHand.setCards(pp_playerCards);
 
         sliderItems.clear(); //Clear wennn neue Carten von Server geschickt werden
 
@@ -81,7 +99,6 @@ public class GameActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_game);
 
-        playerCards = new ArrayList<>();
 
         btnShuffle = (Button) findViewById(R.id.game_btn_shuffleCards);
         btnShuffle.setOnClickListener(v -> shuffleCards());
@@ -95,10 +112,6 @@ public class GameActivity extends AppCompatActivity {
         //List of Images from drawable
         sliderItems = new ArrayList<>();
 
-        createTestPlayerCards();
-
-        addCardsToSlideView(playerCards);
-        // addCardsToSlideView(playerCards); Test of nicht doppelt
 
         //Damit mehrere nebeneinander sichbar sind
         viewPager2.setClipToPadding(false);
@@ -121,42 +134,26 @@ public class GameActivity extends AppCompatActivity {
         //ImageView
         ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
 
-        //------------Metode TRUMP  vom Server Anzeigen in am Rand//--------------------------------
-        //
-        Card card1 = new Card(Color.GREEN, Value.ELEVEN);
-
-        int id = getResources().getIdentifier(card1.getPictureFileId(), "drawable", getPackageName());
-        if (id == 0) {//if the pictureID is false show Error Logo
-            ivShowCardJpg.setImageResource((R.drawable.z0error));
-        } else {//show Card
-            ivShowCardJpg.setImageResource(id);
-        }
-        ivShowCardJpg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
-                ivShowCardJpg.startAnimation(aniRotateClk);
-                if (tv_showTextTrumpf.getVisibility() == View.VISIBLE) {
-                    tv_showTextTrumpf.setVisibility(View.INVISIBLE);
-                } else {
-                    tv_showTextTrumpf.setVisibility(View.VISIBLE);
-                }
-
+        //Animation for display Trumpcard as Text
+        ivShowCardJpg.setOnClickListener(v -> {
+            Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
+            ivShowCardJpg.startAnimation(aniRotateClk);
+            if (tv_showTextTrumpf.getVisibility() == View.VISIBLE) {
+                tv_showTextTrumpf.setVisibility(View.INVISIBLE);
+            } else {
+                tv_showTextTrumpf.setVisibility(View.VISIBLE);
             }
+
         });
     }
 
     private void shuffleCards() {
-        // TODO
-        playerCards.clear();
-        playerCards.add(new Card(Color.WIZARD, Value.WIZARD));
-        playerCards.add(new Card(Color.JESTER, Value.JESTER));
-
-        addCardsToSlideView(playerCards);
+        //TODO
     }
 
     private void dealCards() {
-        // TODO
+        deck.shuffle();
+        create10testPlayerCards(deck);
     }
 
 }

@@ -5,14 +5,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Player {
     static AtomicInteger nextID = new AtomicInteger();
-    private int id;
+    private int player_id;
     String name;
     private static short betTricks;
     private short tookTricks;
 
     public Player(String name){
         //sets unique Player-ID starting with 0 -> equals to position in 2D Array pointsPerPlayerPerRound in Notepad
-        this.id = nextID.incrementAndGet() -1;
+        this.player_id = nextID.incrementAndGet() -1;
         this.name = name;
 
     }
@@ -46,7 +46,7 @@ public class Player {
         return betTricks;
     }
 
-    public int getId() {
-        return this.id;
+    public int getPlayer_id() {
+        return this.player_id;
     }
 }

@@ -60,8 +60,8 @@
 
     <TextView
         android:id="@+id/game_textView_serverResponse"
-        android:layout_width="356dp"
-        android:layout_height="74dp"
+        android:layout_width="358dp"
+        android:layout_height="132dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
