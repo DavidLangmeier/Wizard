@@ -10,6 +10,8 @@ public class Player {
     private static short betTricks;
     private short tookTricks;
 
+    public Player() {}
+
     public Player(String name){
         //sets unique Player-ID starting with 0 -> equals to position in 2D Array pointsPerPlayerPerRound in Notepad
         this.id = nextID.incrementAndGet() -1;
