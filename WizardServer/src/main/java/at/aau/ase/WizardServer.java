@@ -62,7 +62,7 @@ public class WizardServer extends NetworkServerKryo {
             else if (basemessage instanceof LobbyMessage) {
                 LobbyMessage msg = (LobbyMessage) basemessage;
                 info("New user "+msg.getNewUsername());
-                Player newplayer = new Player(msg.getNewUsername());
+                Player newplayer = new Player(msg.getNewUsername(),server.getLastConnectionID());
                 players.add(newplayer);
                 server.broadcastMessage(new LobbyMessage(newplayer));
             }
