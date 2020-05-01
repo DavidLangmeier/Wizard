@@ -12,4 +12,5 @@
     <string name="lobby_btn_testServer">TEST SERVER</string>
     <string name="lobby_btn_startClient">START CLIENT</string>
     <string name="lobby_btn_toGameScreen">TO GAME SCREEN</string>
+    <string name="lobby_et_username">Username</string>
 </resources>
