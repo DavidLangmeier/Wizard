@@ -17,6 +17,7 @@ public enum Value {
     THIRTEEN(13, "Thirteen"),
     WIZARD(14, "Wizard");
 
+
     private final int valueCode;
     private final String valueName;
 
