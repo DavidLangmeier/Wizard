@@ -17,6 +17,7 @@ import java.util.List;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
 
 import static com.esotericsoftware.minlog.Log.*;
 
@@ -59,6 +60,9 @@ public class LobbyActivity extends AppCompatActivity {
                 Player player = ((LobbyMessage) basemessage).getPlayer();
                 info("Received a LobbyMessage "+player.getName());
                 players.add(player.getName());
+                if (players.size() >= WizardConstants.MIN_NUM_PLAYERS && !etUsername.isEnabled()) {
+                    btnToGameScreen.setEnabled(true);
+                }
             }
             else {
                 error("Not a textmessage: "+basemessage.toString());
@@ -76,7 +80,6 @@ public class LobbyActivity extends AppCompatActivity {
             String username = etUsername.getText().toString();
             wizardClient.sendMessage(new LobbyMessage(username));
             debug(username);
-            btnToGameScreen.setEnabled(true);
             etUsername.setEnabled(false);
             return true;
         }
