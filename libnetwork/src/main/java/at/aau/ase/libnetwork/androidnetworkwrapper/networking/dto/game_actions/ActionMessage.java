@@ -1,9 +1,13 @@
 package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions;
 
-public class ActionMessage {
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
+
+public class ActionMessage extends BaseMessage {
     private Action actionType;
 
-    public ActionMessage(Action actionType){
+    public  ActionMessage() {}
+
+    public ActionMessage(Action actionType) {
         this.actionType = actionType;
     }
 

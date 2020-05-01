@@ -5,6 +5,8 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 public class CardMessage extends BaseMessage {
     private Card card;
 
+    public CardMessage() {}
+
     public CardMessage(Card card){
         this.card = card;
     }

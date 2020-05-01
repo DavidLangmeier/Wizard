@@ -41,4 +41,18 @@ public class NetworkServerKryo implements NetworkServer, KryoNetComponent {
         for (Connection connection : server.getConnections())
             connection.sendTCP(message);
     }
+
+    public void sentTo(Integer connectionID, Object object) {
+        server.sendToTCP(connectionID, object);
+    }
+
+    public void sendToAllExcept(Integer connectionID, Object object) {
+        server.sendToAllExceptTCP(connectionID, object);
+    }
+
+    public Integer getLastConnectionID() {
+        if (server.getConnections().length == 0)
+            return null;
+        return server.getConnections()[0].getID();
+    }
 }

@@ -28,36 +28,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lobby_text_title" />
 
-    <Button
-        android:id="@+id/lobby_btn_startClient"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/lobby_btn_startClient"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lobby_btn_testServer" />
-
     <TextView
         android:id="@+id/lobby_text_serverResponseLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="345dp"
+        android:layout_marginBottom="367dp"
         android:text="@string/lobby_textView_serverResponse"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lobby_btn_startClient" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/lobby_text_serverResponseDisplay"
         android:layout_width="213dp"
         android:layout_height="117dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="96dp"
+        android:layout_marginBottom="189dp"
+        app:layout_constraintBottom_toTopOf="@+id/lobby_btn_ToGameScreen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/lobby_text_serverResponseLabel"
-        app:layout_constraintTop_toBottomOf="@+id/lobby_btn_startClient" />
+        app:layout_constraintTop_toBottomOf="@+id/lobby_btn_testServer" />
 
     <Button
         android:id="@+id/lobby_btn_ToGameScreen"

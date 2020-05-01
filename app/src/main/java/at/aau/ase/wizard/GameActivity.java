@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value;
@@ -19,7 +21,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView tvValueColorCard;
     private ImageView ivShowCardJpg;
 
-
+    private WizardClient wizardClient = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,8 @@ public class GameActivity extends AppCompatActivity {
         //ImageView
         ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
 
+        wizardClient = WizardClient.getInstance();
+
         //hardcoded Karten zum Testen ++++++++++++++++++++++++++ server Antwort Eintragen++++++++++++++++++++++++++++++++++++++++
         Card card1 = new Card(Color.GREEN, Value.ELEVEN);
 
@@ -48,7 +52,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void shuffleCards () {
-        // TODO
+        wizardClient.sendMessage(new ActionMessage(Action.SHUFFLE));
     }
 
     private void dealCards () {

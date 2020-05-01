@@ -17,6 +17,8 @@ public class StateMessage extends BaseMessage {
     int activePlayer;
     boolean gameFinished;
 
+    public StateMessage() {}
+
     public StateMessage(Player[] players, Hand table, Notepad scores, int roundsLeft, Hand[] playerHands,
                         Card trump, int dealer, int activePlayer, boolean gameFinished) {
         this.players = players;

@@ -8,6 +8,8 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 public class HandMessage extends BaseMessage {
     private Hand hand;
 
+    public HandMessage() {}
+
     public HandMessage(Hand hand){
         this.hand = hand;
     }
