@@ -5,8 +5,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':libnetwork')
+    // https://mvnrepository.com/artifact/com.esotericsoftware.minlog/minlog
+    implementation group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
+
     testImplementation 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:1.+"
+    testImplementation "org.mockito:mockito-core:1.+"
 }
 
 jacocoTestReport {

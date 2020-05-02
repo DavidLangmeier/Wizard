@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkServerKryo;
@@ -18,7 +19,7 @@ public class WizardServer extends NetworkServerKryo {
     public WizardServer()  {
         super();
         DEBUG();
-        for (Class c: WizardConstants.wizardNetworkClasses) {
+        for (Class<BaseMessage> c: WizardConstants.getWizardNetworkClasses()) {
             super.registerClass(c);
         }
         debug("WizardNetworkClasses registered");

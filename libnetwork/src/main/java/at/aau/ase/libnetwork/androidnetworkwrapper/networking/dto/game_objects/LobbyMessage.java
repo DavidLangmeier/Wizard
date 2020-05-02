@@ -1,7 +1,5 @@
 package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects;
 
-import java.util.List;
-
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 public class LobbyMessage extends BaseMessage {

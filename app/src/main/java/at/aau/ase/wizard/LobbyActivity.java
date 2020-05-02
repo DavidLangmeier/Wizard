@@ -46,7 +46,7 @@ public class LobbyActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.lobby_edittext_username);
         etUsername.setOnKeyListener((v,keyCode,keyEvent) -> enteredUsername(keyCode,keyEvent));
         lvPlayers = findViewById(R.id.lobby_list_players);
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, players);
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, players);
         lvPlayers.setAdapter(arrayAdapter);
 
         wizardClient = WizardClient.getInstance();

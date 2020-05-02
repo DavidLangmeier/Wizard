@@ -17,7 +17,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 public class WizardConstants {
     public  static final Integer MIN_NUM_PLAYERS = 3;
 
-    public  static final Class[] wizardNetworkClasses = new Class[]{
+    private  static final Class[] wizardNetworkClasses = new Class[]{
             TextMessage.class,
             StateMessage.class,
             ActionMessage.class,
@@ -32,4 +32,10 @@ public class WizardConstants {
             LobbyMessage.class,
             NotepadMessage.class
     };
+
+    private WizardConstants() {}
+
+    public static Class[] getWizardNetworkClasses() {
+        return wizardNetworkClasses;
+    }
 }

@@ -16,7 +16,7 @@ public class WizardClient extends NetworkClientKryo {
     private WizardClient() {
         super();
         DEBUG();
-        for (Class c: WizardConstants.wizardNetworkClasses) {
+        for (Class<BaseMessage> c: WizardConstants.getWizardNetworkClasses()) {
             super.registerClass(c);
         }
         debug("WizardNetworkClasses registered");
@@ -38,8 +38,8 @@ public class WizardClient extends NetworkClientKryo {
 
     @Override
     public void sendMessage(BaseMessage message) {
-        new Thread(() -> {
-            super.sendMessage(message);
-        }).start();
+        new Thread(() ->
+            super.sendMessage(message)
+        ).start();
     }
 }

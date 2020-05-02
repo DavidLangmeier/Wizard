@@ -5,13 +5,14 @@ import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.Callback;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 import static com.esotericsoftware.minlog.Log.info;
 
-public class ServerCallback implements Callback {
+public class ServerCallback implements Callback<BaseMessage> {
 
     private WizardServer server;
     private List<Player> players;
@@ -22,7 +23,7 @@ public class ServerCallback implements Callback {
     }
 
     @Override
-    public void callback(Object basemessage) {
+    public void callback(BaseMessage basemessage) {
         if (basemessage instanceof TextMessage) {
             info(basemessage.toString());
             server.broadcastMessage(
