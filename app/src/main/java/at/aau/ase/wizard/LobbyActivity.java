@@ -59,10 +59,14 @@ public class LobbyActivity extends AppCompatActivity {
             else if (basemessage instanceof LobbyMessage) {
                 Player player = ((LobbyMessage) basemessage).getPlayer();
                 info("Received a LobbyMessage "+player.getName());
-                players.add(player.getName());
-                if (players.size() >= WizardConstants.MIN_NUM_PLAYERS && !etUsername.isEnabled()) {
-                    btnToGameScreen.setEnabled(true);
-                }
+
+                runOnUiThread(() -> {
+                    players.add(player.getName());
+                    arrayAdapter.notifyDataSetChanged();
+                    if (players.size() >= WizardConstants.MIN_NUM_PLAYERS && !etUsername.isEnabled()) {
+                        btnToGameScreen.setEnabled(true);
+                    }
+                });
             }
             else {
                 error("Not a textmessage: "+basemessage.toString());
