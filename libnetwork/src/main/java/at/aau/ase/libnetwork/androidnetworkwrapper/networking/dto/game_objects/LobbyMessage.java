@@ -19,6 +19,11 @@ public class LobbyMessage extends BaseMessage {
         this.player = player;
     }
 
+    public LobbyMessage(Player player, String newUsername) {
+        this.newUsername = newUsername;
+        this.player = player;
+    }
+
     public String getNewUsername() {
         return newUsername;
     }
