@@ -53,6 +53,7 @@ public class ServerCallback implements Callback<BaseMessage> {
             Player newplayer = new Player(msg.getNewUsername(),server.getLastConnectionID());
             players.add(newplayer);
             server.broadcastMessage(new LobbyMessage(newplayer));
+            server.sentTo(newplayer.getConnectionID(), newplayer);
         }
         else {
             info("Received message is not a Textmessage!");

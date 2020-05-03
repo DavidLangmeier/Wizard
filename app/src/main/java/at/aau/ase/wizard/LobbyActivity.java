@@ -16,6 +16,7 @@ import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
@@ -32,6 +33,7 @@ public class LobbyActivity extends AppCompatActivity {
     private ListView lvPlayers = null;
     private List<String> players = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter = null;
+    private Player myPlayer;
 
 
     @Override
@@ -72,7 +74,14 @@ public class LobbyActivity extends AppCompatActivity {
             }
             else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == START)) {
                 info(basemessage.toString());
-                startActivity(new Intent(this, GameActivity.class));
+
+                Intent intent = new Intent(this, GameActivity.class);
+                intent.putExtra("myPlayer", Player.class);
+                startActivity(intent);
+            }
+            else if ((basemessage instanceof PlayerMessage)) {
+                myPlayer = new Player(((PlayerMessage) basemessage).getPlayer().getName(),
+                        ((PlayerMessage) basemessage).getPlayer().getConnectionID());
             }
             else {
                 error("Not a textmessage: "+basemessage.toString());
