@@ -4,12 +4,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.Callback;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 import static com.esotericsoftware.minlog.Log.info;
 
 public class ServerCallback implements Callback<BaseMessage> {
@@ -34,11 +36,16 @@ public class ServerCallback implements Callback<BaseMessage> {
                             + " ?"
                     ));
         }
-        else if (basemessage instanceof ActionMessage) {
+        else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == START)) {
             info(basemessage.toString());
+
             //server.broadcastMessage(
             //        new TextMessage("Action "+((ActionMessage)basemessage).getActionType()+" received"))
-            server.test();
+            //server.test();
+
+            Game game = new Game(players);
+            Thread gameThread = new Thread (game);
+            gameThread.start();
         }
         else if (basemessage instanceof LobbyMessage) {
             LobbyMessage msg = (LobbyMessage) basemessage;

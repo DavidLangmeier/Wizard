@@ -40,7 +40,7 @@ public class WizardServer extends NetworkServerKryo {
         WizardServer server = new WizardServer();
 
         server.registerCallback(new ServerCallback(server,players));
-        info("Server started and Callback registered. Listening ...");
+        info("Server started and ServerCallback registered. Listening ...");
     }
 
 }
