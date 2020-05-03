@@ -2,11 +2,14 @@ package at.aau.ase;
 
 import java.util.List;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
+
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 
 public class Game implements Runnable {
     List<Player> players;
@@ -18,8 +21,10 @@ public class Game implements Runnable {
     Card trump;
     int dealer;
     int activePlayer;
+    WizardServer server;
 
-    public Game(List<Player> players) {
+    public Game(WizardServer server, List<Player> players) {
+        this.server = server;
         this.players = players;
         this.deck = new Deck();
         this.deck.shuffle();
@@ -37,6 +42,8 @@ public class Game implements Runnable {
         System.out.println("GAME: New Game started!");
         printPlayers();
 
+        // Send start to all users -> clients should go to gameActivity now
+        server.broadcastMessage(new ActionMessage(START));
 
     }
 

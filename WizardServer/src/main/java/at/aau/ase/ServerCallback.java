@@ -43,7 +43,7 @@ public class ServerCallback implements Callback<BaseMessage> {
             //        new TextMessage("Action "+((ActionMessage)basemessage).getActionType()+" received"))
             //server.test();
 
-            Game game = new Game(players);
+            Game game = new Game(server, players);
             Thread gameThread = new Thread (game);
             gameThread.start();
         }

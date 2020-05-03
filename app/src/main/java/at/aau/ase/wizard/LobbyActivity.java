@@ -14,16 +14,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
 
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 import static com.esotericsoftware.minlog.Log.*;
 
 public class LobbyActivity extends AppCompatActivity {
     private Button btnServer;
-    private Button btnToGameScreen;
+    private Button btnStartGame;
     private WizardClient wizardClient = null;
     private TextView tvServerResponse = null;
     private EditText etUsername = null;
@@ -39,9 +41,9 @@ public class LobbyActivity extends AppCompatActivity {
 
         btnServer = findViewById(R.id.lobby_btn_testServer);
         btnServer.setOnClickListener(v -> startServer());
-        btnToGameScreen = (findViewById(R.id.lobby_btn_ToGameScreen));
-        btnToGameScreen.setOnClickListener(v -> openGameActivity());
-        btnToGameScreen.setEnabled(false);
+        btnStartGame = (findViewById(R.id.lobby_btn_ToGameScreen));
+        btnStartGame.setOnClickListener(v -> startGame());
+        btnStartGame.setEnabled(false);
         tvServerResponse = findViewById(R.id.lobby_text_serverResponseDisplay);
         etUsername = findViewById(R.id.lobby_edittext_username);
         etUsername.setOnKeyListener((v,keyCode,keyEvent) -> enteredUsername(keyCode,keyEvent));
@@ -64,9 +66,13 @@ public class LobbyActivity extends AppCompatActivity {
                     players.add(player.getName());
                     arrayAdapter.notifyDataSetChanged();
                     if (players.size() >= WizardConstants.MIN_NUM_PLAYERS && !etUsername.isEnabled()) {
-                        btnToGameScreen.setEnabled(true);
+                        btnStartGame.setEnabled(true);
                     }
                 });
+            }
+            else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == START)) {
+                info(basemessage.toString());
+                startActivity(new Intent(this, GameActivity.class));
             }
             else {
                 error("Not a textmessage: "+basemessage.toString());
@@ -94,7 +100,7 @@ public class LobbyActivity extends AppCompatActivity {
         wizardClient.sendMessage(new TextMessage("Some request"));
     }
 
-    private void openGameActivity() {
-        startActivity(new Intent(this, GameActivity.class));
+    private void startGame() {
+        wizardClient.sendMessage(new ActionMessage(START));
     }
 }
