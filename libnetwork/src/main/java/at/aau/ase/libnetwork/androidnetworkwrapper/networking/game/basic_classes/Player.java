@@ -9,15 +9,22 @@ public class Player {
     String name;
     private static short betTricks;
     private short tookTricks;
+    private Integer connectionID;
+
+    public Player() {}
 
     public Player(String name){
         //sets unique Player-ID starting with 0 -> equals to position in 2D Array pointsPerPlayerPerRound in Notepad
         this.player_id = nextID.incrementAndGet() -1;
         this.name = name;
-
     }
 
-    //setters
+    public Player(String name, Integer connectionID) {
+        this.name = name;
+        this.connectionID = connectionID;
+    }
+
+    //getters + setters
     public void setName(String name) {
         this.name = name;
     }
@@ -29,10 +36,6 @@ public class Player {
     public void setTookTricks(short tookTricks) {
         this.tookTricks = tookTricks;
     }
-
-
-
-    //getters
 
     public String getName() {
         return name;
@@ -48,5 +51,12 @@ public class Player {
 
     public int getPlayer_id() {
         return this.player_id;
+    }
+    public Integer getConnectionID() {
+        return connectionID;
+    }
+
+    public void setConnectionID(Integer connectionID) {
+        this.connectionID = connectionID;
     }
 }

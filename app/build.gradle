@@ -47,9 +47,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    // https://mvnrepository.com/artifact/com.esotericsoftware.minlog/minlog
+    implementation group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
 
-    // https://mvnrepository.com/artifact/com.esotericsoftware/kryonet
-    // implementation 'com.esotericsoftware:kryonet:2.22.0-RC1'
     implementation project(':libnetwork')
 
     //ViewPager

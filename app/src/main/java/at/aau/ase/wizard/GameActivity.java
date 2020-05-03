@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,7 +93,7 @@ public class GameActivity extends AppCompatActivity {
         viewPager2.setAdapter(new SliderAdapter(sliderItems, viewPager2));
     }
 
-
+    private WizardClient wizardClient = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +136,8 @@ public class GameActivity extends AppCompatActivity {
         //ImageView
         ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
 
+        wizardClient = WizardClient.getInstance();
+
         //Animation for display Trumpcard as Text
         ivShowCardJpg.setOnClickListener(v -> {
             Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
@@ -143,12 +147,11 @@ public class GameActivity extends AppCompatActivity {
             } else {
                 tv_showTextTrumpf.setVisibility(View.VISIBLE);
             }
-
         });
     }
 
-    private void shuffleCards() {
-        //TODO
+    private void shuffleCards () {
+        wizardClient.sendMessage(new ActionMessage(Action.SHUFFLE));
     }
 
     private void dealCards() {

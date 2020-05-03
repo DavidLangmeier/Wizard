@@ -2,24 +2,35 @@ package at.aau.ase.wizard;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.KeyEvent;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkClientKryo;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
+
+import static com.esotericsoftware.minlog.Log.*;
 
 public class LobbyActivity extends AppCompatActivity {
     private Button btnServer;
-    private Button btnClient;
     private Button btnToGameScreen;
-    private String hostname = "se2-demo.aau.at";
-    private NetworkClientKryo client = null;
+    private WizardClient wizardClient = null;
     private TextView tvServerResponse = null;
+    private EditText etUsername = null;
+    private ListView lvPlayers = null;
+    private List<String> players = new ArrayList<>();
+    private ArrayAdapter<String> arrayAdapter = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,28 +39,37 @@ public class LobbyActivity extends AppCompatActivity {
 
         btnServer = findViewById(R.id.lobby_btn_testServer);
         btnServer.setOnClickListener(v -> startServer());
-        btnClient = findViewById(R.id.lobby_btn_startClient);
-        btnClient.setOnClickListener(v -> startClient());
         btnToGameScreen = (findViewById(R.id.lobby_btn_ToGameScreen));
         btnToGameScreen.setOnClickListener(v -> openGameActivity());
-
+        btnToGameScreen.setEnabled(false);
         tvServerResponse = findViewById(R.id.lobby_text_serverResponseDisplay);
-    }
-  
-    private void startServer() {
-        MessageThread t = new MessageThread();
-        t.start();    }
+        etUsername = findViewById(R.id.lobby_edittext_username);
+        etUsername.setOnKeyListener((v,keyCode,keyEvent) -> enteredUsername(keyCode,keyEvent));
+        lvPlayers = findViewById(R.id.lobby_list_players);
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, players);
+        lvPlayers.setAdapter(arrayAdapter);
 
-    private void startClient() {
-        client = new NetworkClientKryo();
-        client.registerClass(TextMessage.class);
-        client.registerCallback(basemessage -> {
+        wizardClient = WizardClient.getInstance();
+        wizardClient.registerCallback(basemessage -> {
             String res = null;
             if (basemessage instanceof TextMessage) {
-                Log.i("SERVER RESPONSE:", basemessage.toString());
+                info("SERVER RESPONSE:"+ basemessage.toString());
                 res = ((TextMessage) basemessage).text;
-            } else {
-                Log.i("ERROR:", "Not a textmessage: "+basemessage.toString());
+            }
+            else if (basemessage instanceof LobbyMessage) {
+                Player player = ((LobbyMessage) basemessage).getPlayer();
+                info("Received a LobbyMessage "+player.getName());
+
+                runOnUiThread(() -> {
+                    players.add(player.getName());
+                    arrayAdapter.notifyDataSetChanged();
+                    if (players.size() >= WizardConstants.MIN_NUM_PLAYERS && !etUsername.isEnabled()) {
+                        btnToGameScreen.setEnabled(true);
+                    }
+                });
+            }
+            else {
+                error("Not a textmessage: "+basemessage.toString());
                 res = "Response is not a TextMessage";
             }
             String finalRes = res;
@@ -57,31 +77,24 @@ public class LobbyActivity extends AppCompatActivity {
                     tvServerResponse.setText(finalRes)
             );
         });
-        new ConnectionThread().start();
+    }
+
+    private boolean enteredUsername(int keycode, KeyEvent keyevent) {
+        if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER) {
+            String username = etUsername.getText().toString();
+            wizardClient.sendMessage(new LobbyMessage(username));
+            debug(username);
+            etUsername.setEnabled(false);
+            return true;
+        }
+        return false;
+    }
+
+    private void startServer() {
+        wizardClient.sendMessage(new TextMessage("Some request"));
     }
 
     private void openGameActivity() {
         startActivity(new Intent(this, GameActivity.class));
-    }
-
-    class MessageThread extends Thread {
-        @Override
-        public void run() {
-            String msg = "Some String";
-            client.sendMessage(new TextMessage(msg));
-            Log.i("REQUEST SEND", msg);
-        }
-    }
-
-    class ConnectionThread extends Thread {
-        @Override
-        public void run () {
-            try {
-                client.connect(hostname);
-                Log.i("SERVER CONNECTION:", "Connection to server "+hostname+" successful");
-            } catch (IOException e) {
-                Log.e("SERVER CONNECTION:", "Could not connect to server "+hostname, e);
-            }
-        }
     }
 }
