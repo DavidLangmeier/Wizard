@@ -14,6 +14,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.S
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.DEAL;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.SHUFFLE;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 import static com.esotericsoftware.minlog.Log.info;
@@ -22,7 +23,7 @@ public class ServerCallback implements Callback<BaseMessage> {
 
     private WizardServer server;
     private List<Player> players;
-    Game game;
+    private Game game;
 
     public ServerCallback(WizardServer server, List<Player> players) {
         this.server = server;
@@ -41,19 +42,7 @@ public class ServerCallback implements Callback<BaseMessage> {
                             + " ?"
                     ));
         }
-        else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == START)) {
-            info(basemessage.toString());
 
-            //server.broadcastMessage(
-            //        new TextMessage("Action "+((ActionMessage)basemessage).getActionType()+" received"))
-            //server.test();
-
-            game = new Game(server, players);
-            Thread gameThread = new Thread (game);
-            gameThread.start();
-
-
-        }
         else if (basemessage instanceof LobbyMessage) {
             LobbyMessage msg = (LobbyMessage) basemessage;
             info("New user "+msg.getNewUsername());
@@ -62,13 +51,31 @@ public class ServerCallback implements Callback<BaseMessage> {
             info("Broadcasting newplayer as LobbyMessage.");
             server.broadcastMessage(new LobbyMessage(newplayer));
 
-            info("Sending playerMessage to new Player");
             PlayerMessage newPlayerMsg = new PlayerMessage(newplayer);
+            info("Sending playerMessage to new Player");
+            info(newPlayerMsg.toString());
             server.sentTo(newplayer.getConnectionID(), newPlayerMsg);
         }
+
+        else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == START)) {
+            info("Received Action START.");
+            //server.broadcastMessage(
+            //        new TextMessage("Action "+((ActionMessage)basemessage).getActionType()+" received"))
+            //server.test();
+            info("Creating new game.");
+            game = new Game(server, players);
+            info("Starting game.");
+            game.startGame();
+        }
+
+        else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == DEAL)) {
+            info("Received Action DEAL.");
+            game.dealCards();
+        }
+
         else {
-            info("Received message is not a Textmessage!");
-            server.broadcastMessage(new TextMessage("Please send a Textmessage!"));
+            info("Received message cannot be handled correctly!");
+            server.broadcastMessage(new TextMessage("Server could not handle sent message correctly!"));
         }
     }
 }
