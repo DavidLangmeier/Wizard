@@ -9,6 +9,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.A
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
@@ -58,8 +59,12 @@ public class ServerCallback implements Callback<BaseMessage> {
             info("New user "+msg.getNewUsername());
             Player newplayer = new Player(msg.getNewUsername(),server.getLastConnectionID());
             players.add(newplayer);
+            info("Broadcasting newplayer as LobbyMessage.");
             server.broadcastMessage(new LobbyMessage(newplayer));
-            server.sentTo(newplayer.getConnectionID(), newplayer);
+
+            info("Sending playerMessage to new Player");
+            PlayerMessage newPlayerMsg = new PlayerMessage(newplayer);
+            server.sentTo(newplayer.getConnectionID(), newPlayerMsg);
         }
         else {
             info("Received message is not a Textmessage!");

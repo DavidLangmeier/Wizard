@@ -54,9 +54,13 @@ public class Game implements Runnable, Callback<BaseMessage> {
         printPlayers();
 
         // Send start to all users -> clients should go to gameActivity now
+        System.out.println("GAME: Broadcasting START now.");
         server.broadcastMessage(new ActionMessage(START));
+
+        // setting dealer and active player, later this has to be automated every new round/trickround
         this.dealer = players.get(0).getConnectionID();
         this.activePlayer = players.get(0).getConnectionID();
+        System.out.println("GAME: Broadcasting initial gameState");
         server.broadcastMessage(new StateMessage(players, table, scores, rounds, trump, dealer, activePlayer, false));
 
     }

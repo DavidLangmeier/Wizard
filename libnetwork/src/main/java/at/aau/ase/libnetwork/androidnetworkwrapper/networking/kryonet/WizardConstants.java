@@ -1,5 +1,7 @@
 package at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet;
 
+import java.util.ArrayList;
+
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
@@ -30,7 +32,10 @@ public class WizardConstants {
             HandMessage.class,
             PlayerMessage.class,
             LobbyMessage.class,
-            NotepadMessage.class
+            NotepadMessage.class,
+            ArrayList.class,
+            short[][].class,
+            short[].class
     };
 
     private WizardConstants() {}

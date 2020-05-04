@@ -41,29 +41,92 @@ public class GameActivity extends AppCompatActivity {
     private Button btnDeal;
     private String etShowCard;
     private String textTrumpCard;
-
     private ImageView ivShowCardJpg;
     private ViewPager2 viewPager2;
     private TextView tv_showTextTrumpf;
-
+    private WizardClient wizardClient = null;
     List<SliderItem> sliderItems; //Zeigt scrollHand
-
-    //Test PlayerHand
-    Hand myHand = new Hand();
-
     Player myPlayer;
 
-    //Test table
-    Hand table = new Hand();
+    Hand myHand = new Hand(); //Test PlayerHand
+    Hand table = new Hand(); //Test Table
+    Hand trumpHand = new Hand(); //Test TrumpHand
+    Deck deck = new Deck(); //Test Deck
 
-    //Test Trump hand
-    Hand trumpHand = new Hand();
+    // onCreate() is overused, has to be cleaned up
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    //test Deck
-    Deck deck = new Deck();
+        setContentView(R.layout.activity_game);
+
+        btnShuffle = (Button) findViewById(R.id.game_btn_shuffleCards);
+        btnShuffle.setOnClickListener(v -> shuffleCards());
+        btnDeal = (Button) findViewById(R.id.game_btn_dealOutCards);
+        btnDeal.setOnClickListener(v -> dealCards());
+        btnDeal.setEnabled(false);
+
+        tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
+
+        sliderItems = new ArrayList<>();    //List of Images from drawable
+
+        viewPager2 = findViewById(R.id.viewPagerImageSlieder);
+        //Damit mehrere nebeneinander sichbar sind
+        viewPager2.setClipToPadding(false);
+        viewPager2.setClipChildren(false);
+        viewPager2.setOffscreenPageLimit(10);
+        viewPager2.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_ALWAYS);
+
+        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+        compositePageTransformer.addTransformer(new MarginPageTransformer(0));
+        compositePageTransformer.addTransformer(new ViewPager2.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                float r = 1 - Math.abs(position);
+                page.setScaleY(0.85f + r * 0.15f);
+            }
+        });
+        viewPager2.setPageTransformer(compositePageTransformer);
+
+        //ende der sichtbarkeit von mehreren hintereinander ----------------------------------------
+        //ImageView
+        ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
+
+        myPlayer = (Player) getIntent().getSerializableExtra("myPlayer"); // does not work properly
+        wizardClient = WizardClient.getInstance(); // <- why? new instance gets new connectionID -> not good
+        // callback does not belong in onCreate(), has to be moved to onStart() or onResume()!?
+        wizardClient.registerCallback(basemessage -> {
+            if (basemessage instanceof StateMessage) {
+                System.out.println("CLIENT: StateMessage received!");
+                //info(basemessage.toString());
+                if(((StateMessage) basemessage).dealer == myPlayer.getConnectionID()){
+                    info("CLIENT: StateMessage recieved!");
+                    runOnUiThread(() ->
+                            btnDeal.setEnabled(true));
+                }
+
+            } else if (basemessage instanceof HandMessage){
+                System.out.println("Client: Hand recieved");
+                myHand = ((HandMessage) basemessage).getHand();
+                addCardsToSlideView(myHand.getCards());
+            }
+
+        });
+
+        //Animation for display Trumpcard as Text
+        ivShowCardJpg.setOnClickListener(v -> {
+            Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
+            ivShowCardJpg.startAnimation(aniRotateClk);
+            if (tv_showTextTrumpf.getVisibility() == View.VISIBLE) {
+                tv_showTextTrumpf.setVisibility(View.INVISIBLE);
+            } else {
+                tv_showTextTrumpf.setVisibility(View.VISIBLE);
+            }
+        });
+    }
 
 
-    //deafault deal for 10 Playercards and 1 Trumpcard
+    //default deal for 10 Playercards and 1 Trumpcard
     public void create10testPlayerCards(Deck deck) {
         myHand.clear();
         for (int i = 1; i < 11; i++) { //skip first card that is going to be trumpcard
@@ -93,7 +156,6 @@ public class GameActivity extends AppCompatActivity {
 
         sliderItems.clear(); //Clear wennn neue Carten von Server geschickt werden
 
-
         for (int i = 0; i < pp_playerCards.size(); i++) {
             //umwandlung Color.Red, Value.Five in drawable picture alternativ (sliderItems.add(new SliderItem(R.drawable.red0eight));
             int id = getResources().getIdentifier(pp_playerCards.get(i).getPictureFileId(), "drawable", getPackageName());
@@ -107,83 +169,6 @@ public class GameActivity extends AppCompatActivity {
         viewPager2.setAdapter(new SliderAdapter(sliderItems, viewPager2));
     }
 
-    private WizardClient wizardClient = null;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_game);
-
-        btnShuffle = (Button) findViewById(R.id.game_btn_shuffleCards);
-        btnShuffle.setOnClickListener(v -> shuffleCards());
-        btnDeal = (Button) findViewById(R.id.game_btn_dealOutCards);
-        btnDeal.setOnClickListener(v -> dealCards());
-
-        btnDeal.setEnabled(false);
-        tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
-
-        viewPager2 = findViewById(R.id.viewPagerImageSlieder);
-
-        //List of Images from drawable
-        sliderItems = new ArrayList<>();
-
-
-        //Damit mehrere nebeneinander sichbar sind
-        viewPager2.setClipToPadding(false);
-        viewPager2.setClipChildren(false);
-        viewPager2.setOffscreenPageLimit(10);
-        viewPager2.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_ALWAYS);
-
-        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
-        compositePageTransformer.addTransformer(new MarginPageTransformer(0));
-        compositePageTransformer.addTransformer(new ViewPager2.PageTransformer() {
-            @Override
-            public void transformPage(@NonNull View page, float position) {
-                float r = 1 - Math.abs(position);
-                page.setScaleY(0.85f + r * 0.15f);
-            }
-        });
-        viewPager2.setPageTransformer(compositePageTransformer);
-
-        //ende der sichtbarkeit von mehreren hintereinander ----------------------------------------
-        //ImageView
-        ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
-
-        myPlayer = (Player) getIntent().getSerializableExtra("myPlayer");
-
-        wizardClient = WizardClient.getInstance();
-        wizardClient.registerCallback(basemessage -> {
-            if (basemessage instanceof StateMessage) {
-                info(basemessage.toString());
-                if(((StateMessage) basemessage).dealer == myPlayer.getConnectionID()){
-                    info("CLIENT: StateMessage recieved!");
-                    runOnUiThread(() ->
-                            btnDeal.setEnabled(true));
-                }
-
-            } else if (basemessage instanceof HandMessage){
-                System.out.println("Client: Hand recieved");
-                myHand = ((HandMessage) basemessage).getHand();
-                addCardsToSlideView(myHand.getCards());
-            }
-
-        });
-
-
-        //Animation for display Trumpcard as Text
-        ivShowCardJpg.setOnClickListener(v -> {
-            Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
-            ivShowCardJpg.startAnimation(aniRotateClk);
-            if (tv_showTextTrumpf.getVisibility() == View.VISIBLE) {
-                tv_showTextTrumpf.setVisibility(View.INVISIBLE);
-            } else {
-                tv_showTextTrumpf.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-
     private void shuffleCards() {
         wizardClient.sendMessage(new ActionMessage(SHUFFLE));
     }
@@ -193,4 +178,3 @@ public class GameActivity extends AppCompatActivity {
     }
 
 }
-

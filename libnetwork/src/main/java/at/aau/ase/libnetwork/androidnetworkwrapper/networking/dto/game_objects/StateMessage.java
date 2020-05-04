@@ -19,8 +19,9 @@ public class StateMessage extends BaseMessage {
     public int activePlayer;
     boolean gameFinished;
 
-    //public StateMessage() {}
+    public StateMessage() {}
 
+    /*
     public StateMessage(List<Player> players, Hand table, Notepad scores, int roundsLeft, Hand[] playerHands,
                         Card trump, int dealer, int activePlayer, boolean gameFinished) {
         this.players = players;
@@ -32,8 +33,8 @@ public class StateMessage extends BaseMessage {
         this.dealer = dealer;
         this.activePlayer = activePlayer;
         this.gameFinished = gameFinished;
-
     }
+    */
 
     //without player Hands
     public StateMessage(List<Player> players, Hand table, Notepad scores, int roundsLeft,
