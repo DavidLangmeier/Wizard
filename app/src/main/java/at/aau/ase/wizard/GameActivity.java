@@ -7,6 +7,7 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -17,12 +18,22 @@ import android.widget.TextView;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.DeckMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
+
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.DEAL;
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.SHUFFLE;
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
+import static com.esotericsoftware.minlog.Log.info;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -38,7 +49,9 @@ public class GameActivity extends AppCompatActivity {
     List<SliderItem> sliderItems; //Zeigt scrollHand
 
     //Test PlayerHand
-    Hand playerHand = new Hand();
+    Hand myHand = new Hand();
+
+    Player myPlayer;
 
     //Test table
     Hand table = new Hand();
@@ -49,17 +62,18 @@ public class GameActivity extends AppCompatActivity {
     //test Deck
     Deck deck = new Deck();
 
+
     //deafault deal for 10 Playercards and 1 Trumpcard
     public void create10testPlayerCards(Deck deck) {
-        playerHand.clear();
+        myHand.clear();
         for (int i = 1; i < 11; i++) { //skip first card that is going to be trumpcard
-            playerHand.add(deck.getCards().get(i));
+            myHand.add(deck.getCards().get(i));
         }
-        addCardsToSlideView(playerHand.getCards());
+        addCardsToSlideView(myHand.getCards());
         dealTrumpCard();
     }
 
-    public void dealTrumpCard(){
+    public void dealTrumpCard() {
         trumpHand.clear();
         deck.dealCard(deck.getCards().get(0), trumpHand);
 
@@ -75,7 +89,7 @@ public class GameActivity extends AppCompatActivity {
 
     //------------Metode SPIEILKARTEN  vom Server Anzeigen in spielhand//--------------------------
     public void addCardsToSlideView(ArrayList<Card> pp_playerCards) {
-        playerHand.setCards(pp_playerCards);
+        //myHand.setCards(pp_playerCards);
 
         sliderItems.clear(); //Clear wennn neue Carten von Server geschickt werden
 
@@ -101,12 +115,12 @@ public class GameActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_game);
 
-
         btnShuffle = (Button) findViewById(R.id.game_btn_shuffleCards);
         btnShuffle.setOnClickListener(v -> shuffleCards());
         btnDeal = (Button) findViewById(R.id.game_btn_dealOutCards);
         btnDeal.setOnClickListener(v -> dealCards());
 
+        btnDeal.setEnabled(false);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
 
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
@@ -136,7 +150,26 @@ public class GameActivity extends AppCompatActivity {
         //ImageView
         ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
 
+        myPlayer = (Player) getIntent().getSerializableExtra("myPlayer");
+
         wizardClient = WizardClient.getInstance();
+        wizardClient.registerCallback(basemessage -> {
+            if (basemessage instanceof StateMessage) {
+                info(basemessage.toString());
+                if(((StateMessage) basemessage).dealer == myPlayer.getConnectionID()){
+                    info("CLIENT: StateMessage recieved!");
+                    runOnUiThread(() ->
+                            btnDeal.setEnabled(true));
+                }
+
+            } else if (basemessage instanceof HandMessage){
+                System.out.println("Client: Hand recieved");
+                myHand = ((HandMessage) basemessage).getHand();
+                addCardsToSlideView(myHand.getCards());
+            }
+
+        });
+
 
         //Animation for display Trumpcard as Text
         ivShowCardJpg.setOnClickListener(v -> {
@@ -150,13 +183,13 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    private void shuffleCards () {
-        wizardClient.sendMessage(new ActionMessage(Action.SHUFFLE));
+
+    private void shuffleCards() {
+        wizardClient.sendMessage(new ActionMessage(SHUFFLE));
     }
 
     private void dealCards() {
-        deck.shuffle();
-        create10testPlayerCards(deck);
+        wizardClient.sendMessage((new ActionMessage(DEAL)));
     }
 
 }

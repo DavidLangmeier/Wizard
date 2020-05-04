@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +77,8 @@ public class LobbyActivity extends AppCompatActivity {
                 info(basemessage.toString());
 
                 Intent intent = new Intent(this, GameActivity.class);
-                intent.putExtra("myPlayer", Player.class);
+
+                intent.putExtra("myPlayer", myPlayer);
                 startActivity(intent);
             }
             else if ((basemessage instanceof PlayerMessage)) {
