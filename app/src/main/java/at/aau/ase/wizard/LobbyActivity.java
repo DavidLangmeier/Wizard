@@ -28,13 +28,13 @@ import static com.esotericsoftware.minlog.Log.*;
 public class LobbyActivity extends AppCompatActivity {
     private Button btnServer;
     private Button btnStartGame;
-    private WizardClient wizardClient = null;
+    private static WizardClient wizardClient = null;
     private TextView tvServerResponse = null;
     private EditText etUsername = null;
     private ListView lvPlayers = null;
     private List<String> players = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter = null;
-    private Player myPlayer;
+    private static Player myPlayer;
 
 
     @Override
@@ -113,5 +113,13 @@ public class LobbyActivity extends AppCompatActivity {
 
     private void startGame() {
         wizardClient.sendMessage(new ActionMessage(START));
+    }
+
+    public static WizardClient getWizardClient() {
+        return wizardClient;
+    }
+
+    public static Player getMyPlayer() {
+        return myPlayer;
     }
 }

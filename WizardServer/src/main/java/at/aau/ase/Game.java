@@ -38,6 +38,9 @@ public class Game {
         this.totalRounds = 60 / players.size();
         this.currentRound = 1;
         this.playerHands = new Hand[players.size()];
+        for (int i = 0; i < players.size(); i++) {
+            this.playerHands[i] = new Hand();
+        }
         this.trump = null;
         this.dealer = -1;
         this.activePlayer = 0;
@@ -67,6 +70,11 @@ public class Game {
         // deal cards to playerHands serverside | rounds=4 hardcoded, has to be changed later
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < players.size(); j++) {
+                System.out.println("GAME: Dealing to hand #" +j +" with players.size of " +players.size());
+                Card currentCard = deck.getCards().get(i);
+                System.out.println("GAME: current card = " +deck.getCards().get(i).toString());
+                //playerHands[j].add(currentCard);
+                //deck.remove(currentCard);
                 deck.dealCard(deck.getCards().get(i), playerHands[j]);
             }
         }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Hand {
     private ArrayList<Card> playerCards;
 
-
     public Hand() {
         this.playerCards = new ArrayList<Card>();
     }

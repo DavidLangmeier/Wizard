@@ -12,9 +12,11 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.P
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value;
 
 public class WizardConstants {
     public  static final Integer MIN_NUM_PLAYERS = 3;
@@ -35,7 +37,9 @@ public class WizardConstants {
             NotepadMessage.class,
             ArrayList.class,
             short[][].class,
-            short[].class
+            short[].class,
+            Color.class,
+            Value.class
     };
 
     private WizardConstants() {}

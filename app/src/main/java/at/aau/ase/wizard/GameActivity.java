@@ -44,10 +44,9 @@ public class GameActivity extends AppCompatActivity {
     private ImageView ivShowCardJpg;
     private ViewPager2 viewPager2;
     private TextView tv_showTextTrumpf;
-    private WizardClient wizardClient = null;
+    private WizardClient wizardClient = LobbyActivity.getWizardClient();
     List<SliderItem> sliderItems; //Zeigt scrollHand
     Player myPlayer;
-
     Hand myHand = new Hand(); //Test PlayerHand
     Hand table = new Hand(); //Test Table
     Hand trumpHand = new Hand(); //Test TrumpHand
@@ -65,6 +64,8 @@ public class GameActivity extends AppCompatActivity {
         btnDeal = (Button) findViewById(R.id.game_btn_dealOutCards);
         btnDeal.setOnClickListener(v -> dealCards());
         btnDeal.setEnabled(false);
+        myPlayer = LobbyActivity.getMyPlayer();
+        //info(myPlayer.toString());
 
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
 
@@ -99,16 +100,17 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 System.out.println("CLIENT: StateMessage received!");
                 //info(basemessage.toString());
-                if(((StateMessage) basemessage).dealer == myPlayer.getConnectionID()){
+                if (((StateMessage) basemessage).dealer == myPlayer.getConnectionID()) {
                     info("CLIENT: StateMessage recieved!");
                     runOnUiThread(() ->
                             btnDeal.setEnabled(true));
                 }
 
-            } else if (basemessage instanceof HandMessage){
+            } else if (basemessage instanceof HandMessage) {
                 System.out.println("Client: Hand recieved");
                 myHand = ((HandMessage) basemessage).getHand();
-                addCardsToSlideView(myHand.getCards());
+                runOnUiThread(() ->
+                        addCardsToSlideView(myHand.getCards()));
             }
 
         });
@@ -174,7 +176,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void dealCards() {
-        wizardClient.sendMessage((new ActionMessage(DEAL)));
+        wizardClient.sendMessage(new ActionMessage(DEAL));
     }
 
 }

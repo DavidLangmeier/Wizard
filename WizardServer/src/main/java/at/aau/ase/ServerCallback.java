@@ -41,39 +41,41 @@ public class ServerCallback implements Callback<BaseMessage> {
                             + LocalDateTime.now().toString()
                             + " ?"
                     ));
-        }
 
-        else if (basemessage instanceof LobbyMessage) {
+        } else if (basemessage instanceof LobbyMessage) {
             LobbyMessage msg = (LobbyMessage) basemessage;
-            info("New user "+msg.getNewUsername());
-            Player newplayer = new Player(msg.getNewUsername(),server.getLastConnectionID());
+            info("New user " + msg.getNewUsername());
+            Player newplayer = new Player(msg.getNewUsername(), server.getLastConnectionID());
             players.add(newplayer);
             info("Broadcasting newplayer as LobbyMessage.");
             server.broadcastMessage(new LobbyMessage(newplayer));
 
             PlayerMessage newPlayerMsg = new PlayerMessage(newplayer);
-            info("Sending playerMessage to new Player");
-            info(newPlayerMsg.toString());
+            info("Sending playerMessage to new Player.");
             server.sentTo(newplayer.getConnectionID(), newPlayerMsg);
-        }
 
-        else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == START)) {
-            info("Received Action START.");
-            //server.broadcastMessage(
-            //        new TextMessage("Action "+((ActionMessage)basemessage).getActionType()+" received"))
-            //server.test();
-            info("Creating new game.");
-            game = new Game(server, players);
-            info("Starting game.");
-            game.startGame();
-        }
+        } else if (basemessage instanceof ActionMessage) {
+            info("Received ActionMessage.");
+            ActionMessage msg = (ActionMessage) basemessage;
 
-        else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == DEAL)) {
-            info("Received Action DEAL.");
-            game.dealCards();
-        }
+            switch (msg.getActionType()) {
+                case START:
+                    info("Received Action START. Creating new game.");
+                    game = new Game(server, players);
+                    info("Starting game.");
+                    game.startGame();
+                    break;
 
-        else {
+                case DEAL:
+                    info("Received Action DEAL.");
+                    game.dealCards();
+                    break;
+
+                default:
+                    info("Unknown Action. Cannot handle Message");
+            }
+
+        } else {
             info("Received message cannot be handled correctly!");
             server.broadcastMessage(new TextMessage("Server could not handle sent message correctly!"));
         }

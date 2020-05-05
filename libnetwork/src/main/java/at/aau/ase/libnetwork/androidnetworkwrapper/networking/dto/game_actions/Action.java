@@ -11,11 +11,8 @@ public enum Action {
     DEAL(3, "Deal cards");
 
 
-
-
     private final int actionCode;
     private final String actionName;
-
 
     public int getActionCode(){
         return actionCode;
