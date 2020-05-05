@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +25,9 @@ import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_ac
 import static com.esotericsoftware.minlog.Log.*;
 
 public class LobbyActivity extends AppCompatActivity {
-    private Button btnServer;
+    private Button btnTestServer;
     private Button btnStartGame;
+    private Button btnConnectToServer;
     private static WizardClient wizardClient = null;
     private TextView tvServerResponse = null;
     private EditText etUsername = null;
@@ -42,19 +42,47 @@ public class LobbyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
 
-        btnServer = findViewById(R.id.lobby_btn_testServer);
-        btnServer.setOnClickListener(v -> startServer());
+        btnTestServer = findViewById(R.id.lobby_btn_testServer);
+        btnTestServer.setOnClickListener(v -> testServer());
         btnStartGame = (findViewById(R.id.lobby_btn_ToGameScreen));
         btnStartGame.setOnClickListener(v -> startGame());
         btnStartGame.setEnabled(false);
+        btnConnectToServer = findViewById(R.id.lobby_btn_connect);
+        btnConnectToServer.setOnClickListener(v -> connectToServer());
         tvServerResponse = findViewById(R.id.lobby_text_serverResponseDisplay);
         etUsername = findViewById(R.id.lobby_edittext_username);
-        etUsername.setOnKeyListener((v,keyCode,keyEvent) -> enteredUsername(keyCode,keyEvent));
+        //etUsername.setOnKeyListener((v,keyCode,keyEvent) -> enteredUsername(keyCode,keyEvent));
         lvPlayers = findViewById(R.id.lobby_list_players);
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, players);
         lvPlayers.setAdapter(arrayAdapter);
 
+
+    }
+
+    /*
+    private boolean enteredUsername(int keycode, KeyEvent keyevent) {
+        if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER) {
+            String username = etUsername.getText().toString();
+            wizardClient.sendMessage(new LobbyMessage(username));
+            debug(username);
+            etUsername.setEnabled(false);
+            return true;
+        }
+        return false;
+    }
+    */
+
+    private void testServer() {
+        wizardClient.sendMessage(new TextMessage("Some request"));
+    }
+
+    private void startGame() {
+        wizardClient.sendMessage(new ActionMessage(START));
+    }
+
+    private void connectToServer() {
         wizardClient = WizardClient.getInstance();
+
         wizardClient.registerCallback(basemessage -> {
             String res = null;
             if (basemessage instanceof TextMessage) {
@@ -94,25 +122,19 @@ public class LobbyActivity extends AppCompatActivity {
                     tvServerResponse.setText(finalRes)
             );
         });
-    }
 
-    private boolean enteredUsername(int keycode, KeyEvent keyevent) {
-        if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER) {
-            String username = etUsername.getText().toString();
-            wizardClient.sendMessage(new LobbyMessage(username));
-            debug(username);
-            etUsername.setEnabled(false);
-            return true;
+        // wait for the connection to be fully established
+        // bad solution, has to be replaced with something like server ping
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        return false;
-    }
 
-    private void startServer() {
-        wizardClient.sendMessage(new TextMessage("Some request"));
-    }
-
-    private void startGame() {
-        wizardClient.sendMessage(new ActionMessage(START));
+        String username = etUsername.getText().toString();
+        wizardClient.sendMessage(new LobbyMessage(username));
+        debug(username);
+        etUsername.setEnabled(false);
     }
 
     public static WizardClient getWizardClient() {

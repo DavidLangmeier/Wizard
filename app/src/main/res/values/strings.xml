@@ -10,8 +10,8 @@
     <string name="lobby_textView_title">LOBBY</string>
     <string name="lobby_textView_serverResponse">Server Response: </string>
     <string name="lobby_btn_testServer">TEST SERVER</string>
-    <string name="lobby_btn_startClient">START CLIENT</string>
+    <string name="lobby_btn_connect">CONNECT TO SERVER</string>
     <string name="lobby_btn_toGameScreen">START GAME</string>
-    <string name="lobby_et_username">Username</string>
+    <string name="lobby_et_username">Enter your Name</string>
     <string name="str_vorhersage">Vorhersage?</string>
 </resources>

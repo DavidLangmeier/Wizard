@@ -172,7 +172,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void shuffleCards() {
-        wizardClient.sendMessage(new ActionMessage(SHUFFLE));
+        wizardClient.sendMessage(new ActionMessage(DEAL));
     }
 
     private void dealCards() {
