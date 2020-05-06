@@ -5,10 +5,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Card {
 
-    private final Color color;
-    private final Value value;
+    private Color color;
+    private Value value;
     static AtomicInteger nextID = new AtomicInteger();
     private int card_id;
+
+    public Card() {}
 
     public Card(Color color, Value value) {
         this.color = color;

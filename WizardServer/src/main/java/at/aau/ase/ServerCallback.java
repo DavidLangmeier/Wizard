@@ -1,21 +1,30 @@
 package at.aau.ase;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.Callback;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.DEAL;
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.SHUFFLE;
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 import static com.esotericsoftware.minlog.Log.info;
 
 public class ServerCallback implements Callback<BaseMessage> {
 
     private WizardServer server;
     private List<Player> players;
+    private Game game;
 
     public ServerCallback(WizardServer server, List<Player> players) {
         this.server = server;
@@ -33,23 +42,43 @@ public class ServerCallback implements Callback<BaseMessage> {
                             + LocalDateTime.now().toString()
                             + " ?"
                     ));
-        }
-        else if (basemessage instanceof ActionMessage) {
-            info(basemessage.toString());
-            //server.broadcastMessage(
-            //        new TextMessage("Action "+((ActionMessage)basemessage).getActionType()+" received"))
-            server.test();
-        }
-        else if (basemessage instanceof LobbyMessage) {
+
+        } else if (basemessage instanceof LobbyMessage) {
             LobbyMessage msg = (LobbyMessage) basemessage;
-            info("New user "+msg.getNewUsername());
-            Player newplayer = new Player(msg.getNewUsername(),server.getLastConnectionID());
+            info("New user " + msg.getNewUsername());
+            Player newplayer = new Player(msg.getNewUsername(), server.getLastConnectionID());
             players.add(newplayer);
+            info("Broadcasting newplayer as LobbyMessage.");
             server.broadcastMessage(new LobbyMessage(newplayer));
-        }
-        else {
-            info("Received message is not a Textmessage!");
-            server.broadcastMessage(new TextMessage("Please send a Textmessage!"));
+
+            PlayerMessage newPlayerMsg = new PlayerMessage(newplayer);
+            info("Sending playerMessage to new Player.");
+            server.sentTo(newplayer.getConnectionID(), newPlayerMsg);
+
+        } else if (basemessage instanceof ActionMessage) {
+            info("Received ActionMessage.");
+            ActionMessage msg = (ActionMessage) basemessage;
+
+            switch (msg.getActionType()) {
+                case START:
+                    info("Received Action START. Creating new game.");
+                    game = new Game(server, players);
+                    info("Starting game.");
+                    game.startGame();
+                    break;
+
+                case DEAL:
+                    info("Received Action DEAL.");
+                    game.dealCards();
+                    break;
+
+                default:
+                    info("Unknown Action. Cannot handle Message");
+            }
+
+        } else {
+            info("Received message cannot be handled correctly!");
+            server.broadcastMessage(new TextMessage("Server could not handle sent message correctly!"));
         }
     }
 }

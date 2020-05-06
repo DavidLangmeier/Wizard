@@ -1,9 +1,10 @@
 package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes;
 
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Player {
+public class Player implements Serializable {
     static AtomicInteger nextID = new AtomicInteger();
     private int player_id;
     String name;

@@ -5,7 +5,6 @@ import java.util.Collections;
 
 public class Deck extends Hand {
 
-
     public Deck() {
         for (Color cardColor : Color.values()) {
             for (Value cardValue : Value.values()) {
@@ -30,5 +29,9 @@ public class Deck extends Hand {
         ArrayList<Card> cards = this.getCards();
         Collections.shuffle(cards);
         this.setCards(cards);
+    }
+
+    public void remove(Card card) {
+        this.remove(card);
     }
 }

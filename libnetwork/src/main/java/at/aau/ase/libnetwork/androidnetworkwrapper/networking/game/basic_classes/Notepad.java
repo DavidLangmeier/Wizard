@@ -9,6 +9,8 @@ public class Notepad {
     short[][] betTricksPerPlayerPerRound;
     short[][] tookTricksPerPlayerPerRound;
 
+    public Notepad() {}
+
     public Notepad(short numberOfPlayers) {
         switch(numberOfPlayers){
             case 3:

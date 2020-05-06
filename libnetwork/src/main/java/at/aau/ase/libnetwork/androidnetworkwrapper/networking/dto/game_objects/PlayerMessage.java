@@ -25,6 +25,8 @@ public class PlayerMessage extends BaseMessage {
     public String toString(){
         String playerInformation = "";
         playerInformation += "Player name:\t" + player.getName() + "\n";
+        playerInformation += "Player ID:\t" + player.getPlayer_id() + "\n";
+        playerInformation += "Connection ID:\t" + player.getConnectionID() + "\n";
         playerInformation += "Bet tricks:\t" + Player.getBetTricks() + "\n";
         playerInformation += "Took tricks:\t" + player.getTookTricks() + "\n";
         return playerInformation;
