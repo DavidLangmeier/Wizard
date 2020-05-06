@@ -39,9 +39,11 @@ public class GameActivity extends AppCompatActivity {
     private ImageView ivShowCardJpg;
     private ViewPager2 viewPager2;
     private TextView tv_showTextTrumpf;
-    private WizardClient wizardClient = LobbyActivity.getWizardClient();
-    List<SliderItem> sliderItems = new ArrayList<>(); //Zeigt scrollHand
-    Player myPlayer;
+    private static WizardClient wizardClient = LobbyActivity.getWizardClient();
+    private List<SliderItem> sliderItems = new ArrayList<>(); //Zeigt scrollHand
+    private Player myPlayer = LobbyActivity.getMyPlayer();
+    private static GameData gameData = LobbyActivity.getGameData();
+
     Hand myHand = new Hand(); //Test PlayerHand
     Hand table = new Hand(); //Test Table
     Hand trumpHand = new Hand(); //Test TrumpHand
@@ -55,9 +57,9 @@ public class GameActivity extends AppCompatActivity {
         //wizardClient = WizardClient.getInstance(); // new instance would get new connectionID, has to be fixed
         startCallback();
 
-        myPlayer = LobbyActivity.getMyPlayer(); // use intent extra if problems with activity lifecycle occur
+        //myPlayer = LobbyActivity.getMyPlayer(); // use intent extra if problems with activity lifecycle occur
         //myPlayer = (Player) getIntent().getSerializableExtra("myPlayer"); // does not work properly - use bundle?
-        info("@GAME_ACTIVITY: My Playername=" +myPlayer.getName() +", connectionID=" +myPlayer.getConnectionID());
+        info("@GAME_ACTIVITY: My Playername=" + myPlayer.getName() + ", connectionID=" + myPlayer.getConnectionID());
 
         btnShuffle = findViewById(R.id.game_btn_shuffleCards);
         btnShuffle.setOnClickListener(v -> shuffleCards());
@@ -98,23 +100,26 @@ public class GameActivity extends AppCompatActivity {
         wizardClient.registerCallback(basemessage -> {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received!");
-                //info(basemessage.toString());
-                if (((StateMessage) basemessage).getDealer() == myPlayer.getConnectionID()) {
+                gameData.updateState((StateMessage) basemessage);
+                if (gameData.getDealer() == myPlayer.getConnectionID()) {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(true));
+                } else {
+                    btnDeal.setEnabled(false);
                 }
 
             } else if (basemessage instanceof HandMessage) {
                 info("GAME_ACTIVITY: Hand recieved");
-                myHand = ((HandMessage) basemessage).getHand();
+                gameData.setMyHand((HandMessage) basemessage);
+                //myHand = ((HandMessage) basemessage).getHand();
                 runOnUiThread(() ->
-                        addCardsToSlideView(myHand.getCards()));
+                        addCardsToSlideView(gameData.getMyHand().getCards()));
             }
 
         });
     }
 
-    public void showTrump () {
+    public void showTrump() {
         Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
         ivShowCardJpg.startAnimation(aniRotateClk);
         if (tv_showTextTrumpf.getVisibility() == View.VISIBLE) {

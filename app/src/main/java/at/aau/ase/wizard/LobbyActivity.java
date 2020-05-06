@@ -35,6 +35,7 @@ public class LobbyActivity extends AppCompatActivity {
     private List<String> players = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter = null;
     private static Player myPlayer;
+    private static GameData gameData;
 
 
     @Override
@@ -103,6 +104,7 @@ public class LobbyActivity extends AppCompatActivity {
             }
             else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == START)) {
                 info(basemessage.toString());
+                gameData = new GameData();
                 Intent intent = new Intent(this, GameActivity.class);
                 //intent.putExtra("myPlayer", myPlayer);
                 wizardClient.deregisterCallback();
@@ -142,5 +144,9 @@ public class LobbyActivity extends AppCompatActivity {
 
     public static Player getMyPlayer() {
         return myPlayer;
+    }
+
+    public static GameData getGameData() {
+        return gameData;
     }
 }

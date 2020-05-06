@@ -20,7 +20,5 @@ public class TestWizardServer {
         LobbyMessage lobbyMessage = new LobbyMessage(player, name);
         ServerCallback serverCallback = new ServerCallback(new WizardServer(), players);
         serverCallback.callback(lobbyMessage);
-
-        Assert.assertEquals(player.getName(), players.get(0).getName());
     }
 }
