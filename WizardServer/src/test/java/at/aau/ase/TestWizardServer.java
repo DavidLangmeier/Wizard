@@ -9,6 +9,11 @@ import java.util.List;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
+import org.mockito.Mockito;
+import org.mockito.Mockito.*;
+
+import static org.mockito.Mockito.when;
+
 public class TestWizardServer {
 
     @Test
@@ -17,8 +22,13 @@ public class TestWizardServer {
         String name = "Username";
         Player player = new Player(name);
 
+        WizardServer server = Mockito.mock(WizardServer.class);
+        when(server.getLastConnectionID()).thenReturn(1);
+
         LobbyMessage lobbyMessage = new LobbyMessage(player, name);
-        ServerCallback serverCallback = new ServerCallback(new WizardServer(), players);
+        ServerCallback serverCallback = new ServerCallback(server, players);
         serverCallback.callback(lobbyMessage);
+
+        Assert.assertEquals(player.getName(), players.get(0).getName());
     }
 }
