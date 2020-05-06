@@ -38,6 +38,10 @@ public class NetworkClientKryo implements NetworkClient, KryoNetComponent {
         this.callback = callback;
     }
 
+    public void deregisterCallback() {
+        this.callback = null;
+    }
+
     public void sendMessage(BaseMessage message) {
         client.sendTCP(message);
     }

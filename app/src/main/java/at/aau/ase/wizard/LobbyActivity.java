@@ -103,10 +103,9 @@ public class LobbyActivity extends AppCompatActivity {
             }
             else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == START)) {
                 info(basemessage.toString());
-
                 Intent intent = new Intent(this, GameActivity.class);
-
-                intent.putExtra("myPlayer", myPlayer);
+                //intent.putExtra("myPlayer", myPlayer);
+                wizardClient.deregisterCallback();
                 startActivity(intent);
             }
             else if ((basemessage instanceof PlayerMessage)) {

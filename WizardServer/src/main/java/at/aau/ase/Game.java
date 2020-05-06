@@ -26,7 +26,6 @@ public class Game {
     private int dealer;
     private int activePlayer;
     private WizardServer server;
-    private int trickRound;
 
 
     public Game(WizardServer server, List<Player> players) {
@@ -42,10 +41,8 @@ public class Game {
             this.playerHands[i] = new Hand();
         }
         this.trump = null;
-        this.dealer = -1;
-        this.activePlayer = 0;
-        //test for Trickround 3
-        this.trickRound = 3;
+        this.dealer = 1;
+        this.activePlayer = 1;
     }
 
     public void startGame() {
@@ -59,19 +56,26 @@ public class Game {
         // setting dealer and active player, later this has to be automated every new round/trickround
         this.dealer = players.get(0).getConnectionID();
         this.activePlayer = players.get(0).getConnectionID();
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         System.out.println("GAME: Broadcasting initial gameState");
-        server.broadcastMessage(new StateMessage(players, table, scores, totalRounds, trump, dealer, activePlayer, false));
+        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayer));
     }
 
     public void dealCards() {
         System.out.println("GAME: Dealing Cards.");
         deck.shuffle();
 
-        // deal cards to playerHands serverside | rounds=4 hardcoded, has to be changed later
-        for (int i = 0; i < 4; i++) {
+        // deal cards to playerHands serverside | round=5 hardcoded, has to be changed later
+        for (int i = 0; i < 5; i++) {
             for (int j = 0; j < players.size(); j++) {
                 System.out.println("GAME: Dealing to hand #" +j +" with players.size of " +players.size());
-                Card currentCard = deck.getCards().get(i);
+                //Card currentCard = deck.getCards().get(i);
                 System.out.println("GAME: current card = " +deck.getCards().get(i).toString());
                 //playerHands[j].add(currentCard);
                 //deck.remove(currentCard);

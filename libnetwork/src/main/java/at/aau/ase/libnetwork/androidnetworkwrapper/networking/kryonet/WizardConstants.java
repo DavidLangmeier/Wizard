@@ -7,7 +7,6 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.A
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotepadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
@@ -34,7 +33,6 @@ public class WizardConstants {
             HandMessage.class,
             PlayerMessage.class,
             LobbyMessage.class,
-            NotepadMessage.class,
             ArrayList.class,
             short[][].class,
             short[].class,
