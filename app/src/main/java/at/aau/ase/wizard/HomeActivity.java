@@ -6,10 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
+
+
+
 public class HomeActivity extends AppCompatActivity {
     private Button btnPlay;
     private Button btnSettings;
     private Button btnHowToPlay;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +26,10 @@ public class HomeActivity extends AppCompatActivity {
         btnSettings = (Button) findViewById(R.id.home_btn_settings);
         btnSettings.setOnClickListener(v -> openSettingsActivity());
         btnHowToPlay = (Button) findViewById(R.id.home_btn_howToPlay);
-        btnHowToPlay.setOnClickListener(v -> openSettingsActivity());
+        btnHowToPlay.setOnClickListener(v -> openHowToPlayActivity());
+
+
+
     }
 
     public void openLobbyActivity() {
@@ -34,7 +42,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void openHowToPlayActivity() {
-        // ToDo
+        Intent intent2 = new Intent(this, howto_playpdfActivity.class);
+        startActivity(intent2);
     }
     
 }
