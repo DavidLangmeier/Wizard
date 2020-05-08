@@ -52,18 +52,10 @@ public class Game {
         // Send START to all users -> @client: trigger intent which starts gameActivity
         System.out.println("GAME: Broadcasting START now.");
         server.broadcastMessage(new ActionMessage(START));
+    }
 
-        // setting dealer and active player, later this has to be automated every new round/trickround
-        this.dealer = players.get(0).getConnectionID();
-        this.activePlayer = players.get(0).getConnectionID();
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("GAME: Broadcasting initial gameState");
+    public void broadcastGameState() {
+        System.out.println("GAME: Broadcasting gameState");
         server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayer));
     }
 

@@ -7,7 +7,7 @@ public enum Action {
 
     START(0, "Start game"),
     END(1, "End game"),
-    SHUFFLE(2, "Shuffle cards"),
+    READY(2, "I am ready"),
     DEAL(3, "Deal cards");
 
 

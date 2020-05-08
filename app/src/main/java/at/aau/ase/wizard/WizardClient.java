@@ -10,7 +10,8 @@ import static com.esotericsoftware.minlog.Log.*;
 
 public class WizardClient extends NetworkClientKryo {
 
-    private String hostname = "192.168.0.45";
+    //private String hostname = "192.168.0.45";
+    private String hostname = "se2-demo.aau.at";
     private static WizardClient wizardClient = null;
 
     private WizardClient() {
