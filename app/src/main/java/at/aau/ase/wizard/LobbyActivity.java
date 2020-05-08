@@ -25,11 +25,9 @@ import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_ac
 import static com.esotericsoftware.minlog.Log.*;
 
 public class LobbyActivity extends AppCompatActivity {
-    private Button btnTestServer;
     private Button btnStartGame;
     private Button btnConnectToServer;
     private static WizardClient wizardClient = null;
-    private TextView tvServerResponse = null;
     private EditText etUsername = null;
     private ListView lvPlayers = null;
     private List<String> players = new ArrayList<>();
@@ -43,14 +41,11 @@ public class LobbyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
 
-        btnTestServer = findViewById(R.id.lobby_btn_testServer);
-        btnTestServer.setOnClickListener(v -> testServer());
         btnStartGame = (findViewById(R.id.lobby_btn_ToGameScreen));
         btnStartGame.setOnClickListener(v -> startGame());
         btnStartGame.setEnabled(false);
         btnConnectToServer = findViewById(R.id.lobby_btn_connect);
         btnConnectToServer.setOnClickListener(v -> connectToServer());
-        tvServerResponse = findViewById(R.id.lobby_text_serverResponseDisplay);
         etUsername = findViewById(R.id.lobby_edittext_username);
         //etUsername.setOnKeyListener((v,keyCode,keyEvent) -> enteredUsername(keyCode,keyEvent));
         lvPlayers = findViewById(R.id.lobby_list_players);
@@ -73,10 +68,6 @@ public class LobbyActivity extends AppCompatActivity {
     }
     */
 
-    private void testServer() {
-        wizardClient.sendMessage(new TextMessage("Some request"));
-    }
-
     private void startGame() {
         wizardClient.sendMessage(new ActionMessage(START));
     }
@@ -85,12 +76,7 @@ public class LobbyActivity extends AppCompatActivity {
         wizardClient = WizardClient.getInstance();
 
         wizardClient.registerCallback(basemessage -> {
-            String res = null;
-            if (basemessage instanceof TextMessage) {
-                info("SERVER RESPONSE:"+ basemessage.toString());
-                res = ((TextMessage) basemessage).text;
-            }
-            else if (basemessage instanceof LobbyMessage) {
+            if (basemessage instanceof LobbyMessage) {
                 Player player = ((LobbyMessage) basemessage).getPlayer();
                 info("Received a LobbyMessage "+player.getName());
 
@@ -116,12 +102,7 @@ public class LobbyActivity extends AppCompatActivity {
             }
             else {
                 error("Not a textmessage: "+basemessage.toString());
-                res = "Response is not a TextMessage";
             }
-            String finalRes = res;
-            runOnUiThread(() ->
-                    tvServerResponse.setText(finalRes)
-            );
         });
 
         // wait for the connection to be fully established
@@ -129,7 +110,7 @@ public class LobbyActivity extends AppCompatActivity {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            error("Error while waiting for server callback being ready", e);
         }
 
         String username = etUsername.getText().toString();
