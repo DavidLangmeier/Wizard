@@ -16,7 +16,6 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.T
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.DEAL;
-import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.SHUFFLE;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 import static com.esotericsoftware.minlog.Log.info;
 
@@ -24,27 +23,29 @@ public class ServerCallback implements Callback<BaseMessage> {
 
     private WizardServer server;
     private List<Player> players;
+    private int playersReady;
     private Game game;
 
     public ServerCallback(WizardServer server, List<Player> players) {
         this.server = server;
         this.players = players;
+        this.playersReady = 0;
     }
 
     @Override
-    public void callback(BaseMessage basemessage) {
-        if (basemessage instanceof TextMessage) {
-            info(basemessage.toString());
+    public void callback(BaseMessage message) {
+        if (message instanceof TextMessage) {
+            info(message.toString());
             server.broadcastMessage(
                     new TextMessage("Hi client, I'm the server and I'm waiting for requests!\nDid you say: "
-                            + ((TextMessage) basemessage).text
+                            + ((TextMessage) message).text
                             + "\nat "
                             + LocalDateTime.now().toString()
                             + " ?"
                     ));
 
-        } else if (basemessage instanceof LobbyMessage) {
-            LobbyMessage msg = (LobbyMessage) basemessage;
+        } else if (message instanceof LobbyMessage) {
+            LobbyMessage msg = (LobbyMessage) message;
             info("New user " + msg.getNewUsername());
             Player newplayer = new Player(msg.getNewUsername(), server.getLastConnectionID());
             players.add(newplayer);
@@ -55,9 +56,9 @@ public class ServerCallback implements Callback<BaseMessage> {
             info("Sending playerMessage to new Player.");
             server.sentTo(newplayer.getConnectionID(), newPlayerMsg);
 
-        } else if (basemessage instanceof ActionMessage) {
+        } else if (message instanceof ActionMessage) {
             info("Received ActionMessage.");
-            ActionMessage msg = (ActionMessage) basemessage;
+            ActionMessage msg = (ActionMessage) message;
 
             switch (msg.getActionType()) {
                 case START:
@@ -72,6 +73,15 @@ public class ServerCallback implements Callback<BaseMessage> {
                     game.dealCards();
                     break;
 
+                case READY:
+                    info("Received Action READY.");
+                    playersReady++;
+                    info(playersReady +"/" +players.size() +" users are ready.");
+                    if (playersReady >= players.size()) {
+                        game.broadcastGameState();
+                    }
+                    break;
+
                 default:
                     info("Unknown Action. Cannot handle Message");
             }
@@ -81,4 +91,5 @@ public class ServerCallback implements Callback<BaseMessage> {
             server.broadcastMessage(new TextMessage("Server could not handle sent message correctly!"));
         }
     }
+
 }

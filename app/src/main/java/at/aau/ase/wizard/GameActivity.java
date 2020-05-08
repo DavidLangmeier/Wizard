@@ -28,6 +28,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.DEAL;
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.READY;
 import static com.esotericsoftware.minlog.Log.info;
 
 
@@ -99,7 +100,7 @@ public class GameActivity extends AppCompatActivity {
     public void startCallback() {
         wizardClient.registerCallback(basemessage -> {
             if (basemessage instanceof StateMessage) {
-                info("GAME_ACTIVITY: StateMessage received!");
+                info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
                 if (gameData.getDealer() == myPlayer.getConnectionID()) {
                     runOnUiThread(() ->
@@ -109,7 +110,7 @@ public class GameActivity extends AppCompatActivity {
                 }
 
             } else if (basemessage instanceof HandMessage) {
-                info("GAME_ACTIVITY: Hand recieved");
+                info("GAME_ACTIVITY: Hand recieved.");
                 gameData.setMyHand((HandMessage) basemessage);
                 //myHand = ((HandMessage) basemessage).getHand();
                 runOnUiThread(() ->
@@ -117,6 +118,8 @@ public class GameActivity extends AppCompatActivity {
             }
 
         });
+        wizardClient.sendMessage(new ActionMessage(READY));
+        info("GAME_ACTIVITY: READY sent.");
     }
 
     public void showTrump() {
