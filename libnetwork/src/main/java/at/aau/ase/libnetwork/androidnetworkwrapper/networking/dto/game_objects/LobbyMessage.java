@@ -28,7 +28,7 @@ public class LobbyMessage extends BaseMessage {
         return newUsername;
     }
 
-    public List<Player> getPlayer() {
+    public List<Player> getPlayers() {
         return players;
     }
 }

@@ -25,7 +25,7 @@ public class TestWizardServer {
         WizardServer server = Mockito.mock(WizardServer.class);
         when(server.getLastConnectionID()).thenReturn(1);
 
-        LobbyMessage lobbyMessage = new LobbyMessage(player, name);
+        LobbyMessage lobbyMessage = new LobbyMessage(name);
         ServerCallback serverCallback = new ServerCallback(server, players);
         serverCallback.callback(lobbyMessage);
 

@@ -56,7 +56,7 @@ public class LobbyActivity extends AppCompatActivity {
 
             wizardClient.registerCallback(basemessage -> {
                 if (basemessage instanceof LobbyMessage) {
-                    List<Player> players = ((LobbyMessage) basemessage).getPlayer();
+                    List<Player> players = ((LobbyMessage) basemessage).getPlayers();
                     info("Received a LobbyMessage "+players.size() + "players online");
 
                     runOnUiThread(() -> {
