@@ -26,7 +26,6 @@ import static com.esotericsoftware.minlog.Log.*;
 
 public class LobbyActivity extends AppCompatActivity {
     private Button btnStartGame;
-    private Button btnConnectToServer;
     private static WizardClient wizardClient = null;
     private EditText etUsername = null;
     private ListView lvPlayers = null;
@@ -44,10 +43,8 @@ public class LobbyActivity extends AppCompatActivity {
         btnStartGame = (findViewById(R.id.lobby_btn_ToGameScreen));
         btnStartGame.setOnClickListener(v -> startGame());
         btnStartGame.setEnabled(false);
-        btnConnectToServer = findViewById(R.id.lobby_btn_connect);
-        btnConnectToServer.setOnClickListener(v -> connectToServer());
         etUsername = findViewById(R.id.lobby_edittext_username);
-        //etUsername.setOnKeyListener((v,keyCode,keyEvent) -> enteredUsername(keyCode,keyEvent));
+        etUsername.setOnKeyListener((v,keyCode,keyEvent) -> enteredUsername(keyCode,keyEvent));
         lvPlayers = findViewById(R.id.lobby_list_players);
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, players);
         lvPlayers.setAdapter(arrayAdapter);
@@ -55,9 +52,48 @@ public class LobbyActivity extends AppCompatActivity {
 
     }
 
-    /*
     private boolean enteredUsername(int keycode, KeyEvent keyevent) {
         if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER) {
+            wizardClient = WizardClient.getInstance();
+
+            wizardClient.registerCallback(basemessage -> {
+                if (basemessage instanceof LobbyMessage) {
+                    Player player = ((LobbyMessage) basemessage).getPlayer();
+                    info("Received a LobbyMessage "+player.getName());
+
+                    runOnUiThread(() -> {
+                        players.add(player.getName());
+                        arrayAdapter.notifyDataSetChanged();
+                        if (players.size() >= WizardConstants.MIN_NUM_PLAYERS && !etUsername.isEnabled()) {
+                            btnStartGame.setEnabled(true);
+                        }
+                    });
+                }
+                else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == START)) {
+                    info(basemessage.toString());
+                    gameData = new GameData();
+                    Intent intent = new Intent(this, GameActivity.class);
+                    //intent.putExtra("myPlayer", myPlayer);
+                    wizardClient.deregisterCallback();
+                    startActivity(intent);
+                }
+                else if ((basemessage instanceof PlayerMessage)) {
+                    myPlayer = new Player(((PlayerMessage) basemessage).getPlayer().getName(),
+                            ((PlayerMessage) basemessage).getPlayer().getConnectionID());
+                }
+                else {
+                    error("No callback for this messagetype in the lobby: "+basemessage.toString());
+                }
+            });
+
+            // wait for the connection to be fully established
+            // bad solution, has to be replaced with something like server ping
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                error("Error while waiting for server callback being ready", e);
+            }
+
             String username = etUsername.getText().toString();
             wizardClient.sendMessage(new LobbyMessage(username));
             debug(username);
@@ -66,57 +102,9 @@ public class LobbyActivity extends AppCompatActivity {
         }
         return false;
     }
-    */
 
     private void startGame() {
         wizardClient.sendMessage(new ActionMessage(START));
-    }
-
-    private void connectToServer() {
-        wizardClient = WizardClient.getInstance();
-
-        wizardClient.registerCallback(basemessage -> {
-            if (basemessage instanceof LobbyMessage) {
-                Player player = ((LobbyMessage) basemessage).getPlayer();
-                info("Received a LobbyMessage "+player.getName());
-
-                runOnUiThread(() -> {
-                    players.add(player.getName());
-                    arrayAdapter.notifyDataSetChanged();
-                    if (players.size() >= WizardConstants.MIN_NUM_PLAYERS && !etUsername.isEnabled()) {
-                        btnStartGame.setEnabled(true);
-                    }
-                });
-            }
-            else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == START)) {
-                info(basemessage.toString());
-                gameData = new GameData();
-                Intent intent = new Intent(this, GameActivity.class);
-                //intent.putExtra("myPlayer", myPlayer);
-                wizardClient.deregisterCallback();
-                startActivity(intent);
-            }
-            else if ((basemessage instanceof PlayerMessage)) {
-                myPlayer = new Player(((PlayerMessage) basemessage).getPlayer().getName(),
-                        ((PlayerMessage) basemessage).getPlayer().getConnectionID());
-            }
-            else {
-                error("Not a textmessage: "+basemessage.toString());
-            }
-        });
-
-        // wait for the connection to be fully established
-        // bad solution, has to be replaced with something like server ping
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            error("Error while waiting for server callback being ready", e);
-        }
-
-        String username = etUsername.getText().toString();
-        wizardClient.sendMessage(new LobbyMessage(username));
-        debug(username);
-        etUsername.setEnabled(false);
     }
 
     public static WizardClient getWizardClient() {
