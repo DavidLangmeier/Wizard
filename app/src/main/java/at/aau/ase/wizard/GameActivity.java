@@ -7,6 +7,7 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -44,6 +45,7 @@ public class GameActivity extends AppCompatActivity {
     private List<SliderItem> sliderItems = new ArrayList<>(); //Zeigt scrollHand
     private Player myPlayer = LobbyActivity.getMyPlayer();
     private static GameData gameData = LobbyActivity.getGameData();
+    private MediaPlayer mpShuffelCardSound; //for sound bei klick auf button shuffel
 
     Hand myHand = new Hand(); //Test PlayerHand
     Hand table = new Hand(); //Test Table
@@ -71,6 +73,7 @@ public class GameActivity extends AppCompatActivity {
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
         //sliderItems = new ArrayList<>();    //List of Images from drawable
+        mpShuffelCardSound =MediaPlayer.create(this,R.raw.shuffel); //sound karte shuffel
 
         //Damit mehrere nebeneinander sichbar sind
         viewPager2.setClipToPadding(false);
@@ -176,13 +179,15 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void shuffleCards() {
+
         wizardClient.sendMessage(new ActionMessage(DEAL));
     }
 
     private void dealCards() {
+        mpShuffelCardSound.start();
         wizardClient.sendMessage(new ActionMessage(DEAL));
     }
 
-    //card = rode
+
 
 }

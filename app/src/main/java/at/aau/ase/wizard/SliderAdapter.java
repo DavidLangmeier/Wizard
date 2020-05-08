@@ -2,6 +2,7 @@ package at.aau.ase.wizard;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     private List<SliderItem> sliderItems;
     private ViewPager2 viewPager2;
     private int selectedICard = 0;
+
 
 
     SliderAdapter(List<SliderItem> sliderItems, ViewPager2 viewPager2) {
