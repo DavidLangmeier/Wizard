@@ -34,17 +34,7 @@ public class ServerCallback implements Callback<BaseMessage> {
 
     @Override
     public void callback(BaseMessage message) {
-        if (message instanceof TextMessage) {
-            info(message.toString());
-            server.broadcastMessage(
-                    new TextMessage("Hi client, I'm the server and I'm waiting for requests!\nDid you say: "
-                            + ((TextMessage) message).text
-                            + "\nat "
-                            + LocalDateTime.now().toString()
-                            + " ?"
-                    ));
-
-        } else if (message instanceof LobbyMessage) {
+        if (message instanceof LobbyMessage) {
             LobbyMessage msg = (LobbyMessage) message;
             info("New user " + msg.getNewUsername());
             Player newplayer = new Player(msg.getNewUsername(), server.getLastConnectionID());
