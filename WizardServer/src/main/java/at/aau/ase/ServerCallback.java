@@ -50,7 +50,7 @@ public class ServerCallback implements Callback<BaseMessage> {
             Player newplayer = new Player(msg.getNewUsername(), server.getLastConnectionID());
             players.add(newplayer);
             info("Broadcasting newplayer as LobbyMessage.");
-            server.broadcastMessage(new LobbyMessage(newplayer));
+            server.broadcastMessage(new LobbyMessage(players));
 
             PlayerMessage newPlayerMsg = new PlayerMessage(newplayer);
             info("Sending playerMessage to new Player.");

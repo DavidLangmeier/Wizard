@@ -7,7 +7,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,7 +16,6 @@ import java.util.List;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
 
@@ -29,7 +27,7 @@ public class LobbyActivity extends AppCompatActivity {
     private static WizardClient wizardClient = null;
     private EditText etUsername = null;
     private ListView lvPlayers = null;
-    private List<String> players = new ArrayList<>();
+    private List<String> playersOnline = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter = null;
     private static Player myPlayer;
     private static GameData gameData;
@@ -46,7 +44,7 @@ public class LobbyActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.lobby_edittext_username);
         etUsername.setOnKeyListener((v,keyCode,keyEvent) -> enteredUsername(keyCode,keyEvent));
         lvPlayers = findViewById(R.id.lobby_list_players);
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, players);
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, playersOnline);
         lvPlayers.setAdapter(arrayAdapter);
 
 
@@ -58,11 +56,14 @@ public class LobbyActivity extends AppCompatActivity {
 
             wizardClient.registerCallback(basemessage -> {
                 if (basemessage instanceof LobbyMessage) {
-                    Player player = ((LobbyMessage) basemessage).getPlayer();
-                    info("Received a LobbyMessage "+player.getName());
+                    List<Player> players = ((LobbyMessage) basemessage).getPlayer();
+                    info("Received a LobbyMessage "+players.size() + "players online");
 
                     runOnUiThread(() -> {
-                        players.add(player.getName());
+                        playersOnline.clear();
+                        for (Player p : players) {
+                            playersOnline.add(p.getName());
+                        }
                         arrayAdapter.notifyDataSetChanged();
                         if (players.size() >= WizardConstants.MIN_NUM_PLAYERS && !etUsername.isEnabled()) {
                             btnStartGame.setEnabled(true);
@@ -78,8 +79,8 @@ public class LobbyActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if ((basemessage instanceof PlayerMessage)) {
-                    myPlayer = new Player(((PlayerMessage) basemessage).getPlayer().getName(),
-                            ((PlayerMessage) basemessage).getPlayer().getConnectionID());
+                    PlayerMessage playerMessage = (PlayerMessage) basemessage;
+                    myPlayer = new Player(playerMessage.getPlayer().getName(), playerMessage.getPlayer().getConnectionID());
                 }
                 else {
                     error("No callback for this messagetype in the lobby: "+basemessage.toString());
