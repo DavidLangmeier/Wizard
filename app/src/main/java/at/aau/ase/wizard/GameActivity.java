@@ -166,9 +166,10 @@ public class GameActivity extends AppCompatActivity {
             int id = getResources().getIdentifier(pp_playerCards.get(i).getPictureFileId(), "drawable", getPackageName());
 
             if (id == 0) {//if the pictureID is false show Error Logo zero
-                sliderItems.add(new SliderItem((R.drawable.z0error)));
+                sliderItems.add(new SliderItem((R.drawable.z0error),pp_playerCards.get(i)));
             } else {//show Card
-                sliderItems.add(new SliderItem(id));
+                sliderItems.add(new SliderItem(id,pp_playerCards.get(i)));
+                //Carte
             }
         }
         viewPager2.setAdapter(new SliderAdapter(sliderItems, viewPager2));
@@ -181,5 +182,7 @@ public class GameActivity extends AppCompatActivity {
     private void dealCards() {
         wizardClient.sendMessage(new ActionMessage(DEAL));
     }
+
+    //card = rode
 
 }

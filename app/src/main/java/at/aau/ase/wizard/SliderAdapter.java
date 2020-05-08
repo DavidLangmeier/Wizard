@@ -2,11 +2,13 @@ package at.aau.ase.wizard;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,13 +17,16 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
+
+import static com.esotericsoftware.minlog.Log.debug;
+
 //Adapter provides the data model and responsible for rendering the views for the individual cell
 //view holder - contains instances for a ll views that are filled by the data of the entry
 public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderViewHolder> {
 
     private List<SliderItem> sliderItems;
     private ViewPager2 viewPager2;
-    private int selectedICard=0;
+    private int selectedICard = 0;
 
 
     SliderAdapter(List<SliderItem> sliderItems, ViewPager2 viewPager2) {
@@ -47,18 +52,25 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
         holder.setImage(sliderItems.get(position));
 
         //Hintergrundfarbe bei Auswählen Bild  GELB
-        if(selectedICard==position){
+        if (selectedICard == position) {
             holder.imageView.setBackgroundColor(Color.parseColor("#fcdb19"));
-        }else{
+        } else {
             holder.imageView.setBackgroundColor(Color.parseColor("#3c822f"));
         }
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int previousSelectetItem=selectedICard;
-                selectedICard=position;
+                int previousSelectetItem = selectedICard;
+                selectedICard = position;
                 notifyItemChanged(previousSelectetItem);
                 holder.imageView.setBackgroundColor(Color.parseColor("#fcdb19"));
+                //debug("test");
+                Card currentPlayingCard= sliderItems.get(position).getGameCard();
+
+ //--- Carte die Angeklickt wurde für Ausspielen Spiel-------!!!--------------------------------------------
+                String playingOutCard =currentPlayingCard.getValue()+" "+currentPlayingCard.getColor();
+
+                Log.i("Playing out Card", playingOutCard);
 
             }
         });
@@ -71,6 +83,8 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
     class SliderViewHolder extends RecyclerView.ViewHolder {
         private RoundedImageView imageView;
+        //kein Object karte anlegen, da  ich karte Übergebe
+        public
 
         SliderViewHolder(@NonNull View itemView) {
             super(itemView);
