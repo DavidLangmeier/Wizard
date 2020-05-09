@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -46,6 +47,7 @@ public class GameActivity extends AppCompatActivity {
     private Player myPlayer = LobbyActivity.getMyPlayer();
     private static GameData gameData = LobbyActivity.getGameData();
     private MediaPlayer mpShuffelCardSound; //for sound bei klick auf button shuffel
+
 
     Hand myHand = new Hand(); //Test PlayerHand
     Hand table = new Hand(); //Test Table
@@ -175,8 +177,17 @@ public class GameActivity extends AppCompatActivity {
                 //Carte
             }
         }
-        viewPager2.setAdapter(new SliderAdapter(sliderItems, viewPager2));
+
+        viewPager2.setAdapter(new SliderAdapter(sliderItems, viewPager2){
+            @Override
+            public void onItemClickCard(Card selectedCard) {
+                Log.i("ClickBack", "Card Clicked:"+selectedCard.getColor()+selectedCard.getValue());
+                ///---- hier drinnen die Klasse Card verwenden   --- Angeklickte 
+            }
+        });
     }
+
+
 
     private void shuffleCards() {
 
@@ -186,6 +197,7 @@ public class GameActivity extends AppCompatActivity {
     private void dealCards() {
         mpShuffelCardSound.start();
         wizardClient.sendMessage(new ActionMessage(DEAL));
+        Log.i("ClickBack", "Card Clicked: teswts lock");
     }
 
 

@@ -8,6 +8,7 @@ import android.view.ViewParent;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
+
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
@@ -31,7 +32,7 @@ import static org.hamcrest.Matchers.allOf;
 public class HomeActivityTest {
 
     @Rule
-    public ActivityTestRule<HomeActivity> mActivityTestRule = new ActivityTestRule<>(HomeActivity.class);
+    public ActivityTestRule <HomeActivity> mActivityTestRule = new ActivityTestRule <>(HomeActivity.class);
 
     @Test
     public void homeActivityTest() {

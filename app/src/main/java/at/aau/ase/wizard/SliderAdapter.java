@@ -68,14 +68,19 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                 holder.imageView.setBackgroundColor(Color.parseColor("#fcdb19"));
                 //debug("test");
                 Card currentPlayingCard= sliderItems.get(position).getGameCard();
+                onItemClickCard(currentPlayingCard);
 
  //--- Carte die Angeklickt wurde für Ausspielen Spiel-------!!!--------------------------------------------
                 String playingOutCard =currentPlayingCard.getValue()+" "+currentPlayingCard.getColor();
-
-                Log.i("Playing out Card", playingOutCard);
+                Log.i("test", "Playing out Card"+playingOutCard);
 
             }
         });
+    }
+
+    public void onItemClickCard(Card selectedCard)
+    {
+
     }
 
     @Override
@@ -85,8 +90,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
     class SliderViewHolder extends RecyclerView.ViewHolder {
         private RoundedImageView imageView;
-        //kein Object karte anlegen, da  ich karte Übergebe
-        public
+
 
         SliderViewHolder(@NonNull View itemView) {
             super(itemView);
