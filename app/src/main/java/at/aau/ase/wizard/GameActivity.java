@@ -113,9 +113,12 @@ public class GameActivity extends AppCompatActivity {
                     btnDeal.setEnabled(false);
                 }
 
+
                 //TODO
                 //show Table Hand
-                //runOnUiThread(() -> addCardsToSlideView(gameData.getMyHand().getCards()));
+                //int id = getResources().getIdentifier(gameData.getTable().getCards().get(0).getPictureFileId(), "drawable", getPackageName());
+                //ivTable.setImageResource(id);
+
 
             } else if (basemessage instanceof HandMessage) {
                 info("GAME_ACTIVITY: Hand recieved.");
@@ -124,10 +127,10 @@ public class GameActivity extends AppCompatActivity {
                 runOnUiThread(() ->
                         addCardsToSlideView(gameData.getMyHand().getCards()));
 
-            } else if (basemessage instanceof CardMessage){
+            } /*else if (basemessage instanceof CardMessage){
                 info("GAME_ACTIVITY: Card recieved.");
-                //TODO
-            }
+
+            }*/
 
         });
         wizardClient.sendMessage(new ActionMessage(READY));
@@ -187,7 +190,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void showTableCards(){
-        //TODO int id = getResources().getIdentifier(table.getCards().get(i).getPictureFileId(), "drawable", getPackageName());
+
     }
 
     private void shuffleCards() {

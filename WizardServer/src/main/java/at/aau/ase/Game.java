@@ -94,11 +94,22 @@ public class Game {
 
     }
     public void dealOnePlayerCardToTable(Card cardToPutOnTable){
-        System.out.println("Card recieved: " + cardToPutOnTable.toString() + " Trying to put on Table...");
-        playerHands[activePlayer].dealCard(cardToPutOnTable, table);
-        System.out.println("Card is now on Table!");
-        server.sentTo(activePlayer, playerHands[activePlayer]);
-        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayer));
+        System.out.println("GAME: Card recieved: " + cardToPutOnTable.toString() + " Trying to put on Table...");
+        System.out.println("GAME: Card object id: " + cardToPutOnTable.hashCode());
+        System.out.println("GAME: Dealer: " + dealer);
+        System.out.println("GAME: Size of PlayerHands: " + playerHands.length);
+        for (int i = 0; i < playerHands.length; i++) {
+            if(playerHands[i].getCards().contains(cardToPutOnTable)){
+                System.out.println("GAME: Hand with relevant Card: " + playerHands[i].toString());
+            }else{
+                System.out.println("GAME: No Hand with this Card!");
+            }
+
+        }
+        playerHands[dealer-1].dealCard(cardToPutOnTable, table);
+        System.out.println(table.getCards().get(0) + " is now on Table!"); //TODO causes IndexOutOfBoundsException. But why???
+        server.sentTo(players.get(dealer-1).getConnectionID(), new HandMessage(playerHands[dealer-1]));
+        //broadcastGameState();
     }
 
     public Hand getTable() {

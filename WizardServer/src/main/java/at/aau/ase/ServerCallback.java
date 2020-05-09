@@ -77,10 +77,11 @@ public class ServerCallback implements Callback<BaseMessage> {
         } else if (message instanceof CardMessage) {
             info("Recieved Card to put on Table!");
             CardMessage msg = (CardMessage) message;
-            info("CARD: " + msg.getCard().toString());
+            info("SERVER_CALLBACK: CARD: " + msg.getCard().toString());
+            System.out.println("SERVER_CALLBACK: Card object id: " + msg.getCard().hashCode());
             game.dealOnePlayerCardToTable(msg.getCard());
-            info("trying to put playerCard to Table");
-            game.broadcastGameState();
+            //info("trying to put playerCard to Table");
+            //game.broadcastGameState();
 
         } else {
             info("Received message cannot be handled correctly!");
