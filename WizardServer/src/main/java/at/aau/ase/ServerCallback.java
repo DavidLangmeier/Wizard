@@ -5,6 +5,7 @@ import java.util.List;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.Callback;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
@@ -63,7 +64,7 @@ public class ServerCallback implements Callback<BaseMessage> {
                 case READY:
                     info("Received Action READY.");
                     playersReady++;
-                    info(playersReady +"/" +players.size() +" users are ready.");
+                    info(playersReady + "/" + players.size() + " users are ready.");
                     if (playersReady >= players.size()) {
                         game.broadcastGameState();
                     }
@@ -72,6 +73,13 @@ public class ServerCallback implements Callback<BaseMessage> {
                 default:
                     info("Unknown Action. Cannot handle Message");
             }
+
+        } else if (message instanceof CardMessage) {
+            info("Recieved Card to put on Table!");
+            CardMessage msg = (CardMessage) message;
+            info("CARD: " + msg.getCard().toString());
+            game.dealOnePlayerCardToTable(msg.getCard());
+            info("trying to put playerCard to Table");
 
         } else {
             info("Received message cannot be handled correctly!");

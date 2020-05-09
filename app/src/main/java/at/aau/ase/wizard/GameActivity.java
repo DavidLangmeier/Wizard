@@ -66,7 +66,7 @@ public class GameActivity extends AppCompatActivity {
 
         btnPlaySelectedCard = findViewById(R.id.play_Card);
         btnPlaySelectedCard.setOnClickListener(v -> dealOnePlayerCardOnTable());
-        btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
+        btnPlaySelectedCard.setEnabled(true); // Button has to be removed later
         btnDeal = findViewById(R.id.game_btn_dealOutCards);
         btnDeal.setOnClickListener(v -> dealCards());
         btnDeal.setEnabled(false);

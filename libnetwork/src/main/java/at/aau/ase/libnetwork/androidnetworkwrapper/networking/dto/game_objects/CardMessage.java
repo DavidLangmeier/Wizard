@@ -22,7 +22,13 @@ public class CardMessage extends BaseMessage {
 
     @Override
     public String toString(){
-        return card.toString();
+        String cardName;
+        if (card != null) {
+            cardName = card.getColor().getColorName() + " " + card.getValue().getValueName();
+        } else {
+            cardName = "Card was empty!";
+        }
+        return cardName;
     }
 
 

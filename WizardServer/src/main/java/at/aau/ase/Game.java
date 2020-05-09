@@ -93,4 +93,13 @@ public class Game {
         }
 
     }
+    public void dealOnePlayerCardToTable(Card cardToPutOnTable){
+        System.out.println("Card recieved: " + cardToPutOnTable.toString() + " Trying to put on Table...");
+        playerHands[activePlayer].dealCard(cardToPutOnTable, table);
+        System.out.println("Card is now on Table!");
+    }
+
+    public Hand getTable() {
+        return table;
+    }
 }
