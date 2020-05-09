@@ -1,11 +1,13 @@
 package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects;
 
+import java.util.List;
+
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 public class LobbyMessage extends BaseMessage {
 
     private String newUsername = null;
-    private Player player = null;
+    private List<Player> players = null;
 
     public LobbyMessage() {}
 
@@ -13,20 +15,20 @@ public class LobbyMessage extends BaseMessage {
         this.newUsername = username;
     }
 
-    public LobbyMessage(Player player) {
-        this.player = player;
+    public LobbyMessage(List<Player> players) {
+        this.players = players;
     }
 
-    public LobbyMessage(Player player, String newUsername) {
+    public LobbyMessage(List<Player> players, String newUsername) {
         this.newUsername = newUsername;
-        this.player = player;
+        this.players = players;
     }
 
     public String getNewUsername() {
         return newUsername;
     }
 
-    public Player getPlayer() {
-        return player;
+    public List<Player> getPlayers() {
+        return players;
     }
 }

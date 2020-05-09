@@ -1,24 +1,21 @@
 package at.aau.ase;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.Callback;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
-import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.DEAL;
-import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 import static com.esotericsoftware.minlog.Log.info;
 
+/**
+ * Class to handle all incoming messages of all clients.
+ * Defines all actions of the server as response to client messages.
+ */
 public class ServerCallback implements Callback<BaseMessage> {
 
     private WizardServer server;
@@ -34,23 +31,13 @@ public class ServerCallback implements Callback<BaseMessage> {
 
     @Override
     public void callback(BaseMessage message) {
-        if (message instanceof TextMessage) {
-            info(message.toString());
-            server.broadcastMessage(
-                    new TextMessage("Hi client, I'm the server and I'm waiting for requests!\nDid you say: "
-                            + ((TextMessage) message).text
-                            + "\nat "
-                            + LocalDateTime.now().toString()
-                            + " ?"
-                    ));
-
-        } else if (message instanceof LobbyMessage) {
+        if (message instanceof LobbyMessage) {
             LobbyMessage msg = (LobbyMessage) message;
             info("New user " + msg.getNewUsername());
             Player newplayer = new Player(msg.getNewUsername(), server.getLastConnectionID());
             players.add(newplayer);
             info("Broadcasting newplayer as LobbyMessage.");
-            server.broadcastMessage(new LobbyMessage(newplayer));
+            server.broadcastMessage(new LobbyMessage(players));
 
             PlayerMessage newPlayerMsg = new PlayerMessage(newplayer);
             info("Sending playerMessage to new Player.");
