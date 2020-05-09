@@ -12,6 +12,10 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 import static com.esotericsoftware.minlog.Log.info;
 
+/**
+ * Class to handle all incoming messages of all clients.
+ * Defines all actions of the server as response to client messages.
+ */
 public class ServerCallback implements Callback<BaseMessage> {
 
     private WizardServer server;

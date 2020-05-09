@@ -12,6 +12,9 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.T
 
 import static com.esotericsoftware.minlog.Log.*;
 
+/**
+ * Class used to access the network on the serverside.
+ */
 public class WizardServer extends NetworkServerKryo {
 
     private static List<Player> players = new ArrayList<>();

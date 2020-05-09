@@ -37,19 +37,39 @@ public class NetworkServerKryo implements NetworkServer, KryoNetComponent {
         this.messageCallback = callback;
     }
 
+    /**
+     * Send a message to all connected clients.
+     * @param message to be send. Has to be subclass of BaseMessage, like all our defined classes should be.
+     */
     public void broadcastMessage(BaseMessage message) {
         for (Connection connection : server.getConnections())
             connection.sendTCP(message);
     }
 
+    /**
+     * Send a message to just one client. You need to specify the connectionID of the client you want to send the msg to.
+     * connectionID should be part of the player in List<Player> players, which keeps all players known to the server.
+     * @param connectionID. Use the one from player in players.
+     * @param object, the message to be send. Should be subclass of BaseMessage.
+     */
     public void sentTo(Integer connectionID, Object object) {
         server.sendToTCP(connectionID, object);
     }
 
+    /**
+     * Send a message to all connected clients except the specified one.
+     * @param connectionID of the player not receiving the message. (Check players list for the connectionIDs)
+     * @param object to be send. Should be subclass of BaseMessage.
+     */
     public void sendToAllExcept(Integer connectionID, Object object) {
         server.sendToAllExceptTCP(connectionID, object);
     }
 
+    /**
+     * Returns the latest kryonet connectionID. This method should only be used in lobby where the clients connect.
+     * Later on the connectionIDs can be accessed by the List<Player> players of the WizardServer.
+     * @return the integer kryonet connectionID
+     */
     public Integer getLastConnectionID() {
         if (server.getConnections().length == 0)
             return null;
