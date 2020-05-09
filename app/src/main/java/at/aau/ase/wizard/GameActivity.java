@@ -20,6 +20,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.A
 import java.util.ArrayList;
 import java.util.List;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
@@ -33,7 +34,7 @@ import static com.esotericsoftware.minlog.Log.info;
 
 
 public class GameActivity extends AppCompatActivity {
-    private Button btnShuffle;
+    private Button btnPlaySelectedCard;
     private Button btnDeal;
     private String etShowCard;
     private String textTrumpCard;
@@ -44,6 +45,7 @@ public class GameActivity extends AppCompatActivity {
     private List<SliderItem> sliderItems = new ArrayList<>(); //Zeigt scrollHand
     private Player myPlayer = LobbyActivity.getMyPlayer();
     private static GameData gameData = LobbyActivity.getGameData();
+    private SliderAdapter sliderAdapter;
 
     Hand myHand = new Hand(); //Test PlayerHand
     Hand table = new Hand(); //Test Table
@@ -62,9 +64,9 @@ public class GameActivity extends AppCompatActivity {
         //myPlayer = (Player) getIntent().getSerializableExtra("myPlayer"); // does not work properly - use bundle?
         info("@GAME_ACTIVITY: My Playername=" + myPlayer.getName() + ", connectionID=" + myPlayer.getConnectionID());
 
-        btnShuffle = findViewById(R.id.game_btn_shuffleCards);
-        btnShuffle.setOnClickListener(v -> shuffleCards());
-        btnShuffle.setEnabled(false); // Button has to be removed later
+        btnPlaySelectedCard = findViewById(R.id.play_Card);
+        btnPlaySelectedCard.setOnClickListener(v -> dealOnePlayerCardOnTable());
+        btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
         btnDeal = findViewById(R.id.game_btn_dealOutCards);
         btnDeal.setOnClickListener(v -> dealCards());
         btnDeal.setEnabled(false);
@@ -166,12 +168,12 @@ public class GameActivity extends AppCompatActivity {
             int id = getResources().getIdentifier(pp_playerCards.get(i).getPictureFileId(), "drawable", getPackageName());
 
             if (id == 0) {//if the pictureID is false show Error Logo zero
-                sliderItems.add(new SliderItem((R.drawable.z0error)));
+                sliderItems.add(new SliderItem((R.drawable.z0error), pp_playerCards.get(i)));
             } else {//show Card
-                sliderItems.add(new SliderItem(id));
+                sliderItems.add(new SliderItem(id, pp_playerCards.get(i)));
             }
         }
-        viewPager2.setAdapter(new SliderAdapter(sliderItems, viewPager2));
+        viewPager2.setAdapter(sliderAdapter = new SliderAdapter(sliderItems, viewPager2));
     }
 
     private void shuffleCards() {
@@ -180,6 +182,10 @@ public class GameActivity extends AppCompatActivity {
 
     private void dealCards() {
         wizardClient.sendMessage(new ActionMessage(DEAL));
+    }
+
+    private void dealOnePlayerCardOnTable(){
+        wizardClient.sendMessage(new CardMessage(sliderAdapter.getSelectedCard()));
     }
 
 }
