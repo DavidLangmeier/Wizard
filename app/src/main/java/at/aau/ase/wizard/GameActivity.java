@@ -38,14 +38,15 @@ public class GameActivity extends AppCompatActivity {
     private Button btnDeal;
     private String etShowCard;
     private String textTrumpCard;
-    private ImageView ivShowCardJpg;
+    private ImageView ivShowTrumpCard;
+    private ImageView ivTable;
     private ViewPager2 viewPager2;
     private TextView tv_showTextTrumpf;
     private static WizardClient wizardClient = LobbyActivity.getWizardClient();
     private List<SliderItem> sliderItems = new ArrayList<>(); //Zeigt scrollHand
     private Player myPlayer = LobbyActivity.getMyPlayer();
     private static GameData gameData = LobbyActivity.getGameData();
-    private SliderAdapter sliderAdapter;
+    private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
 
     Hand myHand = new Hand(); //Test PlayerHand
     Hand table = new Hand(); //Test Table
@@ -71,6 +72,7 @@ public class GameActivity extends AppCompatActivity {
         btnDeal.setOnClickListener(v -> dealCards());
         btnDeal.setEnabled(false);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
+        ivTable = findViewById(R.id.viewTable);
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
         //sliderItems = new ArrayList<>();    //List of Images from drawable
 
@@ -93,10 +95,10 @@ public class GameActivity extends AppCompatActivity {
 
         //ende der sichtbarkeit von mehreren hintereinander ----------------------------------------
         //ImageView
-        ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
+        ivShowTrumpCard = (ImageView) findViewById(R.id.viewTrumpCard);
 
         //Animation for display Trumpcard as Text
-        ivShowCardJpg.setOnClickListener(v -> showTrump());
+        ivShowTrumpCard.setOnClickListener(v -> showTrump());
     }
 
     public void startCallback() {
@@ -111,12 +113,20 @@ public class GameActivity extends AppCompatActivity {
                     btnDeal.setEnabled(false);
                 }
 
+                //TODO
+                //show Table Hand
+                //runOnUiThread(() -> addCardsToSlideView(gameData.getMyHand().getCards()));
+
             } else if (basemessage instanceof HandMessage) {
                 info("GAME_ACTIVITY: Hand recieved.");
                 gameData.setMyHand((HandMessage) basemessage);
                 //myHand = ((HandMessage) basemessage).getHand();
                 runOnUiThread(() ->
                         addCardsToSlideView(gameData.getMyHand().getCards()));
+
+            } else if (basemessage instanceof CardMessage){
+                info("GAME_ACTIVITY: Card recieved.");
+                //TODO
             }
 
         });
@@ -126,7 +136,7 @@ public class GameActivity extends AppCompatActivity {
 
     public void showTrump() {
         Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
-        ivShowCardJpg.startAnimation(aniRotateClk);
+        ivShowTrumpCard.startAnimation(aniRotateClk);
         if (tv_showTextTrumpf.getVisibility() == View.VISIBLE) {
             tv_showTextTrumpf.setVisibility(View.INVISIBLE);
         } else {
@@ -150,10 +160,10 @@ public class GameActivity extends AppCompatActivity {
 
         int id = getResources().getIdentifier(trumpHand.getCards().get(0).getPictureFileId(), "drawable", getPackageName());
         if (id == 0) {//if the pictureID is false show Error Logo
-            ivShowCardJpg.setImageResource((R.drawable.z0error));
+            ivShowTrumpCard.setImageResource((R.drawable.z0error));
 
         } else {//show Card
-            ivShowCardJpg.setImageResource(id);
+            ivShowTrumpCard.setImageResource(id);
             tv_showTextTrumpf.setText(trumpHand.getCards().get(0).toString());
         }
     }
@@ -174,6 +184,10 @@ public class GameActivity extends AppCompatActivity {
             }
         }
         viewPager2.setAdapter(sliderAdapter = new SliderAdapter(sliderItems, viewPager2));
+    }
+
+    private void showTableCards(){
+        //TODO int id = getResources().getIdentifier(table.getCards().get(i).getPictureFileId(), "drawable", getPackageName());
     }
 
     private void shuffleCards() {

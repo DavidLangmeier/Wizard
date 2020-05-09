@@ -97,6 +97,8 @@ public class Game {
         System.out.println("Card recieved: " + cardToPutOnTable.toString() + " Trying to put on Table...");
         playerHands[activePlayer].dealCard(cardToPutOnTable, table);
         System.out.println("Card is now on Table!");
+        server.sentTo(activePlayer, playerHands[activePlayer]);
+        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayer));
     }
 
     public Hand getTable() {

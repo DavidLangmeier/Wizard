@@ -80,6 +80,7 @@ public class ServerCallback implements Callback<BaseMessage> {
             info("CARD: " + msg.getCard().toString());
             game.dealOnePlayerCardToTable(msg.getCard());
             info("trying to put playerCard to Table");
+            game.broadcastGameState();
 
         } else {
             info("Received message cannot be handled correctly!");
