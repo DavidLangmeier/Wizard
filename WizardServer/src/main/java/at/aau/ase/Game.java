@@ -99,12 +99,16 @@ public class Game {
         System.out.println("GAME: Dealer: " + dealer);
         System.out.println("GAME: Size of PlayerHands: " + playerHands.length);
         for (int i = 0; i < playerHands.length; i++) {
-            if(playerHands[i].getCards().contains(cardToPutOnTable)){
-                System.out.println("GAME: Hand with relevant Card: " + playerHands[i].toString());
-            }else{
-                System.out.println("GAME: No Hand with this Card!");
-            }
+            for (int j = 0; j < playerHands[i].getCards().size(); j++) {
 
+
+                System.out.println(playerHands[i].getCards().get(j).hashCode());
+                if (playerHands[i].getCards().contains(cardToPutOnTable)) {
+                    System.out.println("GAME: Hand with relevant Card: " + playerHands[i].toString());
+                } else {
+                    System.out.println("GAME: No Hand with this Card!");
+                }
+            }
         }
         playerHands[dealer-1].dealCard(cardToPutOnTable, table);
         System.out.println(table.getCards().get(0) + " is now on Table!"); //TODO causes IndexOutOfBoundsException. But why???
