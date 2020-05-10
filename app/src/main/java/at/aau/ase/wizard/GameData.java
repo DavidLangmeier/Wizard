@@ -14,6 +14,7 @@ public class GameData {
     private int roundsLeft;
     private int dealer;
     private int activePlayer;
+    private int numberOfPlayers;
 
     public GameData() {}
 

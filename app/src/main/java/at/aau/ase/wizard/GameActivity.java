@@ -39,12 +39,7 @@ public class GameActivity extends AppCompatActivity {
     private String etShowCard;
     private String textTrumpCard;
     private ImageView ivShowTrumpCard;
-    private ImageView ivTable1;
-    private ImageView ivTable2;
-    private ImageView ivTable3;
-    private ImageView ivTable4;
-    private ImageView ivTable5;
-    private ImageView ivTable6;
+    private ImageView ivTable1, ivTable2, ivTable3, ivTable4, ivTable5, ivTable6;
     private ViewPager2 viewPager2;
     private TextView tv_showTextTrumpf;
     private static WizardClient wizardClient = LobbyActivity.getWizardClient();
@@ -73,10 +68,10 @@ public class GameActivity extends AppCompatActivity {
 
         btnPlaySelectedCard = findViewById(R.id.play_Card);
         btnPlaySelectedCard.setOnClickListener(v -> dealOnePlayerCardOnTable());
-        btnPlaySelectedCard.setEnabled(true); // Button has to be removed later
+        btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
         btnDeal = findViewById(R.id.game_btn_dealOutCards);
         btnDeal.setOnClickListener(v -> dealCards());
-        btnDeal.setEnabled(false);
+        btnDeal.setEnabled(true);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
 
         ivTable1 = findViewById(R.id.tableCard1);
@@ -119,22 +114,25 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                if (gameData.getDealer() == (myPlayer.getConnectionID()-1)) {
+                /*if (gameData.getDealer() == (myPlayer.getConnectionID()-1)) {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(true));
                 } else {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(false));
-                }
-/*
+                }*/
+                //TODO should show cards on Table but app crashes when executed here
+                //showTableCards();
+
+
                 if (gameData.getActivePlayer() == (myPlayer.getConnectionID()-1)) {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(true));
                 } else {
-                    btnPlaySelectedCard.setEnabled(false);
+                    runOnUiThread(() ->
+                    btnPlaySelectedCard.setEnabled(false));
                 }
 
-*/
             }
             else if (basemessage instanceof HandMessage) {
                 info("GAME_ACTIVITY: Hand recieved.");
@@ -142,20 +140,8 @@ public class GameActivity extends AppCompatActivity {
                 runOnUiThread(() ->
                         addCardsToSlideView(gameData.getMyHand().getCards()));
 
-                //trying to show Card -> looking for better way
-            } /*else if (basemessage instanceof ActionMessage){
-                ActionMessage msg = (ActionMessage) basemessage;
 
-                switch (msg.getActionType()) {
-                    case READY:
-                        info("GAME_ACTIVITY: Table Card recieved");
-                        runOnUiThread(()->  showTableCards());
-                        break;
-
-                    default:
-                        info("GAME_ACTIVITY: Unknown Action. Cannot handle Message");
-                }
-            }*/
+            }
 
         });
         wizardClient.sendMessage(new ActionMessage(READY));
@@ -215,7 +201,33 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void showTableCards() {
-        ((ImageView) findViewById(R.id.tableCard1)).setImageResource(getResources().getIdentifier(gameData.getTable().getCards().get(0).toString(), "drawable", getPackageName()));
+        int card_id;
+        switch (gameData.getTable().getCards().size()) {
+            case 6:
+                card_id = getResources().getIdentifier(gameData.getTable().getCards().get(5).toString(), "drawable", getPackageName());
+                ivTable6.setImageResource(card_id);
+            case 5:
+                card_id = getResources().getIdentifier(gameData.getTable().getCards().get(5).toString(), "drawable", getPackageName());
+                ivTable5.setImageResource(card_id);
+            case 4:
+                card_id = getResources().getIdentifier(gameData.getTable().getCards().get(5).toString(), "drawable", getPackageName());
+                ivTable4.setImageResource(card_id);
+            case 3:
+                card_id = getResources().getIdentifier(gameData.getTable().getCards().get(5).toString(), "drawable", getPackageName());
+                ivTable3.setImageResource(card_id);
+            case 2:
+                card_id = getResources().getIdentifier(gameData.getTable().getCards().get(5).toString(), "drawable", getPackageName());
+                ivTable2.setImageResource(card_id);
+            case 1:
+                card_id = getResources().getIdentifier(gameData.getTable().getCards().get(1).toString(), "drawable", getPackageName());
+                ivTable1.setImageResource(card_id);
+                break;
+
+            default:
+                System.out.println("Table is empty or something went wrong.");
+        }
+
+
     }
 
     private void shuffleCards() {

@@ -67,10 +67,7 @@ public class Game {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < players.size(); j++) {
                 System.out.println("GAME: Dealing to hand #" +j +" with players.size of " +players.size());
-                //Card currentCard = deck.getCards().get(i);
                 System.out.println("GAME: current card = " +deck.getCards().get(i).toString());
-                //playerHands[j].add(currentCard);
-                //deck.remove(currentCard);
                 deck.dealCard(deck.getCards().get(i), playerHands[j]);
             }
         }
@@ -99,11 +96,11 @@ public class Game {
         System.out.println("GAME: Dealer: " + dealer);
         System.out.println("GAME: Size of PlayerHands: " + playerHands.length);
 
-        playerHands[dealer].dealCard(cardToPutOnTable, table);
+        playerHands[activePlayer].dealCard(cardToPutOnTable, table);
         for (int i = 0; i < table.getCards().size(); i++) {
             System.out.println(table.getCards().get(i) + " is now on Table!");
         }
-        server.sentTo(players.get(dealer).getConnectionID(), new HandMessage(playerHands[dealer]));
+        server.sentTo(players.get(activePlayer).getConnectionID(), new HandMessage(playerHands[activePlayer]));
         currentRound++; //just for test case, should be triggered later, when trickround is over
         incrementDealerAndActivePlayer();
         broadcastGameState();
