@@ -39,7 +39,12 @@ public class GameActivity extends AppCompatActivity {
     private String etShowCard;
     private String textTrumpCard;
     private ImageView ivShowTrumpCard;
-    private ImageView ivTable;
+    private ImageView ivTable1;
+    private ImageView ivTable2;
+    private ImageView ivTable3;
+    private ImageView ivTable4;
+    private ImageView ivTable5;
+    private ImageView ivTable6;
     private ViewPager2 viewPager2;
     private TextView tv_showTextTrumpf;
     private static WizardClient wizardClient = LobbyActivity.getWizardClient();
@@ -47,6 +52,7 @@ public class GameActivity extends AppCompatActivity {
     private Player myPlayer = LobbyActivity.getMyPlayer();
     private static GameData gameData = LobbyActivity.getGameData();
     private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
+
 
     Hand myHand = new Hand(); //Test PlayerHand
     Hand table = new Hand(); //Test Table
@@ -72,7 +78,14 @@ public class GameActivity extends AppCompatActivity {
         btnDeal.setOnClickListener(v -> dealCards());
         btnDeal.setEnabled(false);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
-        ivTable = findViewById(R.id.viewTable);
+
+        ivTable1 = findViewById(R.id.tableCard1);
+        ivTable2 = findViewById(R.id.tableCard2);
+        ivTable3 = findViewById(R.id.tableCard3);
+        ivTable4 = findViewById(R.id.tableCard4);
+        ivTable5 = findViewById(R.id.tableCard5);
+        ivTable6 = findViewById(R.id.tableCard6);
+
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
         //sliderItems = new ArrayList<>();    //List of Images from drawable
 
@@ -106,30 +119,42 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                if (gameData.getDealer() == myPlayer.getConnectionID()) {
+                if (gameData.getDealer() == (myPlayer.getConnectionID()-1)) {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(true));
                 } else {
-                    btnDeal.setEnabled(false);
+                    runOnUiThread(() ->
+                            btnDeal.setEnabled(false));
+                }
+/*
+                if (gameData.getActivePlayer() == (myPlayer.getConnectionID()-1)) {
+                    runOnUiThread(() ->
+                            btnPlaySelectedCard.setEnabled(true));
+                } else {
+                    btnPlaySelectedCard.setEnabled(false);
                 }
 
-
-                //TODO
-                //show Table Hand
-                //int id = getResources().getIdentifier(gameData.getTable().getCards().get(0).getPictureFileId(), "drawable", getPackageName());
-                //ivTable.setImageResource(id);
-
-
-            } else if (basemessage instanceof HandMessage) {
+*/
+            }
+            else if (basemessage instanceof HandMessage) {
                 info("GAME_ACTIVITY: Hand recieved.");
                 gameData.setMyHand((HandMessage) basemessage);
-                //myHand = ((HandMessage) basemessage).getHand();
                 runOnUiThread(() ->
                         addCardsToSlideView(gameData.getMyHand().getCards()));
 
-            } /*else if (basemessage instanceof CardMessage){
-                info("GAME_ACTIVITY: Card recieved.");
+                //trying to show Card -> looking for better way
+            } /*else if (basemessage instanceof ActionMessage){
+                ActionMessage msg = (ActionMessage) basemessage;
 
+                switch (msg.getActionType()) {
+                    case READY:
+                        info("GAME_ACTIVITY: Table Card recieved");
+                        runOnUiThread(()->  showTableCards());
+                        break;
+
+                    default:
+                        info("GAME_ACTIVITY: Unknown Action. Cannot handle Message");
+                }
             }*/
 
         });
@@ -189,8 +214,8 @@ public class GameActivity extends AppCompatActivity {
         viewPager2.setAdapter(sliderAdapter = new SliderAdapter(sliderItems, viewPager2));
     }
 
-    private void showTableCards(){
-
+    private void showTableCards() {
+        ((ImageView) findViewById(R.id.tableCard1)).setImageResource(getResources().getIdentifier(gameData.getTable().getCards().get(0).toString(), "drawable", getPackageName()));
     }
 
     private void shuffleCards() {
@@ -201,7 +226,7 @@ public class GameActivity extends AppCompatActivity {
         wizardClient.sendMessage(new ActionMessage(DEAL));
     }
 
-    private void dealOnePlayerCardOnTable(){
+    private void dealOnePlayerCardOnTable() {
         wizardClient.sendMessage(new CardMessage(sliderAdapter.getSelectedCard()));
     }
 

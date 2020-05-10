@@ -12,6 +12,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.READY;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 
 public class Game {
@@ -41,8 +42,7 @@ public class Game {
             this.playerHands[i] = new Hand();
         }
         this.trump = null;
-        this.dealer = 1;
-        this.activePlayer = 1;
+        incrementDealerAndActivePlayer();
     }
 
     public void startGame() {
@@ -95,28 +95,26 @@ public class Game {
     }
     public void dealOnePlayerCardToTable(Card cardToPutOnTable){
         System.out.println("GAME: Card recieved: " + cardToPutOnTable.toString() + " Trying to put on Table...");
-        System.out.println("GAME: Card object id: " + cardToPutOnTable.hashCode());
+        //System.out.println("GAME: Card object id: " + cardToPutOnTable.hashCode());
         System.out.println("GAME: Dealer: " + dealer);
         System.out.println("GAME: Size of PlayerHands: " + playerHands.length);
-        for (int i = 0; i < playerHands.length; i++) {
-            for (int j = 0; j < playerHands[i].getCards().size(); j++) {
 
-
-                System.out.println(playerHands[i].getCards().get(j).hashCode());
-                if (playerHands[i].getCards().contains(cardToPutOnTable)) {
-                    System.out.println("GAME: Hand with relevant Card: " + playerHands[i].toString());
-                } else {
-                    System.out.println("GAME: No Hand with this Card!");
-                }
-            }
+        playerHands[dealer].dealCard(cardToPutOnTable, table);
+        for (int i = 0; i < table.getCards().size(); i++) {
+            System.out.println(table.getCards().get(i) + " is now on Table!");
         }
-        playerHands[dealer-1].dealCard(cardToPutOnTable, table);
-        System.out.println(table.getCards().get(0) + " is now on Table!"); //TODO causes IndexOutOfBoundsException. But why???
-        server.sentTo(players.get(dealer-1).getConnectionID(), new HandMessage(playerHands[dealer-1]));
-        //broadcastGameState();
+        server.sentTo(players.get(dealer).getConnectionID(), new HandMessage(playerHands[dealer]));
+        currentRound++; //just for test case, should be triggered later, when trickround is over
+        incrementDealerAndActivePlayer();
+        broadcastGameState();
     }
 
     public Hand getTable() {
         return table;
+    }
+
+    public void incrementDealerAndActivePlayer(){
+        this.dealer = ((currentRound-1) % (players.size()));
+        this.activePlayer = (currentRound % (players.size()));
     }
 }
