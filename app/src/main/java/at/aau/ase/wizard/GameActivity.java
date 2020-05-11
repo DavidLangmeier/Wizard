@@ -121,7 +121,7 @@ public class GameActivity extends AppCompatActivity {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(false));
                 }*/
-                //TODO should show cards on Table but app crashes when executed here
+
                 if (gameData.getTable().getCards().size() != 0) {
                     ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
                     runOnUiThread(() -> showTableCards(cardsOnTable));
