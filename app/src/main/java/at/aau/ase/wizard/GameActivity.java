@@ -241,4 +241,5 @@ public class GameActivity extends AppCompatActivity {
         wizardClient.sendMessage(new CardMessage(sliderAdapter.getSelectedCard()));
     }
 
+
 }

@@ -86,6 +86,72 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <ImageView
+        android:id="@+id/tableCard1"
+        android:layout_width="104dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="49dp"
+        android:layout_marginTop="119dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside" />
+
+    <ImageView
+        android:id="@+id/tableCard2"
+        android:layout_width="104dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="89dp"
+        android:layout_marginTop="119dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside" />
+
+    <ImageView
+        android:id="@+id/tableCard3"
+        android:layout_width="104dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="129dp"
+        android:layout_marginTop="119dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside" />
+
+    <ImageView
+        android:id="@+id/tableCard4"
+        android:layout_width="104dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="169dp"
+        android:layout_marginTop="119dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside" />
+
+    <ImageView
+        android:id="@+id/tableCard5"
+        android:layout_width="104dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="219dp"
+        android:layout_marginTop="119dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside" />
+
+    <ImageView
+        android:id="@+id/tableCard6"
+        android:layout_width="104dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="259dp"
+        android:layout_marginTop="119dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside" />
+
     <EditText
         android:id="@+id/etn_Vorhersage"
         android:layout_width="113dp"
@@ -122,83 +188,5 @@
         app:layout_constraintBottom_toTopOf="@+id/viewTrumpCard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewPagerImageSlieder" />
-
-    <ImageView
-        android:id="@+id/tableCard1"
-        android:layout_width="139dp"
-        android:layout_height="164dp"
-        android:layout_above="@+id/viewPagerImageSlieder"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="37dp"
-        android:layout_marginTop="99dp"
-        android:layout_marginEnd="235dp"
-        android:layout_marginBottom="144dp" />
-
-    <ImageView
-        android:id="@+id/tableCard4"
-        android:layout_width="139dp"
-        android:layout_height="164dp"
-        android:layout_above="@+id/viewPagerImageSlieder"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="37dp"
-        android:layout_marginTop="225dp"
-        android:layout_marginEnd="235dp"
-        android:layout_marginBottom="18dp" />
-
-    <ImageView
-        android:id="@+id/tableCard2"
-        android:layout_width="139dp"
-        android:layout_height="164dp"
-        android:layout_above="@+id/viewPagerImageSlieder"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="141dp"
-        android:layout_marginTop="99dp"
-        android:layout_marginEnd="131dp"
-        android:layout_marginBottom="144dp" />
-
-    <ImageView
-        android:id="@+id/tableCard5"
-        android:layout_width="139dp"
-        android:layout_height="164dp"
-        android:layout_above="@+id/viewPagerImageSlieder"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="144dp"
-        android:layout_marginTop="226dp"
-        android:layout_marginEnd="128dp"
-        android:layout_marginBottom="17dp" />
-
-    <ImageView
-        android:id="@+id/tableCard6"
-        android:layout_width="139dp"
-        android:layout_height="164dp"
-        android:layout_above="@+id/viewPagerImageSlieder"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="237dp"
-        android:layout_marginTop="225dp"
-        android:layout_marginEnd="35dp"
-        android:layout_marginBottom="18dp" />
-
-    <ImageView
-        android:id="@+id/tableCard3"
-        android:layout_width="139dp"
-        android:layout_height="164dp"
-        android:layout_above="@+id/viewPagerImageSlieder"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="238dp"
-        android:layout_marginTop="99dp"
-        android:layout_marginEnd="34dp"
-        android:layout_marginBottom="144dp" />
 
 </android.widget.RelativeLayout>
