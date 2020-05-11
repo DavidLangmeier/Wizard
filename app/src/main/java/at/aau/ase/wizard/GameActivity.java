@@ -122,8 +122,10 @@ public class GameActivity extends AppCompatActivity {
                             btnDeal.setEnabled(false));
                 }*/
                 //TODO should show cards on Table but app crashes when executed here
-                //showTableCards();
+                if (table.getCards().size() != 0) {
+                    runOnUiThread(() -> showTableCards());
 
+                }
 
                 if (gameData.getActivePlayer() == (myPlayer.getConnectionID()-1)) {
                     runOnUiThread(() ->
@@ -219,7 +221,9 @@ public class GameActivity extends AppCompatActivity {
                 card_id = getResources().getIdentifier(gameData.getTable().getCards().get(5).toString(), "drawable", getPackageName());
                 ivTable2.setImageResource(card_id);
             case 1:
+                System.out.println("GameActivity: showTableCards!");
                 card_id = getResources().getIdentifier(gameData.getTable().getCards().get(1).toString(), "drawable", getPackageName());
+                ivTable1.setImageResource(0);
                 ivTable1.setImageResource(card_id);
                 break;
 
