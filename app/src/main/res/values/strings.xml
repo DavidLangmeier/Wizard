@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Wizard</string>
     <string name="game_textView_title">GAME SCREEN</string>
-    <string name="game_btn_shuffleCards">SHUFFLE CARDS</string>
     <string name="game_btn_dealOutCards">DEAL OUT CARDS</string>
     <string name="home_textView_title">WIZARD</string>
     <string name="home_btn_play">PLAY</string>
@@ -14,4 +13,5 @@
     <string name="lobby_btn_toGameScreen">START GAME</string>
     <string name="lobby_et_username">Enter your Name</string>
     <string name="str_vorhersage">Vorhersage?</string>
+    <string name="play_card">PLAY CARD</string>
 </resources>

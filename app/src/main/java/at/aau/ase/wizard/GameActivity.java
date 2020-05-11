@@ -20,6 +20,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.A
 import java.util.ArrayList;
 import java.util.List;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
@@ -33,17 +34,20 @@ import static com.esotericsoftware.minlog.Log.info;
 
 
 public class GameActivity extends AppCompatActivity {
-    private Button btnShuffle;
+    private Button btnPlaySelectedCard;
     private Button btnDeal;
     private String etShowCard;
     private String textTrumpCard;
-    private ImageView ivShowCardJpg;
+    private ImageView ivShowTrumpCard;
+    private ImageView ivTable1, ivTable2, ivTable3, ivTable4, ivTable5, ivTable6;
     private ViewPager2 viewPager2;
     private TextView tv_showTextTrumpf;
     private static WizardClient wizardClient = LobbyActivity.getWizardClient();
     private List<SliderItem> sliderItems = new ArrayList<>(); //Zeigt scrollHand
     private Player myPlayer = LobbyActivity.getMyPlayer();
     private static GameData gameData = LobbyActivity.getGameData();
+    private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
+
 
     Hand myHand = new Hand(); //Test PlayerHand
     Hand table = new Hand(); //Test Table
@@ -62,13 +66,21 @@ public class GameActivity extends AppCompatActivity {
         //myPlayer = (Player) getIntent().getSerializableExtra("myPlayer"); // does not work properly - use bundle?
         info("@GAME_ACTIVITY: My Playername=" + myPlayer.getName() + ", connectionID=" + myPlayer.getConnectionID());
 
-        btnShuffle = findViewById(R.id.game_btn_shuffleCards);
-        btnShuffle.setOnClickListener(v -> shuffleCards());
-        btnShuffle.setEnabled(false); // Button has to be removed later
+        btnPlaySelectedCard = findViewById(R.id.play_Card);
+        btnPlaySelectedCard.setOnClickListener(v -> dealOnePlayerCardOnTable());
+        btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
         btnDeal = findViewById(R.id.game_btn_dealOutCards);
         btnDeal.setOnClickListener(v -> dealCards());
-        btnDeal.setEnabled(false);
+        btnDeal.setEnabled(true);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
+
+        ivTable1 = findViewById(R.id.tableCard1);
+        ivTable2 = findViewById(R.id.tableCard2);
+        ivTable3 = findViewById(R.id.tableCard3);
+        ivTable4 = findViewById(R.id.tableCard4);
+        ivTable5 = findViewById(R.id.tableCard5);
+        ivTable6 = findViewById(R.id.tableCard6);
+
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
         //sliderItems = new ArrayList<>();    //List of Images from drawable
 
@@ -91,10 +103,10 @@ public class GameActivity extends AppCompatActivity {
 
         //ende der sichtbarkeit von mehreren hintereinander ----------------------------------------
         //ImageView
-        ivShowCardJpg = (ImageView) findViewById(R.id.im_firstCard);
+        ivShowTrumpCard = (ImageView) findViewById(R.id.viewTrumpCard);
 
         //Animation for display Trumpcard as Text
-        ivShowCardJpg.setOnClickListener(v -> showTrump());
+        ivShowTrumpCard.setOnClickListener(v -> showTrump());
     }
 
     public void startCallback() {
@@ -102,19 +114,35 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                if (gameData.getDealer() == myPlayer.getConnectionID()) {
+                /*if (gameData.getDealer() == (myPlayer.getConnectionID()-1)) {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(true));
                 } else {
-                    btnDeal.setEnabled(false);
+                    runOnUiThread(() ->
+                            btnDeal.setEnabled(false));
+                }*/
+
+                if (gameData.getTable().getCards().size() != 0) {
+                    ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
+                    runOnUiThread(() -> showTableCards(cardsOnTable));
                 }
 
-            } else if (basemessage instanceof HandMessage) {
+                if (gameData.getActivePlayer() == (myPlayer.getConnectionID()-1)) {
+                    runOnUiThread(() ->
+                            btnPlaySelectedCard.setEnabled(true));
+                } else {
+                    runOnUiThread(() ->
+                    btnPlaySelectedCard.setEnabled(false));
+                }
+
+            }
+            else if (basemessage instanceof HandMessage) {
                 info("GAME_ACTIVITY: Hand recieved.");
                 gameData.setMyHand((HandMessage) basemessage);
-                //myHand = ((HandMessage) basemessage).getHand();
                 runOnUiThread(() ->
                         addCardsToSlideView(gameData.getMyHand().getCards()));
+
+
             }
 
         });
@@ -124,7 +152,7 @@ public class GameActivity extends AppCompatActivity {
 
     public void showTrump() {
         Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
-        ivShowCardJpg.startAnimation(aniRotateClk);
+        ivShowTrumpCard.startAnimation(aniRotateClk);
         if (tv_showTextTrumpf.getVisibility() == View.VISIBLE) {
             tv_showTextTrumpf.setVisibility(View.INVISIBLE);
         } else {
@@ -148,10 +176,10 @@ public class GameActivity extends AppCompatActivity {
 
         int id = getResources().getIdentifier(trumpHand.getCards().get(0).getPictureFileId(), "drawable", getPackageName());
         if (id == 0) {//if the pictureID is false show Error Logo
-            ivShowCardJpg.setImageResource((R.drawable.z0error));
+            ivShowTrumpCard.setImageResource((R.drawable.z0error));
 
         } else {//show Card
-            ivShowCardJpg.setImageResource(id);
+            ivShowTrumpCard.setImageResource(id);
             tv_showTextTrumpf.setText(trumpHand.getCards().get(0).toString());
         }
     }
@@ -166,12 +194,39 @@ public class GameActivity extends AppCompatActivity {
             int id = getResources().getIdentifier(pp_playerCards.get(i).getPictureFileId(), "drawable", getPackageName());
 
             if (id == 0) {//if the pictureID is false show Error Logo zero
-                sliderItems.add(new SliderItem((R.drawable.z0error)));
+                sliderItems.add(new SliderItem((R.drawable.z0error), pp_playerCards.get(i)));
             } else {//show Card
-                sliderItems.add(new SliderItem(id));
+                sliderItems.add(new SliderItem(id, pp_playerCards.get(i)));
             }
         }
-        viewPager2.setAdapter(new SliderAdapter(sliderItems, viewPager2));
+        viewPager2.setAdapter(sliderAdapter = new SliderAdapter(sliderItems, viewPager2));
+    }
+
+    private void showTableCards(ArrayList<Card> cards){
+        int cardID;
+        switch(cards.size()) {
+            case 6:
+                cardID = getResources().getIdentifier(cards.get(5).getPictureFileId(), "drawable", getPackageName());
+                ivTable6.setImageResource(cardID);
+            case 5:
+                cardID = getResources().getIdentifier(cards.get(4).getPictureFileId(), "drawable", getPackageName());
+                ivTable5.setImageResource(cardID);
+            case 4:
+                cardID = getResources().getIdentifier(cards.get(3).getPictureFileId(), "drawable", getPackageName());
+                ivTable4.setImageResource(cardID);
+            case 3:
+                cardID = getResources().getIdentifier(cards.get(2).getPictureFileId(), "drawable", getPackageName());
+                ivTable3.setImageResource(cardID);
+            case 2:
+                cardID = getResources().getIdentifier(cards.get(1).getPictureFileId(), "drawable", getPackageName());
+                ivTable2.setImageResource(cardID);
+            case 1:
+                cardID = getResources().getIdentifier(cards.get(0).getPictureFileId(), "drawable", getPackageName());
+                ivTable1.setImageResource(cardID);
+                break;
+            default:
+                System.out.println("Table Hand too short or too big! Something strange happened...");
+        }
     }
 
     private void shuffleCards() {
@@ -181,5 +236,10 @@ public class GameActivity extends AppCompatActivity {
     private void dealCards() {
         wizardClient.sendMessage(new ActionMessage(DEAL));
     }
+
+    private void dealOnePlayerCardOnTable() {
+        wizardClient.sendMessage(new CardMessage(sliderAdapter.getSelectedCard()));
+    }
+
 
 }

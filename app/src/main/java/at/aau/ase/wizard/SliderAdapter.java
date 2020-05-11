@@ -15,6 +15,9 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
+
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
+
 //Adapter provides the data model and responsible for rendering the views for the individual cell
 //view holder - contains instances for a ll views that are filled by the data of the entry
 public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderViewHolder> {
@@ -22,6 +25,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     private List<SliderItem> sliderItems;
     private ViewPager2 viewPager2;
     private int selectedICard=0;
+    private Card selectedCard;
 
 
     SliderAdapter(List<SliderItem> sliderItems, ViewPager2 viewPager2) {
@@ -59,15 +63,20 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                 selectedICard=position;
                 notifyItemChanged(previousSelectetItem);
                 holder.imageView.setBackgroundColor(Color.parseColor("#fcdb19"));
-
+                selectedCard = sliderItems.get(position).getSelectedCard();
             }
         });
+    }
+
+    public Card getSelectedCard() {
+        return selectedCard;
     }
 
     @Override
     public int getItemCount() {
         return sliderItems.size();
     }
+
 
     class SliderViewHolder extends RecyclerView.ViewHolder {
         private RoundedImageView imageView;

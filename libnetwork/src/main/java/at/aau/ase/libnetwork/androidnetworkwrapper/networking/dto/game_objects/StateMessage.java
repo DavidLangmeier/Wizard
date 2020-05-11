@@ -13,6 +13,7 @@ public class StateMessage extends BaseMessage {
     Notepad scores;
     Card trump;
     int roundsLeft;
+    int currentRound;
     int dealer;
     int activePlayer;
 
@@ -51,5 +52,9 @@ public class StateMessage extends BaseMessage {
 
     public int getActivePlayer() {
         return activePlayer;
+    }
+
+    public int getCurrentRound() {
+        return currentRound;
     }
 }
