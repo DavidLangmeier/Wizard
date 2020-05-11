@@ -122,9 +122,9 @@ public class GameActivity extends AppCompatActivity {
                             btnDeal.setEnabled(false));
                 }*/
                 //TODO should show cards on Table but app crashes when executed here
-                if (table.getCards().size() != 0) {
-                    runOnUiThread(() -> showTableCards());
-
+                if (gameData.getTable().getCards().size() != 0) {
+                    ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
+                    runOnUiThread(() -> showTableCards(cardsOnTable));
                 }
 
                 if (gameData.getActivePlayer() == (myPlayer.getConnectionID()-1)) {
@@ -202,36 +202,31 @@ public class GameActivity extends AppCompatActivity {
         viewPager2.setAdapter(sliderAdapter = new SliderAdapter(sliderItems, viewPager2));
     }
 
-    private void showTableCards() {
-        int card_id;
-        switch (gameData.getTable().getCards().size()) {
+    private void showTableCards(ArrayList<Card> cards){
+        int cardID;
+        switch(cards.size()) {
             case 6:
-                card_id = getResources().getIdentifier(gameData.getTable().getCards().get(5).toString(), "drawable", getPackageName());
-                ivTable6.setImageResource(card_id);
+                cardID = getResources().getIdentifier(cards.get(5).getPictureFileId(), "drawable", getPackageName());
+                ivTable6.setImageResource(cardID);
             case 5:
-                card_id = getResources().getIdentifier(gameData.getTable().getCards().get(5).toString(), "drawable", getPackageName());
-                ivTable5.setImageResource(card_id);
+                cardID = getResources().getIdentifier(cards.get(4).getPictureFileId(), "drawable", getPackageName());
+                ivTable5.setImageResource(cardID);
             case 4:
-                card_id = getResources().getIdentifier(gameData.getTable().getCards().get(5).toString(), "drawable", getPackageName());
-                ivTable4.setImageResource(card_id);
+                cardID = getResources().getIdentifier(cards.get(3).getPictureFileId(), "drawable", getPackageName());
+                ivTable4.setImageResource(cardID);
             case 3:
-                card_id = getResources().getIdentifier(gameData.getTable().getCards().get(5).toString(), "drawable", getPackageName());
-                ivTable3.setImageResource(card_id);
+                cardID = getResources().getIdentifier(cards.get(2).getPictureFileId(), "drawable", getPackageName());
+                ivTable3.setImageResource(cardID);
             case 2:
-                card_id = getResources().getIdentifier(gameData.getTable().getCards().get(5).toString(), "drawable", getPackageName());
-                ivTable2.setImageResource(card_id);
+                cardID = getResources().getIdentifier(cards.get(1).getPictureFileId(), "drawable", getPackageName());
+                ivTable2.setImageResource(cardID);
             case 1:
-                System.out.println("GameActivity: showTableCards!");
-                card_id = getResources().getIdentifier(gameData.getTable().getCards().get(1).toString(), "drawable", getPackageName());
-                ivTable1.setImageResource(0);
-                ivTable1.setImageResource(card_id);
+                cardID = getResources().getIdentifier(cards.get(0).getPictureFileId(), "drawable", getPackageName());
+                ivTable1.setImageResource(cardID);
                 break;
-
             default:
-                System.out.println("Table is empty or something went wrong.");
+                System.out.println("Table Hand too short or too big! Something strange happened...");
         }
-
-
     }
 
     private void shuffleCards() {

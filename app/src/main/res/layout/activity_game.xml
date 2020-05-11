@@ -124,104 +124,81 @@
         app:layout_constraintTop_toBottomOf="@+id/viewPagerImageSlieder" />
 
     <ImageView
+        android:id="@+id/tableCard1"
+        android:layout_width="139dp"
+        android:layout_height="164dp"
+        android:layout_above="@+id/viewPagerImageSlieder"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="37dp"
+        android:layout_marginTop="99dp"
+        android:layout_marginEnd="235dp"
+        android:layout_marginBottom="144dp" />
+
+    <ImageView
         android:id="@+id/tableCard4"
-        android:layout_width="82dp"
-        android:layout_height="110dp"
+        android:layout_width="139dp"
+        android:layout_height="164dp"
         android:layout_above="@+id/viewPagerImageSlieder"
-        android:layout_below="@+id/game_textView_title"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="184dp"
-        android:layout_marginTop="66dp"
-        android:layout_marginEnd="144dp"
-        android:layout_marginBottom="156dp"
-        android:contentDescription="TODO"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/tableCard6"
-        android:layout_width="82dp"
-        android:layout_height="110dp"
-        android:layout_above="@+id/viewPagerImageSlieder"
-        android:layout_below="@+id/game_textView_title"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="267dp"
-        android:layout_marginTop="66dp"
-        android:layout_marginEnd="61dp"
-        android:layout_marginBottom="156dp"
-        android:contentDescription="TODO"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/tableCard3"
-        android:layout_width="82dp"
-        android:layout_height="110dp"
-        android:layout_above="@+id/viewPagerImageSlieder"
-        android:layout_below="@+id/game_textView_title"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="143dp"
-        android:layout_marginTop="66dp"
-        android:layout_marginEnd="185dp"
-        android:layout_marginBottom="156dp"
-        android:contentDescription="TODO"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginStart="37dp"
+        android:layout_marginTop="225dp"
+        android:layout_marginEnd="235dp"
+        android:layout_marginBottom="18dp" />
 
     <ImageView
         android:id="@+id/tableCard2"
-        android:layout_width="82dp"
-        android:layout_height="110dp"
+        android:layout_width="139dp"
+        android:layout_height="164dp"
         android:layout_above="@+id/viewPagerImageSlieder"
-        android:layout_below="@+id/game_textView_title"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="66dp"
-        android:layout_marginEnd="228dp"
-        android:layout_marginBottom="156dp"
-        android:contentDescription="TODO"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/tableCard1"
-        android:layout_width="82dp"
-        android:layout_height="110dp"
-        android:layout_above="@+id/viewPagerImageSlieder"
-        android:layout_below="@+id/game_textView_title"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="66dp"
-        android:layout_marginEnd="269dp"
-        android:layout_marginBottom="156dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginStart="141dp"
+        android:layout_marginTop="99dp"
+        android:layout_marginEnd="131dp"
+        android:layout_marginBottom="144dp" />
 
     <ImageView
         android:id="@+id/tableCard5"
-        android:layout_width="82dp"
-        android:layout_height="110dp"
+        android:layout_width="139dp"
+        android:layout_height="164dp"
         android:layout_above="@+id/viewPagerImageSlieder"
-        android:layout_below="@+id/game_textView_title"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="226dp"
-        android:layout_marginTop="66dp"
-        android:layout_marginEnd="102dp"
-        android:layout_marginBottom="156dp"
-        android:contentDescription="TODO"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginStart="144dp"
+        android:layout_marginTop="226dp"
+        android:layout_marginEnd="128dp"
+        android:layout_marginBottom="17dp" />
+
+    <ImageView
+        android:id="@+id/tableCard6"
+        android:layout_width="139dp"
+        android:layout_height="164dp"
+        android:layout_above="@+id/viewPagerImageSlieder"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="237dp"
+        android:layout_marginTop="225dp"
+        android:layout_marginEnd="35dp"
+        android:layout_marginBottom="18dp" />
+
+    <ImageView
+        android:id="@+id/tableCard3"
+        android:layout_width="139dp"
+        android:layout_height="164dp"
+        android:layout_above="@+id/viewPagerImageSlieder"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="238dp"
+        android:layout_marginTop="99dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginBottom="144dp" />
 
 </android.widget.RelativeLayout>
