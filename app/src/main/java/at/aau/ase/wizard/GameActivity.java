@@ -7,6 +7,9 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -47,6 +50,7 @@ public class GameActivity extends AppCompatActivity {
     private Player myPlayer = LobbyActivity.getMyPlayer();
     private static GameData gameData = LobbyActivity.getGameData();
     private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
+    Dialog dialog;
 
 
     Hand myHand = new Hand(); //Test PlayerHand
@@ -73,7 +77,7 @@ public class GameActivity extends AppCompatActivity {
         btnDeal.setOnClickListener(v -> dealCards());
         btnDeal.setEnabled(true);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
-
+        dialog = new Dialog(this);
         ivTable1 = findViewById(R.id.tableCard1);
         ivTable2 = findViewById(R.id.tableCard2);
         ivTable3 = findViewById(R.id.tableCard3);
@@ -107,6 +111,20 @@ public class GameActivity extends AppCompatActivity {
 
         //Animation for display Trumpcard as Text
         ivShowTrumpCard.setOnClickListener(v -> showTrump());
+    }
+    public void ShowPopupBlockofTruth(View v) {
+        TextView txtclose;
+        dialog.setContentView(R.layout.activity_game_popup);
+        txtclose =(TextView) dialog.findViewById(R.id.txtclose);
+       // txtclose.setText("X");
+        txtclose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 
     public void startCallback() {
