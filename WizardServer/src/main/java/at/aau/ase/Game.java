@@ -3,7 +3,6 @@ package at.aau.ase;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
@@ -12,7 +11,6 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
-import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.READY;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 
 public class Game {
@@ -22,11 +20,12 @@ public class Game {
     private Notepad scores;
     private int totalRounds;
     private int currentRound;
-    private Hand[] playerHands;
+    private Hand[] playerHands; // if indexed with "activePlayer" put -1
     private Card trump;
     private int dealer;
-    private int activePlayer;
+    private int activePlayer;   // refers to connectionID of player
     private WizardServer server;
+    private int trickRoundTurn;
 
 
     public Game(WizardServer server, List<Player> players) {
@@ -37,12 +36,15 @@ public class Game {
         this.scores = new Notepad((short) players.size());
         this.totalRounds = 60 / players.size();
         this.currentRound = 1;
+        this.trickRoundTurn = 0;
         this.playerHands = new Hand[players.size()];
         for (int i = 0; i < players.size(); i++) {
             this.playerHands[i] = new Hand();
         }
         this.trump = null;
-        incrementDealerAndActivePlayer();
+        this.dealer = players.get(0).getConnectionID();
+        this.activePlayer = players.get(0).getConnectionID();
+        //incrementDealerAndActivePlayer();
     }
 
     public void startGame() {
@@ -57,6 +59,7 @@ public class Game {
     public void broadcastGameState() {
         System.out.println("GAME: Broadcasting gameState");
         server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayer));
+        System.out.println("GAME: DEALER = " +dealer +" ActivePlayer = " +activePlayer);
     }
 
     public void dealCards() {
@@ -64,11 +67,11 @@ public class Game {
         deck.shuffle();
 
         // deal cards to playerHands serverside | round=5 hardcoded, has to be changed later
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             for (int j = 0; j < players.size(); j++) {
-                System.out.println("GAME: Dealing to hand #" +j +" with players.size of " +players.size());
-                System.out.println("GAME: current card = " +deck.getCards().get(i).toString());
-                deck.dealCard(deck.getCards().get(i), playerHands[j]);
+                System.out.println("GAME: Dealing to hand #" + j + " with players.size of " + players.size());
+                System.out.println("GAME: current card = " + deck.getCards().get(0).toString());
+                deck.dealCard(deck.getCards().get(0), playerHands[j]);
             }
         }
 
@@ -90,19 +93,21 @@ public class Game {
         }
 
     }
-    public void dealOnePlayerCardToTable(Card cardToPutOnTable){
+
+    public void dealOnePlayerCardToTable(Card cardToPutOnTable) {
         System.out.println("GAME: Card recieved: " + cardToPutOnTable.toString() + " Trying to put on Table...");
         //System.out.println("GAME: Card object id: " + cardToPutOnTable.hashCode());
         System.out.println("GAME: Dealer: " + dealer);
         System.out.println("GAME: Size of PlayerHands: " + playerHands.length);
 
-        playerHands[activePlayer].dealCard(cardToPutOnTable, table);
+        playerHands[activePlayer-1].dealCard(cardToPutOnTable, table);
         for (int i = 0; i < table.getCards().size(); i++) {
             System.out.println(table.getCards().get(i) + " is now on Table!");
         }
-        server.sentTo(players.get(activePlayer).getConnectionID(), new HandMessage(playerHands[activePlayer]));
-        currentRound++; //just for test case, should be triggered later, when trickround is over
-        incrementDealerAndActivePlayer();
+        //server.sentTo(players.get(activePlayer-1).getConnectionID(), new HandMessage(playerHands[activePlayer-1]));
+        server.sentTo(activePlayer, new HandMessage(playerHands[activePlayer-1]));
+        trickRoundTurn++;
+        updateDealerAndActivePlayer();
         broadcastGameState();
     }
 
@@ -110,8 +115,10 @@ public class Game {
         return table;
     }
 
-    public void incrementDealerAndActivePlayer(){
-        this.dealer = ((currentRound-1) % (players.size()));
-        this.activePlayer = (currentRound % (players.size()));
+    // better not refer directly to current round, as it is not sure that the connectionIDs go like 1,2,3...
+    public void updateDealerAndActivePlayer() {
+        this.dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
+        this.activePlayer = players.get((trickRoundTurn % (players.size()))).getConnectionID();
+        System.out.println("GAME: DEALER = " +dealer +" ActivePlayer = " +activePlayer);
     }
 }

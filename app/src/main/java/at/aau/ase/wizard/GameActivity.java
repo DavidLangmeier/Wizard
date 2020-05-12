@@ -48,11 +48,9 @@ public class GameActivity extends AppCompatActivity {
     private static GameData gameData = LobbyActivity.getGameData();
     private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
 
-
-    Hand myHand = new Hand(); //Test PlayerHand
-    Hand table = new Hand(); //Test Table
     Hand trumpHand = new Hand(); //Test TrumpHand
     Deck deck = new Deck(); //Test Deck
+
 
     // onCreate() is overused, has to be cleaned up
     @Override
@@ -71,7 +69,7 @@ public class GameActivity extends AppCompatActivity {
         btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
         btnDeal = findViewById(R.id.game_btn_dealOutCards);
         btnDeal.setOnClickListener(v -> dealCards());
-        btnDeal.setEnabled(true);
+        //btnDeal.setEnabled(true);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
 
         ivTable1 = findViewById(R.id.tableCard1);
@@ -82,8 +80,6 @@ public class GameActivity extends AppCompatActivity {
         ivTable6 = findViewById(R.id.tableCard6);
 
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
-        //sliderItems = new ArrayList<>();    //List of Images from drawable
-
         //Damit mehrere nebeneinander sichbar sind
         viewPager2.setClipToPadding(false);
         viewPager2.setClipChildren(false);
@@ -114,20 +110,20 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                /*if (gameData.getDealer() == (myPlayer.getConnectionID()-1)) {
+                if (gameData.getDealer() == (myPlayer.getConnectionID())) {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(true));
                 } else {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(false));
-                }*/
+                }
 
                 if (gameData.getTable().getCards().size() != 0) {
                     ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
                     runOnUiThread(() -> showTableCards(cardsOnTable));
                 }
 
-                if (gameData.getActivePlayer() == (myPlayer.getConnectionID()-1)) {
+                if (gameData.getActivePlayer() == (myPlayer.getConnectionID())) {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(true));
                 } else {
@@ -141,8 +137,6 @@ public class GameActivity extends AppCompatActivity {
                 gameData.setMyHand((HandMessage) basemessage);
                 runOnUiThread(() ->
                         addCardsToSlideView(gameData.getMyHand().getCards()));
-
-
             }
 
         });
@@ -158,16 +152,6 @@ public class GameActivity extends AppCompatActivity {
         } else {
             tv_showTextTrumpf.setVisibility(View.VISIBLE);
         }
-    }
-
-    //default deal for 10 Playercards and 1 Trumpcard
-    public void create10testPlayerCards(Deck deck) {
-        myHand.clear();
-        for (int i = 1; i < 11; i++) { //skip first card that is going to be trumpcard
-            myHand.add(deck.getCards().get(i));
-        }
-        addCardsToSlideView(myHand.getCards());
-        dealTrumpCard();
     }
 
     public void dealTrumpCard() {
@@ -227,10 +211,6 @@ public class GameActivity extends AppCompatActivity {
             default:
                 System.out.println("Table Hand too short or too big! Something strange happened...");
         }
-    }
-
-    private void shuffleCards() {
-        wizardClient.sendMessage(new ActionMessage(DEAL));
     }
 
     private void dealCards() {
