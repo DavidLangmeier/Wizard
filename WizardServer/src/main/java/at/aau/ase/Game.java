@@ -67,8 +67,8 @@ public class Game {
         System.out.println("GAME: Dealing Cards.");
         deck.shuffle();
 
-        // deal cards to playerHands serverside | round=5 hardcoded, has to be changed later
-        for (int i = 0; i < 10; i++) {
+        // deal cards to playerHands serverside | round=7 hardcoded, has to be changed later
+        for (int i = 0; i < 7; i++) {
             for (int j = 0; j < players.size(); j++) {
                 System.out.println("GAME: Dealing to hand #" + j + " with players.size of " + players.size());
                 System.out.println("GAME: current card = " + deck.getCards().get(0).toString());
@@ -89,7 +89,7 @@ public class Game {
         // set trump card
         if (currentRound != 20) {
             trump = deck.getCards().get(0);
-            System.out.println("GAME: Current TRUMP = " +trump.toString());
+            System.out.println("GAME: Current TRUMP = " + trump.toString());
             //deck.remove(trump);
         }
         activePlayer = players.get(0).getConnectionID();
@@ -110,6 +110,7 @@ public class Game {
         System.out.println("GAME: Dealer: " + dealer);
         System.out.println("GAME: Size of PlayerHands: " + playerHands.length);
 
+        cardToPutOnTable.setPlayedBy(activePlayer - 1);
         playerHands[activePlayer - 1].dealCard(cardToPutOnTable, table);
         for (int i = 0; i < table.getCards().size(); i++) {
             System.out.println(table.getCards().get(i) + " is now on Table!");
@@ -142,6 +143,7 @@ public class Game {
         } else {
             activePlayer = -1; // deactivate all players while showing full trick on table
             broadcastGameState(); // send to show full trick on table
+            checkTrickWinner();
 
             trickRoundTurn = 0;
             table.clear();
@@ -156,5 +158,38 @@ public class Game {
             }
             broadcastGameState();
         }
+    }
+
+    public void checkTrickWinner() {
+        Card highestCard = table.getCards().get(0);
+
+        for (Card card : table.getCards()) {
+
+            // First Wizard on the table wins the trick
+            if (card.getValue().getValueCode() == 14) {
+                highestCard = card;
+                break;
+            }
+
+            // if current highest card and compared card have same color (trump or not trump)
+            else if ((card.getColor().getColorCode() == highestCard.getColor().getColorCode()) &&
+                    (card.getValue().getValueCode() > highestCard.getValue().getValueCode())) {
+                highestCard = card;
+            }
+
+            // if current highest card has not trump color but compared card has trump color
+            else if ((card.getColor().getColorCode() == trump.getColor().getColorCode())) {
+                highestCard = card;
+            }
+
+            // if current highest card is Jester and compared card is not Jester
+            else if ((highestCard.getValue().getValueCode() == 0) &&
+                    (card.getValue().getValueCode() != 0)) {
+                highestCard = card;
+            }
+        }
+        String trickWinner = "" + highestCard.toString() + " played by " + players.get(highestCard.getPlayedBy()).getName()
+                + " has won the trick";
+        System.out.println("GAME: " +trickWinner);
     }
 }
