@@ -94,6 +94,7 @@ public class Game {
         }
         activePlayer = players.get(0).getConnectionID();
         broadcastGameState();
+        server.broadcastMessage(new TextMessage("Current Trump: " +trump.toString()));
     }
 
     public void printPlayers() {
