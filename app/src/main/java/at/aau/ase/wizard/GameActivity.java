@@ -23,6 +23,7 @@ import java.util.List;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
@@ -47,6 +48,7 @@ public class GameActivity extends AppCompatActivity {
     private Player myPlayer = LobbyActivity.getMyPlayer();
     private static GameData gameData = LobbyActivity.getGameData();
     private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
+    private TextView tv_serverMsg;
 
     Hand trumpHand = new Hand(); //Test TrumpHand
     Deck deck = new Deck(); //Test Deck
@@ -71,6 +73,7 @@ public class GameActivity extends AppCompatActivity {
         btnDeal.setOnClickListener(v -> dealCards());
         //btnDeal.setEnabled(true);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
+        tv_serverMsg = findViewById(R.id.game_textView_serverMsg);
 
         ivTable1 = findViewById(R.id.tableCard1);
         ivTable2 = findViewById(R.id.tableCard2);
@@ -117,12 +120,6 @@ public class GameActivity extends AppCompatActivity {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(false));
                 }
-                /*
-                if (gameData.getTable().getCards().size() != 0) {
-                    ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
-                    runOnUiThread(() -> showTableCards(cardsOnTable));
-                }
-                */
                 if (gameData.getActivePlayer() == (myPlayer.getConnectionID())) {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(true));
@@ -138,6 +135,10 @@ public class GameActivity extends AppCompatActivity {
                 gameData.setMyHand((HandMessage) basemessage);
                 runOnUiThread(() ->
                         addCardsToSlideView(gameData.getMyHand().getCards()));
+
+            } else if (basemessage instanceof TextMessage) {
+                String msg = ((TextMessage) basemessage).toString();
+                runOnUiThread(() -> tv_serverMsg.setText(msg));
             }
 
         });

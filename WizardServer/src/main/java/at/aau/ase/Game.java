@@ -5,6 +5,7 @@ import java.util.List;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
@@ -45,7 +46,6 @@ public class Game {
         this.dealer = players.get(0).getConnectionID();
         //this.activePlayer = players.get(0).getConnectionID();
         this.activePlayer = -1;
-        //incrementDealerAndActivePlayer();
     }
 
     public void startGame() {
@@ -188,8 +188,9 @@ public class Game {
                 highestCard = card;
             }
         }
-        String trickWinner = "" + highestCard.toString() + " played by " + players.get(highestCard.getPlayedBy()).getName()
-                + " has won the trick";
+        String trickWinner = "Card: " + highestCard.toString() + " played by " + players.get(highestCard.getPlayedBy()).getName()
+                + " has won the last trick";
         System.out.println("GAME: " +trickWinner);
+        server.broadcastMessage(new TextMessage(trickWinner));
     }
 }
