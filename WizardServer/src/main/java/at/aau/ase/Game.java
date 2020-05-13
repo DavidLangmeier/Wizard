@@ -59,7 +59,7 @@ public class Game {
     public void broadcastGameState() {
         System.out.println("GAME: Broadcasting gameState");
         server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayer));
-        System.out.println("GAME: DEALER = " +dealer +" ActivePlayer = " +activePlayer);
+        System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayer);
     }
 
     public void dealCards() {
@@ -100,13 +100,14 @@ public class Game {
         System.out.println("GAME: Dealer: " + dealer);
         System.out.println("GAME: Size of PlayerHands: " + playerHands.length);
 
-        playerHands[activePlayer-1].dealCard(cardToPutOnTable, table);
+        playerHands[activePlayer - 1].dealCard(cardToPutOnTable, table);
         for (int i = 0; i < table.getCards().size(); i++) {
             System.out.println(table.getCards().get(i) + " is now on Table!");
         }
         //server.sentTo(players.get(activePlayer-1).getConnectionID(), new HandMessage(playerHands[activePlayer-1]));
-        server.sentTo(activePlayer, new HandMessage(playerHands[activePlayer-1]));
-        trickRoundTurn++;
+        server.sentTo(activePlayer, new HandMessage(playerHands[activePlayer - 1]));
+        checkCurrentTrickRound();
+        //trickRoundTurn++;
         updateDealerAndActivePlayer();
         broadcastGameState();
     }
@@ -119,6 +120,23 @@ public class Game {
     public void updateDealerAndActivePlayer() {
         this.dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
         this.activePlayer = players.get((trickRoundTurn % (players.size()))).getConnectionID();
-        System.out.println("GAME: DEALER = " +dealer +" ActivePlayer = " +activePlayer);
+        System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayer);
+    }
+
+    public void checkCurrentTrickRound() {
+        if (trickRoundTurn < players.size() - 1) {
+            trickRoundTurn++;
+            System.out.println("GAME: Current trick still incomplete. TrickRoundTurn=" + trickRoundTurn);
+        } else {
+            trickRoundTurn = 0;
+            table.clear();
+            System.out.println("GAME: Trick complete. Table cleared - new trickRound starting.");
+
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
