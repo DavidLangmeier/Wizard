@@ -68,7 +68,7 @@ public class Game {
         deck.shuffle();
 
         // deal cards to playerHands serverside | round=7 hardcoded, has to be changed later
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 19; i++) {
             for (int j = 0; j < players.size(); j++) {
                 System.out.println("GAME: Dealing to hand #" + j + " with players.size of " + players.size());
                 System.out.println("GAME: current card = " + deck.getCards().get(0).toString());
@@ -168,6 +168,8 @@ public class Game {
 
             // First Wizard on the table wins the trick
             if (card.getValue().getValueCode() == 14) {
+                System.out.println("GAME @ checkTrickWinner -> IF 1");
+                System.out.println("GAME: " +card.toString() +" is better than " +highestCard.toString());
                 highestCard = card;
                 break;
             }
@@ -176,16 +178,23 @@ public class Game {
             else if ((card.getColor().getColorCode() == highestCard.getColor().getColorCode()) &&
                     (card.getValue().getValueCode() > highestCard.getValue().getValueCode())) {
                 highestCard = card;
+                System.out.println("GAME @ checkTrickWinner -> IF 2");
+                System.out.println("GAME: " +card.toString() +" is better than " +highestCard.toString());
             }
 
             // if current highest card has not trump color but compared card has trump color
-            else if ((card.getColor().getColorCode() == trump.getColor().getColorCode())) {
+            else if ((highestCard.getColor().getColorCode() != trump.getColor().getColorCode()) &&
+                    (card.getColor().getColorCode() == trump.getColor().getColorCode())) {
+                System.out.println("GAME @ checkTrickWinner -> IF 3");
+                System.out.println("GAME: " +card.toString() +" is better than " +highestCard.toString());
                 highestCard = card;
             }
 
             // if current highest card is Jester and compared card is not Jester
             else if ((highestCard.getValue().getValueCode() == 0) &&
                     (card.getValue().getValueCode() != 0)) {
+                System.out.println("GAME @ checkTrickWinner -> IF 4");
+                System.out.println("GAME: " +card.toString() +" is better than " +highestCard.toString());
                 highestCard = card;
             }
         }
