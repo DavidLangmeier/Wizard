@@ -117,22 +117,23 @@ public class GameActivity extends AppCompatActivity {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(false));
                 }
-
+                /*
                 if (gameData.getTable().getCards().size() != 0) {
                     ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
                     runOnUiThread(() -> showTableCards(cardsOnTable));
                 }
-
+                */
                 if (gameData.getActivePlayer() == (myPlayer.getConnectionID())) {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(true));
                 } else {
                     runOnUiThread(() ->
-                    btnPlaySelectedCard.setEnabled(false));
+                            btnPlaySelectedCard.setEnabled(false));
                 }
+                ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
+                runOnUiThread(() -> showTableCards(cardsOnTable));
 
-            }
-            else if (basemessage instanceof HandMessage) {
+            } else if (basemessage instanceof HandMessage) {
                 info("GAME_ACTIVITY: Hand recieved.");
                 gameData.setMyHand((HandMessage) basemessage);
                 runOnUiThread(() ->
@@ -186,28 +187,46 @@ public class GameActivity extends AppCompatActivity {
         viewPager2.setAdapter(sliderAdapter = new SliderAdapter(sliderItems, viewPager2));
     }
 
-    private void showTableCards(ArrayList<Card> cards){
+    private void showTableCards(ArrayList<Card> cards) {
         int cardID;
-        switch(cards.size()) {
+        switch (cards.size()) {
             case 6:
                 cardID = getResources().getIdentifier(cards.get(5).getPictureFileId(), "drawable", getPackageName());
                 ivTable6.setImageResource(cardID);
+                ivTable6.setVisibility(View.VISIBLE);
+                break;
             case 5:
                 cardID = getResources().getIdentifier(cards.get(4).getPictureFileId(), "drawable", getPackageName());
                 ivTable5.setImageResource(cardID);
+                ivTable5.setVisibility(View.VISIBLE);
+                break;
             case 4:
                 cardID = getResources().getIdentifier(cards.get(3).getPictureFileId(), "drawable", getPackageName());
                 ivTable4.setImageResource(cardID);
+                ivTable4.setVisibility(View.VISIBLE);
+                break;
             case 3:
                 cardID = getResources().getIdentifier(cards.get(2).getPictureFileId(), "drawable", getPackageName());
                 ivTable3.setImageResource(cardID);
+                ivTable3.setVisibility(View.VISIBLE);
+                break;
             case 2:
                 cardID = getResources().getIdentifier(cards.get(1).getPictureFileId(), "drawable", getPackageName());
                 ivTable2.setImageResource(cardID);
+                ivTable2.setVisibility(View.VISIBLE);
+                break;
             case 1:
                 cardID = getResources().getIdentifier(cards.get(0).getPictureFileId(), "drawable", getPackageName());
                 ivTable1.setImageResource(cardID);
+                ivTable1.setVisibility(View.VISIBLE);
                 break;
+            case 0:
+                ivTable1.setVisibility(View.INVISIBLE);
+                ivTable2.setVisibility(View.INVISIBLE);
+                ivTable3.setVisibility(View.INVISIBLE);
+                ivTable4.setVisibility(View.INVISIBLE);
+                ivTable5.setVisibility(View.INVISIBLE);
+                ivTable6.setVisibility(View.INVISIBLE);
             default:
                 System.out.println("Table Hand too short or too big! Something strange happened...");
         }

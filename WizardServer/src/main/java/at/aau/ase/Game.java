@@ -43,7 +43,8 @@ public class Game {
         }
         this.trump = null;
         this.dealer = players.get(0).getConnectionID();
-        this.activePlayer = players.get(0).getConnectionID();
+        //this.activePlayer = players.get(0).getConnectionID();
+        this.activePlayer = -1;
         //incrementDealerAndActivePlayer();
     }
 
@@ -84,6 +85,15 @@ public class Game {
             System.out.println("GAME: Hand sent for Player " + i);
             System.out.println(currentHand.showCardsInHand());
         }
+
+        // set trump card
+        if (currentRound != 20) {
+            trump = deck.getCards().get(0);
+            System.out.println("GAME: Current TRUMP = " +trump.toString());
+            //deck.remove(trump);
+        }
+        activePlayer = players.get(0).getConnectionID();
+        broadcastGameState();
     }
 
     public void printPlayers() {
@@ -106,8 +116,8 @@ public class Game {
         }
         //server.sentTo(players.get(activePlayer-1).getConnectionID(), new HandMessage(playerHands[activePlayer-1]));
         server.sentTo(activePlayer, new HandMessage(playerHands[activePlayer - 1]));
+
         checkCurrentTrickRound();
-        //trickRoundTurn++;
         updateDealerAndActivePlayer();
         broadcastGameState();
     }
@@ -119,24 +129,32 @@ public class Game {
     // better not refer directly to current round, as it is not sure that the connectionIDs go like 1,2,3...
     public void updateDealerAndActivePlayer() {
         this.dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
-        this.activePlayer = players.get((trickRoundTurn % (players.size()))).getConnectionID();
+        this.activePlayer = players.get(trickRoundTurn).getConnectionID();
         System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayer);
     }
 
     public void checkCurrentTrickRound() {
         if (trickRoundTurn < players.size() - 1) {
             trickRoundTurn++;
+            updateDealerAndActivePlayer();
+            broadcastGameState();
             System.out.println("GAME: Current trick still incomplete. TrickRoundTurn=" + trickRoundTurn);
         } else {
+            activePlayer = -1; // deactivate all players while showing full trick on table
+            broadcastGameState(); // send to show full trick on table
+
             trickRoundTurn = 0;
             table.clear();
+            updateDealerAndActivePlayer();
             System.out.println("GAME: Trick complete. Table cleared - new trickRound starting.");
 
+            // wait some time before sending cleared table
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            broadcastGameState();
         }
     }
 }
