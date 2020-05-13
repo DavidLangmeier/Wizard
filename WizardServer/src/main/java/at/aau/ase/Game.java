@@ -24,7 +24,8 @@ public class Game {
     private Hand[] playerHands; // if indexed with "activePlayer" put -1
     private Card trump;
     private int dealer;
-    private int activePlayer;   // refers to connectionID of player
+    private int activePlayerID;   // refers to connectionID of player
+    private int activePlayerIndex; // refers to activePlayers index in list "players"
     private WizardServer server;
     private int trickRoundTurn;
 
@@ -43,9 +44,9 @@ public class Game {
             this.playerHands[i] = new Hand();
         }
         this.trump = null;
-        this.dealer = players.get(0).getConnectionID();
+        this.dealer = players.get((currentRound % players.size())).getConnectionID();
         //this.activePlayer = players.get(0).getConnectionID();
-        this.activePlayer = -1;
+        this.activePlayerID = -1;
     }
 
     public void startGame() {
@@ -59,16 +60,16 @@ public class Game {
 
     public void broadcastGameState() {
         System.out.println("GAME: Broadcasting gameState");
-        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayer));
-        System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayer);
+        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID));
+        System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
     }
 
     public void dealCards() {
         System.out.println("GAME: Dealing Cards.");
         deck.shuffle();
 
-        // deal cards to playerHands serverside | round=7 hardcoded, has to be changed later
-        for (int i = 0; i < 19; i++) {
+        // deal cards to playerHands serverside | round=5 hardcoded, has to be changed later
+        for (int i = 0; i < currentRound; i++) {
             for (int j = 0; j < players.size(); j++) {
                 System.out.println("GAME: Dealing to hand #" + j + " with players.size of " + players.size());
                 System.out.println("GAME: current card = " + deck.getCards().get(0).toString());
@@ -92,9 +93,10 @@ public class Game {
             System.out.println("GAME: Current TRUMP = " + trump.toString());
             //deck.remove(trump);
         }
-        activePlayer = players.get(0).getConnectionID();
+        activePlayerIndex = (currentRound + 1) % players.size();
+        activePlayerID = players.get(activePlayerIndex).getConnectionID();
         broadcastGameState();
-        server.broadcastMessage(new TextMessage("Current Trump: " +trump.toString()));
+        server.broadcastMessage(new TextMessage("Current Trump: " + trump.toString()));
     }
 
     public void printPlayers() {
@@ -111,13 +113,13 @@ public class Game {
         System.out.println("GAME: Dealer: " + dealer);
         System.out.println("GAME: Size of PlayerHands: " + playerHands.length);
 
-        cardToPutOnTable.setPlayedBy(activePlayer - 1);
-        playerHands[activePlayer - 1].dealCard(cardToPutOnTable, table);
+        cardToPutOnTable.setPlayedBy(activePlayerIndex);
+        playerHands[activePlayerIndex].dealCard(cardToPutOnTable, table);
         for (int i = 0; i < table.getCards().size(); i++) {
             System.out.println(table.getCards().get(i) + " is now on Table!");
         }
         //server.sentTo(players.get(activePlayer-1).getConnectionID(), new HandMessage(playerHands[activePlayer-1]));
-        server.sentTo(activePlayer, new HandMessage(playerHands[activePlayer - 1]));
+        server.sentTo(activePlayerID, new HandMessage(playerHands[activePlayerIndex]));
 
         checkCurrentTrickRound();
         updateDealerAndActivePlayer();
@@ -131,20 +133,22 @@ public class Game {
     // better not refer directly to current round, as it is not sure that the connectionIDs go like 1,2,3...
     public void updateDealerAndActivePlayer() {
         this.dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
-        this.activePlayer = players.get(trickRoundTurn).getConnectionID();
-        System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayer);
+        this.activePlayerID = players.get(activePlayerIndex).getConnectionID();
+        System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
     }
 
     public void checkCurrentTrickRound() {
         if (trickRoundTurn < players.size() - 1) {
             trickRoundTurn++;
+            activePlayerIndex = (activePlayerIndex + 1) % players.size();
             updateDealerAndActivePlayer();
             broadcastGameState();
             System.out.println("GAME: Current trick still incomplete. TrickRoundTurn=" + trickRoundTurn);
-        } else {
-            activePlayer = -1; // deactivate all players while showing full trick on table
+
+        } else if ((trickRoundTurn == players.size() - 1) && (!playerHands[activePlayerIndex].getCards().isEmpty())) {
+            activePlayerID = -1; // deactivate all players while showing full trick on table
             broadcastGameState(); // send to show full trick on table
-            checkTrickWinner();
+            activePlayerIndex = checkTrickWinner();
 
             trickRoundTurn = 0;
             table.clear();
@@ -158,10 +162,29 @@ public class Game {
                 e.printStackTrace();
             }
             broadcastGameState();
+
+        } else if ((trickRoundTurn == players.size() - 1) && (playerHands[activePlayerIndex].getCards().isEmpty())) {
+            activePlayerID = -1; // deactivate all players while showing full trick on table
+            broadcastGameState(); // send to show full trick on table
+            checkTrickWinner();
+            trickRoundTurn = 0;
+            table.clear();
+
+            // wait some time before sending cleared table
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            broadcastGameState();
+            currentRound++;
+            dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
+            dealCards();
         }
     }
 
-    public void checkTrickWinner() {
+    public int checkTrickWinner() {
         Card highestCard = table.getCards().get(0);
 
         for (Card card : table.getCards()) {
@@ -169,7 +192,7 @@ public class Game {
             // First Wizard on the table wins the trick
             if (card.getValue().getValueCode() == 14) {
                 System.out.println("GAME @ checkTrickWinner -> IF 1");
-                System.out.println("GAME: " +card.toString() +" is better than " +highestCard.toString());
+                System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
                 highestCard = card;
                 break;
             }
@@ -179,14 +202,14 @@ public class Game {
                     (card.getValue().getValueCode() > highestCard.getValue().getValueCode())) {
                 highestCard = card;
                 System.out.println("GAME @ checkTrickWinner -> IF 2");
-                System.out.println("GAME: " +card.toString() +" is better than " +highestCard.toString());
+                System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
             }
 
             // if current highest card has not trump color but compared card has trump color
             else if ((highestCard.getColor().getColorCode() != trump.getColor().getColorCode()) &&
                     (card.getColor().getColorCode() == trump.getColor().getColorCode())) {
                 System.out.println("GAME @ checkTrickWinner -> IF 3");
-                System.out.println("GAME: " +card.toString() +" is better than " +highestCard.toString());
+                System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
                 highestCard = card;
             }
 
@@ -194,13 +217,14 @@ public class Game {
             else if ((highestCard.getValue().getValueCode() == 0) &&
                     (card.getValue().getValueCode() != 0)) {
                 System.out.println("GAME @ checkTrickWinner -> IF 4");
-                System.out.println("GAME: " +card.toString() +" is better than " +highestCard.toString());
+                System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
                 highestCard = card;
             }
         }
         String trickWinner = "Card: " + highestCard.toString() + " played by " + players.get(highestCard.getPlayedBy()).getName()
                 + " has won the last trick";
-        System.out.println("GAME: " +trickWinner);
+        System.out.println("GAME: " + trickWinner);
         server.broadcastMessage(new TextMessage(trickWinner));
+        return highestCard.getPlayedBy();
     }
 }
