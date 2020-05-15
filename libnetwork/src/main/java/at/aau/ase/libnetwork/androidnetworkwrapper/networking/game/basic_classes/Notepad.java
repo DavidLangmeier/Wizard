@@ -50,4 +50,14 @@ public class Notepad {
         Notepad.round = round;
     }
 
+    public void testFillPointsPlayerround(){
+        //short [][]pointsPerPlayerPerRound = new short[3][20];
+        for(int i=0; i< pointsPerPlayerPerRound.length;i++){
+            for(int j=0; j<pointsPerPlayerPerRound[i].length;j++){
+                pointsPerPlayerPerRound[i][j]= (short) (j+i*j);
+            }
+
+        }
+    }
+
 }

@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
@@ -29,6 +30,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.S
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.DEAL;
@@ -65,6 +67,7 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
         //wizardClient = WizardClient.getInstance(); // new instance would get new connectionID, has to be fixed
         startCallback();
+
 
         //myPlayer = LobbyActivity.getMyPlayer(); // use intent extra if problems with activity lifecycle occur
         //myPlayer = (Player) getIntent().getSerializableExtra("myPlayer"); // does not work properly - use bundle?
@@ -112,11 +115,13 @@ public class GameActivity extends AppCompatActivity {
         //Animation for display Trumpcard as Text
         ivShowTrumpCard.setOnClickListener(v -> showTrump());
     }
+
     public void ShowPopupBlockofTruth(View v) {
         TextView txtclose;
+        TextView player1;
         dialog.setContentView(R.layout.activity_game_popup);
-        txtclose =(TextView) dialog.findViewById(R.id.txtclose);
-       // txtclose.setText("X");
+        txtclose = (TextView) dialog.findViewById(R.id.txtclose);
+        // txtclose.setText("X");
         txtclose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +129,15 @@ public class GameActivity extends AppCompatActivity {
             }
         });
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        player1 = (TextView) dialog.findViewById(R.id.tv_player1);
+        player1.setText("er");
+        Notepad testNodepade = new Notepad((short) 3);
+        testNodepade.testFillPointsPlayerround();
+        String test = String.valueOf(testNodepade.pointsPerPlayerPerRound[0][0]);
+        //test ob befüllen geht
+        player1.setText(test);
         dialog.show();
+
     }
 
     public void startCallback() {
@@ -145,16 +158,15 @@ public class GameActivity extends AppCompatActivity {
                     runOnUiThread(() -> showTableCards(cardsOnTable));
                 }
 
-                if (gameData.getActivePlayer() == (myPlayer.getConnectionID()-1)) {
+                if (gameData.getActivePlayer() == (myPlayer.getConnectionID() - 1)) {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(true));
                 } else {
                     runOnUiThread(() ->
-                    btnPlaySelectedCard.setEnabled(false));
+                            btnPlaySelectedCard.setEnabled(false));
                 }
 
-            }
-            else if (basemessage instanceof HandMessage) {
+            } else if (basemessage instanceof HandMessage) {
                 info("GAME_ACTIVITY: Hand recieved.");
                 gameData.setMyHand((HandMessage) basemessage);
                 runOnUiThread(() ->
@@ -220,9 +232,9 @@ public class GameActivity extends AppCompatActivity {
         viewPager2.setAdapter(sliderAdapter = new SliderAdapter(sliderItems, viewPager2));
     }
 
-    private void showTableCards(ArrayList<Card> cards){
+    private void showTableCards(ArrayList<Card> cards) {
         int cardID;
-        switch(cards.size()) {
+        switch (cards.size()) {
             case 6:
                 cardID = getResources().getIdentifier(cards.get(5).getPictureFileId(), "drawable", getPackageName());
                 ivTable6.setImageResource(cardID);
