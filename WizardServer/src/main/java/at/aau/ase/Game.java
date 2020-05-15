@@ -15,6 +15,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 
 public class Game {
+    private boolean gamerunning = false;
     private List<Player> players;
     private Deck deck;
     private Hand table;         // for the cards within 1 trickround
@@ -47,6 +48,7 @@ public class Game {
 
     public void startGame() {
         System.out.println("GAME: New Game started! Showing connected players:");
+        gamerunning = true;
         printPlayers();
 
         // Send START to all users -> @client: trigger intent which starts gameActivity
@@ -92,5 +94,9 @@ public class Game {
                     + ", connectionID=" + players.get(i).getConnectionID());
         }
 
+    }
+
+    public boolean isGamerunning() {
+        return gamerunning;
     }
 }

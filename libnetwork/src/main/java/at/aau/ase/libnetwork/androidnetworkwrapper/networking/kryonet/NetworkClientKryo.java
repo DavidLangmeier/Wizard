@@ -9,6 +9,8 @@ import java.io.IOException;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.Callback;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.NetworkClient;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 public class NetworkClientKryo implements NetworkClient, KryoNetComponent {
     private Client client;
@@ -44,5 +46,10 @@ public class NetworkClientKryo implements NetworkClient, KryoNetComponent {
 
     public void sendMessage(BaseMessage message) {
         client.sendTCP(message);
+    }
+
+    public void disconnect(String goodbyeMsg, Player playerLeaving) {
+        this.sendMessage(new GoodbyeMessage(goodbyeMsg, playerLeaving));
+        client.close();
     }
 }

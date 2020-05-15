@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
@@ -27,6 +29,7 @@ public class LobbyActivity extends AppCompatActivity {
     private static WizardClient wizardClient = null;
     private EditText etUsername = null;
     private ListView lvPlayers = null;
+    private TextView tvError = null;
     private List<String> playersOnline = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter = null;
     private static Player myPlayer;
@@ -41,6 +44,7 @@ public class LobbyActivity extends AppCompatActivity {
         btnStartGame = (findViewById(R.id.lobby_btn_ToGameScreen));
         btnStartGame.setOnClickListener(v -> startGame());
         btnStartGame.setEnabled(false);
+        tvError = findViewById(R.id.lobby_error);
         etUsername = findViewById(R.id.lobby_edittext_username);
         etUsername.setOnKeyListener((v,keyCode,keyEvent) -> enteredUsername(keyCode,keyEvent));
         lvPlayers = findViewById(R.id.lobby_list_players);
@@ -79,9 +83,17 @@ public class LobbyActivity extends AppCompatActivity {
                     wizardClient.deregisterCallback();
                     startActivity(intent);
                 }
-                else if ((basemessage instanceof PlayerMessage)) {
+                else if (basemessage instanceof PlayerMessage) {
                     PlayerMessage playerMessage = (PlayerMessage) basemessage;
-                    myPlayer = new Player(playerMessage.getPlayer().getName(), playerMessage.getPlayer().getConnectionID());
+                    myPlayer = playerMessage.getPlayer();
+                }
+                else if (basemessage instanceof ErrorMessage) {
+                    ErrorMessage em = (ErrorMessage) basemessage;
+                    runOnUiThread(() -> {
+                        tvError.setText(em.getError());
+                        etUsername.setEnabled(true);
+                    });
+                    wizardClient.disconnect("Ciao", myPlayer);
                 }
                 else {
                     error("No callback for this messagetype in the lobby: "+basemessage.toString());
@@ -105,8 +117,8 @@ public class LobbyActivity extends AppCompatActivity {
         return false;
     }
 
-    private void inCaseOfLobbyMessage(LobbyMessage basemessage) {
-        List<Player> players = basemessage.getPlayers();
+    private void inCaseOfLobbyMessage(LobbyMessage lobbymessage) {
+        List<Player> players = lobbymessage.getPlayers();
         info("Received a LobbyMessage "+players.size() + "players online");
 
         runOnUiThread(() -> {

@@ -5,12 +5,14 @@ import java.util.List;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.Callback;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
-import static com.esotericsoftware.minlog.Log.info;
+import static com.esotericsoftware.minlog.Log.*;
 
 /**
  * Class to handle all incoming messages of all clients.
@@ -21,7 +23,7 @@ public class ServerCallback implements Callback<BaseMessage> {
     private WizardServer server;
     private List<Player> players;
     private int playersReady;
-    private Game game;
+    private Game game = null;
 
     public ServerCallback(WizardServer server, List<Player> players) {
         this.server = server;
@@ -34,15 +36,32 @@ public class ServerCallback implements Callback<BaseMessage> {
         if (message instanceof LobbyMessage) {
             LobbyMessage msg = (LobbyMessage) message;
             info("New user " + msg.getNewUsername());
-            Player newplayer = new Player(msg.getNewUsername(), server.getLastConnectionID());
-            players.add(newplayer);
-            info("Broadcasting newplayer as LobbyMessage.");
-            server.broadcastMessage(new LobbyMessage(players));
+            Integer newPlayerID = server.getLastConnectionID();
+            Player newplayer = new Player(msg.getNewUsername(), newPlayerID);
+            if (game != null) {
+                if (game.isGamerunning()) { // if game is already running send back info and close connection
+                    server.sentTo(newPlayerID, new ErrorMessage("Game is already in progress, join later"));
+                    //server.disconnect(newPlayerID);
+                    debug("Send error msg, that game is already runnning");
+                }
+            } else {
+                players.add(newplayer);
+                info("Broadcasting newplayer as LobbyMessage.");
+                server.broadcastMessage(new LobbyMessage(players));
 
-            PlayerMessage newPlayerMsg = new PlayerMessage(newplayer);
-            info("Sending playerMessage to new Player.");
-            server.sentTo(newplayer.getConnectionID(), newPlayerMsg);
-
+                PlayerMessage newPlayerMsg = new PlayerMessage(newplayer);
+                info("Sending playerMessage to new Player.");
+                server.sentTo(newplayer.getConnectionID(), newPlayerMsg);
+            }
+        } else if (message instanceof GoodbyeMessage) {
+            GoodbyeMessage msg = (GoodbyeMessage) message;
+            Player playerLeaving = msg.getPlayer();
+            info("User "+playerLeaving.getName()+" left: "+msg.getGoodbye());
+            for (Player p: players) {
+                if (p.getPlayer_id() == playerLeaving.getConnectionID()) {
+                    this.players.remove(p);
+                }
+            }
         } else if (message instanceof ActionMessage) {
             info("Received ActionMessage.");
             ActionMessage msg = (ActionMessage) message;
