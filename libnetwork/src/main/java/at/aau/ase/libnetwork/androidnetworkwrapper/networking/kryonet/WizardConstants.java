@@ -8,6 +8,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.C
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
@@ -49,7 +50,8 @@ public class WizardConstants {
             Color.class,
             Value.class,
             ErrorMessage.class,
-            GoodbyeMessage.class
+            GoodbyeMessage.class,
+            LifecycleMessage.class
     };
 
     private WizardConstants() {}

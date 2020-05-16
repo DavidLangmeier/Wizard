@@ -93,7 +93,7 @@ public class LobbyActivity extends AppCompatActivity {
                         tvError.setText(em.getError());
                         etUsername.setEnabled(true);
                     });
-                    wizardClient.disconnect("Ciao", myPlayer);
+                    wizardClient.disconnect("Ciao", null); // null because myPlayer is null anyway (not yet being registered at server)
                 }
                 else {
                     error("No callback for this messagetype in the lobby: "+basemessage.toString());
@@ -106,6 +106,7 @@ public class LobbyActivity extends AppCompatActivity {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 error("Error while waiting for server callback being ready", e);
+                Thread.currentThread().interrupt();
             }
 
             String username = etUsername.getText().toString();

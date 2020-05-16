@@ -12,6 +12,8 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.B
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
+import static com.esotericsoftware.minlog.Log.*;
+
 public class NetworkClientKryo implements NetworkClient, KryoNetComponent {
     private Client client;
     private Callback<BaseMessage> callback;
@@ -50,6 +52,13 @@ public class NetworkClientKryo implements NetworkClient, KryoNetComponent {
 
     public void disconnect(String goodbyeMsg, Player playerLeaving) {
         this.sendMessage(new GoodbyeMessage(goodbyeMsg, playerLeaving));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            error("Error while sending disconnect", e);
+            Thread.currentThread().interrupt();
+        }
+        debug("Goodbye msg send. Closing connection now.");
         client.close();
     }
 }

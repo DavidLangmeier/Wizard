@@ -8,6 +8,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.B
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
@@ -57,12 +58,20 @@ public class ServerCallback implements Callback<BaseMessage> {
         } else if (message instanceof GoodbyeMessage) {
             GoodbyeMessage msg = (GoodbyeMessage) message;
             Player playerLeaving = msg.getPlayer();
-            info("User "+playerLeaving.getName()+" left: "+msg.getGoodbye());
-            for (Player p: players) {
-                if (p.getPlayer_id() == playerLeaving.getConnectionID()) {
-                    this.players.remove(p);
+            if (playerLeaving != null) { // Player closed app
+                info("User " + playerLeaving.getName() + " left: " + msg.getGoodbye());
+                for (Player p : players) {
+                    if (p.getPlayer_id() == playerLeaving.getConnectionID()) {
+                        this.players.remove(p);
+                    }
                 }
+                server.broadcastMessage(msg);
+            } else { // Player tried to join a running game in progress
+                info("Late joining user connection closed: "+msg.getGoodbye());
             }
+        } else if(message instanceof LifecycleMessage) {
+            info("Received LifecycleMessage: "+((LifecycleMessage) message).getMsg());
+            server.broadcastMessage(message);
         } else if (message instanceof ActionMessage) {
             info("Received ActionMessage.");
             ActionMessage msg = (ActionMessage) message;

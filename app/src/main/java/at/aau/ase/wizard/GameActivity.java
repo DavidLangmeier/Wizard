@@ -7,6 +7,7 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -21,7 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
@@ -31,7 +35,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.DEAL;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.READY;
-import static com.esotericsoftware.minlog.Log.info;
+import static com.esotericsoftware.minlog.Log.*;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -50,9 +54,11 @@ public class GameActivity extends AppCompatActivity {
     private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
     private TextView tv_serverMsg;
 
+
+    Hand myHand = new Hand(); //Test PlayerHand
+    Hand table = new Hand(); //Test Table
     Hand trumpHand = new Hand(); //Test TrumpHand
     Deck deck = new Deck(); //Test Deck
-
 
     // onCreate() is overused, has to be cleaned up
     @Override
@@ -71,7 +77,7 @@ public class GameActivity extends AppCompatActivity {
         btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
         btnDeal = findViewById(R.id.game_btn_dealOutCards);
         btnDeal.setOnClickListener(v -> dealCards());
-        //btnDeal.setEnabled(true);
+        btnDeal.setEnabled(true);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
         tv_serverMsg = findViewById(R.id.game_textView_serverMsg);
 
@@ -83,6 +89,8 @@ public class GameActivity extends AppCompatActivity {
         ivTable6 = findViewById(R.id.tableCard6);
 
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
+        //sliderItems = new ArrayList<>();    //List of Images from drawable
+
         //Damit mehrere nebeneinander sichbar sind
         viewPager2.setClipToPadding(false);
         viewPager2.setClipChildren(false);
@@ -106,6 +114,18 @@ public class GameActivity extends AppCompatActivity {
 
         //Animation for display Trumpcard as Text
         ivShowTrumpCard.setOnClickListener(v -> showTrump());
+    }
+
+    @Override
+    protected void onStop() {
+        wizardClient.sendMessage(new LifecycleMessage(""+myPlayer.getName()+"left the game"));
+        super.onStop();
+    }
+
+    @Override
+    protected void onRestart() {
+        wizardClient.sendMessage(new LifecycleMessage(""+myPlayer.getName()+"came back"));
+        super.onRestart();
     }
 
     public void startCallback() {
@@ -138,7 +158,19 @@ public class GameActivity extends AppCompatActivity {
 
             } else if (basemessage instanceof TextMessage) {
                 String msg = ((TextMessage) basemessage).toString();
-                runOnUiThread(() -> tv_serverMsg.setText(msg));
+                runOnUiThread(() -> {
+                    tv_serverMsg.setText(msg);
+                    addCardsToSlideView(gameData.getMyHand().getCards());
+                });
+            } else if (basemessage instanceof GoodbyeMessage) { // A player closed the app, so stop game and show current points as endresult
+                info("GAME_ACTIVITY: Goodbye received.");
+                runOnUiThread(() -> {
+                    Intent intent = new Intent(this, EndscreenActivity.class);
+                    startActivity(intent);
+                });
+            } else if (basemessage instanceof LifecycleMessage) {
+                LifecycleMessage msg = (LifecycleMessage) basemessage;
+                runOnUiThread(() -> tv_serverMsg.setText(msg.getMsg()));
             }
 
         });
