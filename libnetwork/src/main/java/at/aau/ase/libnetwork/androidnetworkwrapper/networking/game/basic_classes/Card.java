@@ -9,6 +9,7 @@ public class Card {
     private Value value;
     static AtomicInteger nextID = new AtomicInteger();
     private int card_id;
+    private int playedBy;
 
     public Card() {}
 
@@ -30,6 +31,14 @@ public class Card {
 
     public Value getValue() {
         return value;
+    }
+
+    public int getPlayedBy() {
+        return playedBy;
+    }
+
+    public void setPlayedBy(int playedBy) {
+        this.playedBy = playedBy;
     }
 
     public int getCard_id() {

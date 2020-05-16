@@ -23,6 +23,7 @@ import java.util.List;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
@@ -47,12 +48,11 @@ public class GameActivity extends AppCompatActivity {
     private Player myPlayer = LobbyActivity.getMyPlayer();
     private static GameData gameData = LobbyActivity.getGameData();
     private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
+    private TextView tv_serverMsg;
 
-
-    Hand myHand = new Hand(); //Test PlayerHand
-    Hand table = new Hand(); //Test Table
     Hand trumpHand = new Hand(); //Test TrumpHand
     Deck deck = new Deck(); //Test Deck
+
 
     // onCreate() is overused, has to be cleaned up
     @Override
@@ -71,8 +71,9 @@ public class GameActivity extends AppCompatActivity {
         btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
         btnDeal = findViewById(R.id.game_btn_dealOutCards);
         btnDeal.setOnClickListener(v -> dealCards());
-        btnDeal.setEnabled(true);
+        //btnDeal.setEnabled(true);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
+        tv_serverMsg = findViewById(R.id.game_textView_serverMsg);
 
         ivTable1 = findViewById(R.id.tableCard1);
         ivTable2 = findViewById(R.id.tableCard2);
@@ -82,8 +83,6 @@ public class GameActivity extends AppCompatActivity {
         ivTable6 = findViewById(R.id.tableCard6);
 
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
-        //sliderItems = new ArrayList<>();    //List of Images from drawable
-
         //Damit mehrere nebeneinander sichbar sind
         viewPager2.setClipToPadding(false);
         viewPager2.setClipChildren(false);
@@ -114,35 +113,32 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                /*if (gameData.getDealer() == (myPlayer.getConnectionID()-1)) {
+                if (gameData.getDealer() == (myPlayer.getConnectionID())) {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(true));
                 } else {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(false));
-                }*/
-
-                if (gameData.getTable().getCards().size() != 0) {
-                    ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
-                    runOnUiThread(() -> showTableCards(cardsOnTable));
                 }
-
-                if (gameData.getActivePlayer() == (myPlayer.getConnectionID()-1)) {
+                if (gameData.getActivePlayer() == (myPlayer.getConnectionID())) {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(true));
                 } else {
                     runOnUiThread(() ->
-                    btnPlaySelectedCard.setEnabled(false));
+                            btnPlaySelectedCard.setEnabled(false));
                 }
+                ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
+                runOnUiThread(() -> showTableCards(cardsOnTable));
 
-            }
-            else if (basemessage instanceof HandMessage) {
+            } else if (basemessage instanceof HandMessage) {
                 info("GAME_ACTIVITY: Hand recieved.");
                 gameData.setMyHand((HandMessage) basemessage);
                 runOnUiThread(() ->
                         addCardsToSlideView(gameData.getMyHand().getCards()));
 
-
+            } else if (basemessage instanceof TextMessage) {
+                String msg = ((TextMessage) basemessage).toString();
+                runOnUiThread(() -> tv_serverMsg.setText(msg));
             }
 
         });
@@ -158,16 +154,6 @@ public class GameActivity extends AppCompatActivity {
         } else {
             tv_showTextTrumpf.setVisibility(View.VISIBLE);
         }
-    }
-
-    //default deal for 10 Playercards and 1 Trumpcard
-    public void create10testPlayerCards(Deck deck) {
-        myHand.clear();
-        for (int i = 1; i < 11; i++) { //skip first card that is going to be trumpcard
-            myHand.add(deck.getCards().get(i));
-        }
-        addCardsToSlideView(myHand.getCards());
-        dealTrumpCard();
     }
 
     public void dealTrumpCard() {
@@ -202,35 +188,49 @@ public class GameActivity extends AppCompatActivity {
         viewPager2.setAdapter(sliderAdapter = new SliderAdapter(sliderItems, viewPager2));
     }
 
-    private void showTableCards(ArrayList<Card> cards){
+    private void showTableCards(ArrayList<Card> cards) {
         int cardID;
-        switch(cards.size()) {
+        switch (cards.size()) {
             case 6:
                 cardID = getResources().getIdentifier(cards.get(5).getPictureFileId(), "drawable", getPackageName());
                 ivTable6.setImageResource(cardID);
+                ivTable6.setVisibility(View.VISIBLE);
+                break;
             case 5:
                 cardID = getResources().getIdentifier(cards.get(4).getPictureFileId(), "drawable", getPackageName());
                 ivTable5.setImageResource(cardID);
+                ivTable5.setVisibility(View.VISIBLE);
+                break;
             case 4:
                 cardID = getResources().getIdentifier(cards.get(3).getPictureFileId(), "drawable", getPackageName());
                 ivTable4.setImageResource(cardID);
+                ivTable4.setVisibility(View.VISIBLE);
+                break;
             case 3:
                 cardID = getResources().getIdentifier(cards.get(2).getPictureFileId(), "drawable", getPackageName());
                 ivTable3.setImageResource(cardID);
+                ivTable3.setVisibility(View.VISIBLE);
+                break;
             case 2:
                 cardID = getResources().getIdentifier(cards.get(1).getPictureFileId(), "drawable", getPackageName());
                 ivTable2.setImageResource(cardID);
+                ivTable2.setVisibility(View.VISIBLE);
+                break;
             case 1:
                 cardID = getResources().getIdentifier(cards.get(0).getPictureFileId(), "drawable", getPackageName());
                 ivTable1.setImageResource(cardID);
+                ivTable1.setVisibility(View.VISIBLE);
                 break;
+            case 0:
+                ivTable1.setVisibility(View.INVISIBLE);
+                ivTable2.setVisibility(View.INVISIBLE);
+                ivTable3.setVisibility(View.INVISIBLE);
+                ivTable4.setVisibility(View.INVISIBLE);
+                ivTable5.setVisibility(View.INVISIBLE);
+                ivTable6.setVisibility(View.INVISIBLE);
             default:
                 System.out.println("Table Hand too short or too big! Something strange happened...");
         }
-    }
-
-    private void shuffleCards() {
-        wizardClient.sendMessage(new ActionMessage(DEAL));
     }
 
     private void dealCards() {
