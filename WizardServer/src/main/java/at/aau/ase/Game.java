@@ -12,6 +12,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.END;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 
 public class Game {
@@ -37,7 +38,7 @@ public class Game {
         this.table = new Hand();
         this.scores = new Notepad((short) players.size());
         this.totalRounds = 60 / players.size();
-        this.currentRound = 1;
+        this.currentRound = 19;
         this.trickRoundTurn = 0;
         this.playerHands = new Hand[players.size()];
         for (int i = 0; i < players.size(); i++) {
@@ -66,6 +67,7 @@ public class Game {
 
     public void dealCards() {
         System.out.println("GAME: Dealing Cards.");
+        deck = new Deck();
         deck.shuffle();
 
         // deal cards to playerHands serverside | round=5 hardcoded, has to be changed later
@@ -137,7 +139,10 @@ public class Game {
         System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
     }
 
+    // checks if a trickRound is over and handles the remaining rounds of the game
     public void checkCurrentTrickRound() {
+
+        // trick is still incomplete
         if (trickRoundTurn < players.size() - 1) {
             trickRoundTurn++;
             activePlayerIndex = (activePlayerIndex + 1) % players.size();
@@ -145,6 +150,7 @@ public class Game {
             broadcastGameState();
             System.out.println("GAME: Current trick still incomplete. TrickRoundTurn=" + trickRoundTurn);
 
+            // trick is complete, current round is still incomplete
         } else if ((trickRoundTurn == players.size() - 1) && (!playerHands[activePlayerIndex].getCards().isEmpty())) {
             activePlayerID = -1; // deactivate all players while showing full trick on table
             broadcastGameState(); // send to show full trick on table
@@ -163,6 +169,7 @@ public class Game {
             }
             broadcastGameState();
 
+            // trick is complete, current round is over
         } else if ((trickRoundTurn == players.size() - 1) && (playerHands[activePlayerIndex].getCards().isEmpty())) {
             activePlayerID = -1; // deactivate all players while showing full trick on table
             broadcastGameState(); // send to show full trick on table
@@ -178,12 +185,29 @@ public class Game {
             }
 
             broadcastGameState();
-            currentRound++;
-            dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
-            dealCards();
+
+            // check if round was the last round of the game
+            if (currentRound < 20) {
+                currentRound++;
+                dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
+                dealCards();
+            } else {
+                System.out.println("GAME: Last round played, Game is complete.");
+                server.broadcastMessage(new TextMessage("Last round played, Game is complete."));
+
+                // wait some time before sending Action END
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // End-Msg should trigger the client going to Endscreen Activity
+                server.broadcastMessage(new ActionMessage(END));
+            }
         }
     }
 
+    // returns trick-winners index in list "players"
     public int checkTrickWinner() {
         Card highestCard = table.getCards().get(0);
 
@@ -191,7 +215,6 @@ public class Game {
 
             // First Wizard on the table wins the trick
             if (card.getValue().getValueCode() == 14) {
-                System.out.println("GAME @ checkTrickWinner -> IF 1");
                 System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
                 highestCard = card;
                 break;
@@ -201,14 +224,12 @@ public class Game {
             else if ((card.getColor().getColorCode() == highestCard.getColor().getColorCode()) &&
                     (card.getValue().getValueCode() > highestCard.getValue().getValueCode())) {
                 highestCard = card;
-                System.out.println("GAME @ checkTrickWinner -> IF 2");
                 System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
             }
 
             // if current highest card has not trump color but compared card has trump color
             else if ((highestCard.getColor().getColorCode() != trump.getColor().getColorCode()) &&
                     (card.getColor().getColorCode() == trump.getColor().getColorCode())) {
-                System.out.println("GAME @ checkTrickWinner -> IF 3");
                 System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
                 highestCard = card;
             }
@@ -216,7 +237,6 @@ public class Game {
             // if current highest card is Jester and compared card is not Jester
             else if ((highestCard.getValue().getValueCode() == 0) &&
                     (card.getValue().getValueCode() != 0)) {
-                System.out.println("GAME @ checkTrickWinner -> IF 4");
                 System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
                 highestCard = card;
             }
