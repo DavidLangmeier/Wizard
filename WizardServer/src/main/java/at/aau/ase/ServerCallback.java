@@ -7,6 +7,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.A
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
@@ -82,7 +83,7 @@ public class ServerCallback implements Callback<BaseMessage> {
                 case READY:
                     info("Received Action READY.");
                     playersReady++;
-                    info(playersReady +"/" +players.size() +" users are ready.");
+                    info(playersReady + "/" + players.size() + " users are ready.");
                     if (playersReady >= players.size()) {
                         game.broadcastGameState();
                     }
@@ -91,6 +92,15 @@ public class ServerCallback implements Callback<BaseMessage> {
                 default:
                     info("Unknown Action. Cannot handle Message");
             }
+
+        } else if (message instanceof CardMessage) {
+            info("Recieved Card to put on Table!");
+            CardMessage msg = (CardMessage) message;
+            info("SERVER_CALLBACK: CARD: " + msg.getCard().toString());
+            System.out.println("SERVER_CALLBACK: Card object id: " + msg.getCard().hashCode());
+            game.dealOnePlayerCardToTable(msg.getCard());
+            //info("trying to put playerCard to Table");
+            //game.broadcastGameState();
 
         } else {
             info("Received message cannot be handled correctly!");

@@ -12,6 +12,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.READY;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 
 public class Game {
@@ -42,8 +43,7 @@ public class Game {
             this.playerHands[i] = new Hand();
         }
         this.trump = null;
-        this.dealer = 1;
-        this.activePlayer = 1;
+        incrementDealerAndActivePlayer();
     }
 
     public void startGame() {
@@ -69,10 +69,7 @@ public class Game {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < players.size(); j++) {
                 System.out.println("GAME: Dealing to hand #" +j +" with players.size of " +players.size());
-                //Card currentCard = deck.getCards().get(i);
                 System.out.println("GAME: current card = " +deck.getCards().get(i).toString());
-                //playerHands[j].add(currentCard);
-                //deck.remove(currentCard);
                 deck.dealCard(deck.getCards().get(i), playerHands[j]);
             }
         }
@@ -94,6 +91,30 @@ public class Game {
                     + ", connectionID=" + players.get(i).getConnectionID());
         }
 
+    }
+    public void dealOnePlayerCardToTable(Card cardToPutOnTable){
+        System.out.println("GAME: Card recieved: " + cardToPutOnTable.toString() + " Trying to put on Table...");
+        //System.out.println("GAME: Card object id: " + cardToPutOnTable.hashCode());
+        System.out.println("GAME: Dealer: " + dealer);
+        System.out.println("GAME: Size of PlayerHands: " + playerHands.length);
+
+        playerHands[activePlayer].dealCard(cardToPutOnTable, table);
+        for (int i = 0; i < table.getCards().size(); i++) {
+            System.out.println(table.getCards().get(i) + " is now on Table!");
+        }
+        server.sentTo(players.get(activePlayer).getConnectionID(), new HandMessage(playerHands[activePlayer]));
+        currentRound++; //just for test case, should be triggered later, when trickround is over
+        incrementDealerAndActivePlayer();
+        broadcastGameState();
+    }
+
+    public Hand getTable() {
+        return table;
+    }
+
+    public void incrementDealerAndActivePlayer(){
+        this.dealer = ((currentRound-1) % (players.size()));
+        this.activePlayer = (currentRound % (players.size()));
     }
 
     public boolean isGamerunning() {
