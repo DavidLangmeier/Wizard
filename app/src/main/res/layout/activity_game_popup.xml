@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="352dp"
-    android:layout_height="480dp"
+    android:layout_width="380dp"
+    android:layout_height="390dp"
     android:background="@color/colorPrimaryDark"
     android:padding="4dp"
     android:layout_gravity="right">
@@ -21,52 +21,211 @@
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
+        <TextView
+            android:id="@+id/tv_0"
+            android:height="30dp"
+            android:width="25dp"
+            android:textColor="@color/colorWhite"
+            android:text="Round"
+            android:singleLine="true"
+            android:textSize="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+                       />
         <TextView
             android:id="@+id/tv_player1"
+            android:height="30dp"
+            android:width="57dp"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/text_view_boarder_rechtange"
-            android:text="TextView" />
+            android:text="player1" />
 
         <TextView
             android:id="@+id/tv_player2"
+            android:height="30dp"
+            android:width="57dp"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/text_view_boarder_rechtange"
-            android:text="TextView" />
+            android:text="player2" />
 
         <TextView
             android:id="@+id/tv_player3"
+            android:height="30dp"
+            android:width="57dp"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/text_view_boarder_rechtange"
-            android:text="TextView" />
+            android:text="player3" />
+        <TextView
+            android:id="@+id/tv_player4"
+            android:height="30dp"
+            android:width="57dp"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_boarder_rechtange"
+            />
+        <TextView
+            android:id="@+id/tv_player5"
+            android:height="30dp"
+            android:width="57dp"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_boarder_rechtange"
+             />
+        <TextView
+            android:id="@+id/tv_player6"
+            android:height="30dp"
+            android:width="57dp"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_boarder_rechtange"
+             />
+
     </TableRow>
+
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="404dp">
 
         <TextView
-            android:id="@+id/tv_player11"
+            android:id="@+id/tv_rounds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:width="25dp"
+            android:height="400dp"
+            android:textSize="12dp"
             android:background="@drawable/text_view_boarder_rechtange"
-            android:text="TextView" />
+            android:text="rounds"
+            android:textColor="@color/colorWhite" />
 
         <TextView
-            android:id="@+id/tv_player22"
+            android:id="@+id/tv_points1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="400dp"
             android:background="@drawable/text_view_boarder_rechtange"
-            android:text="TextView" />
-
+            android:text="points1"
+            android:textColor="@color/colorWhite" />
         <TextView
-            android:id="@+id/tv_player33"
+            android:id="@+id/tv_pointstricks1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="400dp"
             android:background="@drawable/text_view_boarder_rechtange"
-            android:text="TextView" />
+            android:text="pointstricks1"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_points2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="400dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="points2"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_pointstricks2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="400dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="pointstricks2"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_points3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="400dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="points3"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_pointstricks3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="400dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="pointstricks3"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_points4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="400dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_pointstricks4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="400dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_points5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="400dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_pointstricks5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="400dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_points6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="400dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_pointstricks6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="400dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:textColor="@color/colorWhite" />
     </TableRow>
 
 

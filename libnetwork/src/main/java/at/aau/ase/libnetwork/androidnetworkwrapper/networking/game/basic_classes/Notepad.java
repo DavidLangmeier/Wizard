@@ -4,6 +4,7 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classe
 public class Notepad {
     private static short round = 0;
     public short[][] pointsPerPlayerPerRound;
+    public String[]playerNames;
 
     //to use later
     short[][] betTricksPerPlayerPerRound;
@@ -12,6 +13,7 @@ public class Notepad {
     public Notepad() {}
 
     public Notepad(short numberOfPlayers) {
+        playerNames=new String[numberOfPlayers];
         switch(numberOfPlayers){
             case 3:
                 this.pointsPerPlayerPerRound = new short[3][20];
@@ -50,14 +52,24 @@ public class Notepad {
         Notepad.round = round;
     }
 
+    //brauche Notpade classe die mir werte gibt funktion
     public void testFillPointsPlayerround(){
-        //short [][]pointsPerPlayerPerRound = new short[3][20];
+        int count=1;
         for(int i=0; i< pointsPerPlayerPerRound.length;i++){
+            playerNames[i]="name"+i;
             for(int j=0; j<pointsPerPlayerPerRound[i].length;j++){
-                pointsPerPlayerPerRound[i][j]= (short) (j+i*j);
-            }
+                pointsPerPlayerPerRound[i][j]= (short) count;
+                count++;
 
+            }
         }
+
+
     }
+
+
+
+
+
 
 }
