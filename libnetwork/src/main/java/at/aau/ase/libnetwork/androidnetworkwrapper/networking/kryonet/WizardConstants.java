@@ -45,8 +45,8 @@ public class WizardConstants {
             short[][].class,
             short[].class,
             Color.class,
-            Value.class,
-            String[].class
+            Value.class
+
     };
 
     private WizardConstants() {}

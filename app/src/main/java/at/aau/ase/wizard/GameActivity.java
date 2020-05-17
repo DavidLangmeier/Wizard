@@ -119,17 +119,13 @@ public class GameActivity extends AppCompatActivity {
     public void ShowPopupBlockofTruth(View v) {
         TextView txtclose;
         TextView np_Rounds;
-        TextView np_pointsPlayer1;
-        TextView np_vorherSagePlayer1;
-        TextView np_pointsPlayer2;
-        TextView np_vorherSagePlayer2;
         TextView np_vorherSagePlayer;
         TextView np_pointsPlayer;
         TextView np_PlayerNames;
 
         dialog.setContentView(R.layout.activity_game_popup);
         txtclose = (TextView) dialog.findViewById(R.id.txtclose);
-        // txtclose.setText("X");
+
         txtclose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,11 +150,11 @@ public class GameActivity extends AppCompatActivity {
 
         //-----------------------Player Befüllung Namen ---------------------------
         //ersetzung durch daten erhalten von server
-        Notepad testNodepade = new Notepad((short) 3);
+        Notepad testNodepade = new Notepad((short) 5);
         testNodepade.testFillPointsPlayerround();
 
         np_PlayerNames = (TextView) dialog.findViewById(R.id.tv_player1);
-        for (int i = 0; i < testNodepade.playerNames.length; i++) {
+        for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
 
             switch (i) {
                 case 0:
@@ -183,7 +179,7 @@ public class GameActivity extends AppCompatActivity {
                 default:
                     np_PlayerNames = (TextView) dialog.findViewById(R.id.tv_player6);
             }
-            np_PlayerNames.setText(testNodepade.playerNames[i]);
+            np_PlayerNames.setText(testNodepade.playerNamesList.get(i));
         }
 
         //------------------Punkte Ausgabe Player  3 4 5 6-----------------------------------
@@ -219,7 +215,7 @@ public class GameActivity extends AppCompatActivity {
             }
             np_pointsPlayer.setText(testPlayerpoints1);
         }
-            //------------------Vorhersage Ausgabe Player 1 2 3 4 5 6--------------------------
+        //------------------Vorhersage Ausgabe Player 1 2 3 4 5 6--------------------------
 
         for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
             String testVorhersage = "";
@@ -253,43 +249,6 @@ public class GameActivity extends AppCompatActivity {
             np_vorherSagePlayer.setText(testVorhersage);
         }
 
-        /*
-        //-----------------------------Vorhersagen Ausgabe Player 1 ----------------------------
-        np_vorherSagePlayer1=(TextView) dialog.findViewById(R.id.tv_pointstricks1);
-        Notepad testPoints=new Notepad((short)3);
-        testPoints.testFillPointsPlayerround();
-        String vorhersage="";
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < testPoints.pointsPerPlayerPerRound[i].length; j++) {
-                vorhersage = vorhersage + String.valueOf(testPoints.pointsPerPlayerPerRound[i][j]);
-                vorhersage = vorhersage + System.lineSeparator();
-            }
-        }
-        np_vorherSagePlayer1.setText(vorhersage);
-        //-------------------------------Punkte Ausgabe Player 2---------------------------------
-        np_pointsPlayer2=(TextView) dialog.findViewById(R.id.tv_points2);
-        String testPlayerPoints2="";
-        for (int i = 1; i < 2; i++) {
-            for (int j = 0; j < testNodepade.pointsPerPlayerPerRound[i].length; j++) {
-                testPlayerPoints2 = testPlayerPoints2 + String.valueOf(testNodepade.pointsPerPlayerPerRound[i][j]);
-                testPlayerPoints2 = testPlayerPoints2 + System.lineSeparator();
-            }
-        }
-        np_pointsPlayer2.setText(testPlayerPoints2);
-
-
-        //-------------------------------Vorhersage Ausgabe Player 2------------------------
-        String teste="2";
-        np_vorherSagePlayer2=(TextView) dialog.findViewById(R.id.tv_pointstricks2);
-        String vorhersage2="";
-        for (int i = 1; i < 2; i++) {
-            for (int j = 0; j < testPoints.pointsPerPlayerPerRound[i].length; j++) {
-                vorhersage2 = vorhersage2 + String.valueOf(testPoints.pointsPerPlayerPerRound[i][j]);
-                vorhersage2 = vorhersage2 + System.lineSeparator();
-            }
-        }
-        np_vorherSagePlayer2.setText(vorhersage2);
-        */
         dialog.show();
 
     }
