@@ -15,8 +15,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
@@ -38,7 +40,7 @@ import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_ac
 import static com.esotericsoftware.minlog.Log.info;
 
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity  {
     private Button btnPlaySelectedCard;
     private Button btnDeal;
     private String etShowCard;
@@ -122,6 +124,9 @@ public class GameActivity extends AppCompatActivity {
         TextView np_vorherSagePlayer;
         TextView np_pointsPlayer;
         TextView np_PlayerNames;
+        Switch sw_changeViewPointsStiche;
+        TextView np_textChangePointsStiche;
+
 
         dialog.setContentView(R.layout.activity_game_popup);
         txtclose = (TextView) dialog.findViewById(R.id.txtclose);
@@ -133,6 +138,97 @@ public class GameActivity extends AppCompatActivity {
             }
         });
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        //ersetzung durch daten erhalten von server----------------------------------------------------------------------
+        Notepad testNodepade = new Notepad((short) 5);
+        testNodepade.testFillPointsPlayerround();
+
+
+        //----------------------switch-------------------------
+        np_textChangePointsStiche=(TextView)dialog.findViewById(R.id.tv_stichepunkte);
+        sw_changeViewPointsStiche=(Switch)dialog.findViewById(R.id.sw_switch1);
+
+        sw_changeViewPointsStiche.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                TextView np_vorherSagePlayerTrue;
+                if(isChecked){
+                    np_textChangePointsStiche.setText("Punkte per Runde");
+                    testNodepade.testFillPointsPlayerround();
+                    for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
+                        String testPlayerpoints1 = "";
+                        switch (i) {
+                            case 0:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points1);
+                                break;
+                            case 1:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points2);
+                                break;
+                            case 2:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points3);
+                                break;
+                            case 3:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points4);
+                                break;
+                            case 4:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points5);
+                                break;
+                            case 5:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
+                                break;
+
+                            default:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
+                        }
+                        for (int j = 0; j < testNodepade.pointsPerPlayerPerRound[i].length; j++) {
+                            testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.pointsPerPlayerPerRound[i][j]);
+                            testPlayerpoints1 = testPlayerpoints1 + System.lineSeparator();
+                        }
+                        np_vorherSagePlayerTrue.setText(testPlayerpoints1);
+                    }
+
+
+                }else{
+                    np_textChangePointsStiche.setText("Stiche per Runde");
+                    testNodepade.testFillPointsPlayerround2();
+                    for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
+                        String testPlayerpoints1 = "";
+                        switch (i) {
+                            case 0:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points1);
+                                break;
+                            case 1:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points2);
+                                break;
+                            case 2:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points3);
+                                break;
+                            case 3:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points4);
+                                break;
+                            case 4:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points5);
+                                break;
+                            case 5:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
+                                break;
+
+                            default:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
+                        }
+                        for (int j = 0; j < testNodepade.pointsPerPlayerPerRound[i].length; j++) {
+                            testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.pointsPerPlayerPerRound[i][j]);
+                            testPlayerpoints1 = testPlayerpoints1 + System.lineSeparator();
+                        }
+                        np_vorherSagePlayerTrue.setText(testPlayerpoints1);
+                    }
+                }
+            }
+        });
+
+
+
+
         //-------------------------------Runden Befüllen   1-20---------------------------
         np_Rounds = (TextView) dialog.findViewById(R.id.tv_rounds);
         String round = "";
@@ -149,9 +245,7 @@ public class GameActivity extends AppCompatActivity {
 
 
         //-----------------------Player Befüllung Namen ---------------------------
-        //ersetzung durch daten erhalten von server
-        Notepad testNodepade = new Notepad((short) 5);
-        testNodepade.testFillPointsPlayerround();
+
 
         np_PlayerNames = (TextView) dialog.findViewById(R.id.tv_player1);
         for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
