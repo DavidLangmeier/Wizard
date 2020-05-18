@@ -31,6 +31,7 @@ public class Game {
     private WizardServer server;
     private int trickRoundTurn;
     private int betTricksCounter;
+    private boolean clearBetTricks;
 
 
     public Game(WizardServer server, List<Player> players) {
@@ -40,7 +41,7 @@ public class Game {
         this.table = new Hand();
         this.scores = new Notepad((short) players.size());
         this.totalRounds = 60 / players.size();
-        this.currentRound = 5;
+        this.currentRound = 2;
         this.trickRoundTurn = 0;
         this.betTricksCounter = 0;
         this.playerHands = new Hand[players.size()];
@@ -51,6 +52,7 @@ public class Game {
         this.dealer = players.get((currentRound % players.size())).getConnectionID();
         //this.activePlayer = players.get(0).getConnectionID();
         this.activePlayerID = -1;
+        this.clearBetTricks = false;
     }
 
     public void startGame() {
@@ -64,7 +66,7 @@ public class Game {
 
     public void broadcastGameState() {
         System.out.println("GAME: Broadcasting gameState");
-        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID, betTricksCounter));
+        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID, betTricksCounter, clearBetTricks));
         System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
     }
 
@@ -124,7 +126,7 @@ public class Game {
             System.out.println(table.getCards().get(i) + " is now on Table!");
         }
         //server.sentTo(players.get(activePlayer-1).getConnectionID(), new HandMessage(playerHands[activePlayer-1]));
-        server.sentTo(activePlayerID, new HandMessage(playerHands[activePlayerIndex]));
+        server.sentTo(activePlayerID, new HandMessage(playerHands[activePlayerIndex], clearBetTricks));
 
         checkCurrentTrickRound();
         updateDealerAndActivePlayer();
@@ -178,6 +180,8 @@ public class Game {
             broadcastGameState(); // send to show full trick on table
             checkTrickWinner();
             trickRoundTurn = 0;
+            betTricksCounter = 0;
+            clearBetTricks = true;
             table.clear();
 
             // wait some time before sending cleared table
@@ -252,7 +256,8 @@ public class Game {
     }
 
     public void writeToNotePad(Notepad scores, short playerID, short betTricks) {
-        scores.setBetTricksPerPlayerPerRound(playerID, betTricks);
+        clearBetTricks = false;
+        scores.setBetTricksPerPlayerPerRound(playerID, betTricks, currentRound);
         this.scores = scores;
         server.sentTo(activePlayerID, new NotePadMessage(this.scores));
         System.out.println("GAME: Trickroundturn: " + trickRoundTurn);
@@ -265,4 +270,5 @@ public class Game {
             broadcastGameState();
         }
     }
+
 }

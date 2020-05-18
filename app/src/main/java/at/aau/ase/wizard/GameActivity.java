@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -134,12 +135,19 @@ public class GameActivity extends AppCompatActivity {
                             btnDeal.setEnabled(false));
                 }
                 System.err.println("Active Player: " + gameData.getActivePlayer() + ", Connection ID my Player: " + myPlayer.getConnectionID());
+
+                if(((StateMessage) basemessage).isClearBetTricks()){
+                    runOnUiThread(() -> {
+                                et_vorhersage.setText("");
+                                et_vorhersage.setVisibility(View.INVISIBLE);
+                            });
+                }
                 if (gameData.getActivePlayer() == (myPlayer.getConnectionID())) {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(true));
 
-                    if (gameData.getTrickroundTurn() < gameData.getScores().getTotalPointsPerPlayer().length) {
-                        info("!!!!!!!!! Trickround: " + gameData.getTrickroundTurn() + " score size: " + gameData.getScores().getTotalPointsPerPlayer().length);
+                    if (gameData.getBetTricksCounter() < gameData.getScores().getTotalPointsPerPlayer().length) {
+                        info("!!!!!!!!! Trickround: " + gameData.getBetTricksCounter() + " score size: " + gameData.getScores().getTotalPointsPerPlayer().length);
                         runOnUiThread(() -> {
                             et_vorhersage.setEnabled(true);
                             et_vorhersage.setVisibility(View.VISIBLE);
@@ -173,7 +181,7 @@ public class GameActivity extends AppCompatActivity {
 
             } else if (basemessage instanceof NotePadMessage) {
                 gameData.setScores((NotePadMessage) basemessage);
-                System.out.println("!!!!!" + Arrays.deepToString(gameData.getScores().getBetTricksPerPlayerPerRound()));
+                System.out.println(Arrays.deepToString(gameData.getScores().getBetTricksPerPlayerPerRound()));
 
             } else if (basemessage instanceof TextMessage) {
                 String msg = ((TextMessage) basemessage).toString();
@@ -291,6 +299,5 @@ public class GameActivity extends AppCompatActivity {
             return false;
         }
     }
-
 
 }

@@ -38,8 +38,8 @@ public class Notepad {
         Notepad.round = round;
     }
 
-    public void setBetTricksPerPlayerPerRound(short playerID, short betTricks) {
-        this.betTricksPerPlayerPerRound[playerID][round] = betTricks;
+    public void setBetTricksPerPlayerPerRound(short playerID, short betTricks, int currentRound) {
+        this.betTricksPerPlayerPerRound[playerID][currentRound-1] = betTricks;
     }
 
     public short[][] getBetTricksPerPlayerPerRound() {

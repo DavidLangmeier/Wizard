@@ -66,7 +66,7 @@ public class GameData {
         return activePlayer;
     }
 
-    public int getTrickroundTurn() {
+    public int getBetTricksCounter() {
         return betTricksCounter;
     }
 }
