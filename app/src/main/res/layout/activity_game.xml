@@ -24,22 +24,20 @@
         app:layout_constraintHorizontal_bias="0.499"
         app:layout_constraintStart_toStartOf="parent"></androidx.viewpager2.widget.ViewPager2>
 
+
     <TextView
-        android:id="@+id/game_textView_title"
-        android:layout_width="214dp"
-        android:layout_height="43dp"
+        android:id="@+id/game_textView_serverMsg"
+        android:layout_width="383dp"
+        android:layout_height="61dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="96dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
         android:text="@string/game_textView_title"
-        android:textSize="30sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <Button
         android:id="@+id/play_Card"

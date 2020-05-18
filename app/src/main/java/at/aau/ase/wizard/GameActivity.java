@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -27,8 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
@@ -37,7 +42,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.DEAL;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.READY;
-import static com.esotericsoftware.minlog.Log.info;
+import static com.esotericsoftware.minlog.Log.*;
 
 
 public class GameActivity extends AppCompatActivity  {
@@ -54,7 +59,8 @@ public class GameActivity extends AppCompatActivity  {
     private Player myPlayer = LobbyActivity.getMyPlayer();
     private static GameData gameData = LobbyActivity.getGameData();
     private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
-    Dialog dialog;
+    private Dialog dialog;
+    private TextView tv_serverMsg;
 
 
     Hand myHand = new Hand(); //Test PlayerHand
@@ -83,6 +89,7 @@ public class GameActivity extends AppCompatActivity  {
         btnDeal.setEnabled(true);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
         dialog = new Dialog(this);
+        tv_serverMsg = findViewById(R.id.game_textView_serverMsg);
         ivTable1 = findViewById(R.id.tableCard1);
         ivTable2 = findViewById(R.id.tableCard2);
         ivTable3 = findViewById(R.id.tableCard3);
@@ -344,34 +351,42 @@ public class GameActivity extends AppCompatActivity  {
         }
 
         dialog.show();
-
+    }
+  
+    @Override
+    protected void onStop() {
+        wizardClient.sendMessage(new LifecycleMessage(""+myPlayer.getName()+"left the game"));
+        super.onStop();
     }
 
-    public void startCallback() {
+    @Override
+    protected void onRestart() {
+        wizardClient.sendMessage(new LifecycleMessage(""+myPlayer.getName()+"came back"));
+        super.onRestart();
+    }
+  
+  public void startCallback() {
         wizardClient.registerCallback(basemessage -> {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                /*if (gameData.getDealer() == (myPlayer.getConnectionID()-1)) {
+                if (gameData.getDealer() == (myPlayer.getConnectionID())) {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(true));
                 } else {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(false));
-                }*/
-
-                if (gameData.getTable().getCards().size() != 0) {
-                    ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
-                    runOnUiThread(() -> showTableCards(cardsOnTable));
                 }
 
-                if (gameData.getActivePlayer() == (myPlayer.getConnectionID() - 1)) {
+                if (gameData.getActivePlayer() == (myPlayer.getConnectionID())) {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(true));
                 } else {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(false));
                 }
+                ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
+                runOnUiThread(() -> showTableCards(cardsOnTable));
 
             } else if (basemessage instanceof HandMessage) {
                 info("GAME_ACTIVITY: Hand recieved.");
@@ -379,7 +394,21 @@ public class GameActivity extends AppCompatActivity  {
                 runOnUiThread(() ->
                         addCardsToSlideView(gameData.getMyHand().getCards()));
 
-
+            } else if (basemessage instanceof TextMessage) {
+                String msg = ((TextMessage) basemessage).toString();
+                runOnUiThread(() -> {
+                    tv_serverMsg.setText(msg);
+                    addCardsToSlideView(gameData.getMyHand().getCards());
+                });
+            } else if (basemessage instanceof GoodbyeMessage) { // A player closed the app, so stop game and show current points as endresult
+                info("GAME_ACTIVITY: Goodbye received.");
+                runOnUiThread(() -> {
+                    Intent intent = new Intent(this, EndscreenActivity.class);
+                    startActivity(intent);
+                });
+            } else if (basemessage instanceof LifecycleMessage) {
+                LifecycleMessage msg = (LifecycleMessage) basemessage;
+                runOnUiThread(() -> tv_serverMsg.setText(msg.getMsg()));
             }
 
         });
@@ -395,16 +424,6 @@ public class GameActivity extends AppCompatActivity  {
         } else {
             tv_showTextTrumpf.setVisibility(View.VISIBLE);
         }
-    }
-
-    //default deal for 10 Playercards and 1 Trumpcard
-    public void create10testPlayerCards(Deck deck) {
-        myHand.clear();
-        for (int i = 1; i < 11; i++) { //skip first card that is going to be trumpcard
-            myHand.add(deck.getCards().get(i));
-        }
-        addCardsToSlideView(myHand.getCards());
-        dealTrumpCard();
     }
 
     public void dealTrumpCard() {
@@ -445,29 +464,43 @@ public class GameActivity extends AppCompatActivity  {
             case 6:
                 cardID = getResources().getIdentifier(cards.get(5).getPictureFileId(), "drawable", getPackageName());
                 ivTable6.setImageResource(cardID);
+                ivTable6.setVisibility(View.VISIBLE);
+                break;
             case 5:
                 cardID = getResources().getIdentifier(cards.get(4).getPictureFileId(), "drawable", getPackageName());
                 ivTable5.setImageResource(cardID);
+                ivTable5.setVisibility(View.VISIBLE);
+                break;
             case 4:
                 cardID = getResources().getIdentifier(cards.get(3).getPictureFileId(), "drawable", getPackageName());
                 ivTable4.setImageResource(cardID);
+                ivTable4.setVisibility(View.VISIBLE);
+                break;
             case 3:
                 cardID = getResources().getIdentifier(cards.get(2).getPictureFileId(), "drawable", getPackageName());
                 ivTable3.setImageResource(cardID);
+                ivTable3.setVisibility(View.VISIBLE);
+                break;
             case 2:
                 cardID = getResources().getIdentifier(cards.get(1).getPictureFileId(), "drawable", getPackageName());
                 ivTable2.setImageResource(cardID);
+                ivTable2.setVisibility(View.VISIBLE);
+                break;
             case 1:
                 cardID = getResources().getIdentifier(cards.get(0).getPictureFileId(), "drawable", getPackageName());
                 ivTable1.setImageResource(cardID);
+                ivTable1.setVisibility(View.VISIBLE);
                 break;
+            case 0:
+                ivTable1.setVisibility(View.INVISIBLE);
+                ivTable2.setVisibility(View.INVISIBLE);
+                ivTable3.setVisibility(View.INVISIBLE);
+                ivTable4.setVisibility(View.INVISIBLE);
+                ivTable5.setVisibility(View.INVISIBLE);
+                ivTable6.setVisibility(View.INVISIBLE);
             default:
                 System.out.println("Table Hand too short or too big! Something strange happened...");
         }
-    }
-
-    private void shuffleCards() {
-        wizardClient.sendMessage(new ActionMessage(DEAL));
     }
 
     private void dealCards() {
