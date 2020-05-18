@@ -16,18 +16,20 @@ public class StateMessage extends BaseMessage {
     int currentRound;
     int dealer;
     int activePlayer;
+    int betTricksCounter;
 
     public StateMessage() {
     }
 
     public StateMessage(Hand table, Notepad scores, Card trump, int roundsLeft,
-                        int dealer, int activePlayer) {
+                        int dealer, int activePlayer, int betTricksCounter) {
         this.table = table;
         this.scores = scores;
         this.roundsLeft = roundsLeft;
         this.trump = trump;
         this.dealer = dealer;
         this.activePlayer = activePlayer;
+        this.betTricksCounter = betTricksCounter;
     }
 
     public Hand getTable() {
@@ -52,6 +54,10 @@ public class StateMessage extends BaseMessage {
 
     public int getActivePlayer() {
         return activePlayer;
+    }
+
+    public int getBetTricksCounter() {
+        return betTricksCounter;
     }
 
     public int getCurrentRound() {

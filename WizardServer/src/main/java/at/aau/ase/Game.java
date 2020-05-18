@@ -4,6 +4,7 @@ import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
@@ -29,6 +30,7 @@ public class Game {
     private int activePlayerIndex; // refers to activePlayers index in list "players"
     private WizardServer server;
     private int trickRoundTurn;
+    private int betTricksCounter;
 
 
     public Game(WizardServer server, List<Player> players) {
@@ -38,8 +40,9 @@ public class Game {
         this.table = new Hand();
         this.scores = new Notepad((short) players.size());
         this.totalRounds = 60 / players.size();
-        this.currentRound = 19;
+        this.currentRound = 5;
         this.trickRoundTurn = 0;
+        this.betTricksCounter = 0;
         this.playerHands = new Hand[players.size()];
         for (int i = 0; i < players.size(); i++) {
             this.playerHands[i] = new Hand();
@@ -61,7 +64,7 @@ public class Game {
 
     public void broadcastGameState() {
         System.out.println("GAME: Broadcasting gameState");
-        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID));
+        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID, betTricksCounter));
         System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
     }
 
@@ -246,5 +249,20 @@ public class Game {
         System.out.println("GAME: " + trickWinner);
         server.broadcastMessage(new TextMessage(trickWinner));
         return highestCard.getPlayedBy();
+    }
+
+    public void writeToNotePad(Notepad scores, short playerID, short betTricks) {
+        scores.setBetTricksPerPlayerPerRound(playerID, betTricks);
+        this.scores = scores;
+        server.sentTo(activePlayerID, new NotePadMessage(this.scores));
+        System.out.println("GAME: Trickroundturn: " + trickRoundTurn);
+        //to check, when it's time to start with trickround
+        if (betTricksCounter < players.size()) {
+            betTricksCounter++;
+            activePlayerIndex = (activePlayerIndex + 1) % players.size();
+            activePlayerID = players.get(activePlayerIndex).getConnectionID();
+            updateDealerAndActivePlayer();
+            broadcastGameState();
+        }
     }
 }

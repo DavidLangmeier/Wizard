@@ -9,25 +9,13 @@ public class Notepad {
     short[][] betTricksPerPlayerPerRound;
     short[][] tookTricksPerPlayerPerRound;
 
-    public Notepad() {}
+    public Notepad() {
+    }
 
     public Notepad(short numberOfPlayers) {
-        switch(numberOfPlayers){
-            case 3:
-                this.pointsPerPlayerPerRound = new short[3][20];
-                break;
-            case 4:
-                this.pointsPerPlayerPerRound = new short[4][15];
-                break;
-            case 5:
-                this.pointsPerPlayerPerRound = new short[5][12];
-                break;
-            case 6:
-                this.pointsPerPlayerPerRound = new short[6][10];
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + numberOfPlayers);
-        }
+        this.pointsPerPlayerPerRound = new short[numberOfPlayers][60/numberOfPlayers];
+        this.betTricksPerPlayerPerRound = new short[numberOfPlayers][60/numberOfPlayers];
+        this.tookTricksPerPlayerPerRound = new short[numberOfPlayers][60/numberOfPlayers];
     }
 
     public static short getRound() {
@@ -35,11 +23,11 @@ public class Notepad {
     }
 
 
-    public short [][] getTotalPointsPerPlayer(short[][] pointsPerPlayerPerRound) {
-        short [][] totalPoints = new short[pointsPerPlayerPerRound.length][1];
+    public short[][] getTotalPointsPerPlayer() {
+        short[][] totalPoints = new short[pointsPerPlayerPerRound.length][1];
         for (int i = 0; i < pointsPerPlayerPerRound.length; i++) {
             for (int j = 0; j < pointsPerPlayerPerRound[i].length; j++) {
-            totalPoints [i][0] +=pointsPerPlayerPerRound[i][j];
+                totalPoints[i][0] += pointsPerPlayerPerRound[i][j];
             }
 
         }
@@ -50,4 +38,19 @@ public class Notepad {
         Notepad.round = round;
     }
 
+    public void setBetTricksPerPlayerPerRound(short playerID, short betTricks) {
+        this.betTricksPerPlayerPerRound[playerID][round] = betTricks;
+    }
+
+    public short[][] getBetTricksPerPlayerPerRound() {
+        return betTricksPerPlayerPerRound;
+    }
+
+    public void setTookTricksPerPlayerPerRound(short[][] tookTricksPerPlayerPerRound) {
+        this.tookTricksPerPlayerPerRound = tookTricksPerPlayerPerRound;
+    }
+
+    public short[][] getTookTricksPerPlayerPerRound() {
+        return pointsPerPlayerPerRound;
+    }
 }

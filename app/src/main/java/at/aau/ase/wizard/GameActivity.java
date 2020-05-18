@@ -8,20 +8,26 @@ import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
@@ -49,6 +55,7 @@ public class GameActivity extends AppCompatActivity {
     private static GameData gameData = LobbyActivity.getGameData();
     private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
     private TextView tv_serverMsg;
+    private EditText et_vorhersage;
 
     Hand trumpHand = new Hand(); //Test TrumpHand
     Deck deck = new Deck(); //Test Deck
@@ -74,6 +81,10 @@ public class GameActivity extends AppCompatActivity {
         //btnDeal.setEnabled(true);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
         tv_serverMsg = findViewById(R.id.game_textView_serverMsg);
+
+        et_vorhersage = findViewById(R.id.etn_Vorhersage);
+        et_vorhersage.setInputType(InputType.TYPE_CLASS_NUMBER);
+        et_vorhersage.setVisibility(View.INVISIBLE);
 
         ivTable1 = findViewById(R.id.tableCard1);
         ivTable2 = findViewById(R.id.tableCard2);
@@ -106,6 +117,8 @@ public class GameActivity extends AppCompatActivity {
 
         //Animation for display Trumpcard as Text
         ivShowTrumpCard.setOnClickListener(v -> showTrump());
+
+        et_vorhersage.setOnKeyListener((v, keyCode, keyEvent) -> enteredPrediction(keyCode, keyEvent));
     }
 
     public void startCallback() {
@@ -120,13 +133,35 @@ public class GameActivity extends AppCompatActivity {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(false));
                 }
+                System.err.println("Active Player: " + gameData.getActivePlayer() + ", Connection ID my Player: " + myPlayer.getConnectionID());
                 if (gameData.getActivePlayer() == (myPlayer.getConnectionID())) {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(true));
+
+                    if (gameData.getTrickroundTurn() < gameData.getScores().getTotalPointsPerPlayer().length) {
+                        info("!!!!!!!!! Trickround: " + gameData.getTrickroundTurn() + " score size: " + gameData.getScores().getTotalPointsPerPlayer().length);
+                        runOnUiThread(() -> {
+                            et_vorhersage.setEnabled(true);
+                            et_vorhersage.setVisibility(View.VISIBLE);
+                            btnPlaySelectedCard.setEnabled(false);
+                        });
+                    } else {
+                        runOnUiThread(() ->
+                                btnPlaySelectedCard.setEnabled(true));
+                    }
+
                 } else {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(false));
                 }
+                /*if(gameData.getActivePlayer() == myPlayer.getConnectionID() && btnPlaySelectedCard.isEnabled()){
+                    runOnUiThread(() ->
+                            et_vorhersage.setVisibility(View.VISIBLE));
+                } else {
+                    runOnUiThread(() ->
+                            et_vorhersage.setVisibility(View.INVISIBLE));
+
+                }*/
                 ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
                 runOnUiThread(() -> showTableCards(cardsOnTable));
 
@@ -135,6 +170,10 @@ public class GameActivity extends AppCompatActivity {
                 gameData.setMyHand((HandMessage) basemessage);
                 runOnUiThread(() ->
                         addCardsToSlideView(gameData.getMyHand().getCards()));
+
+            } else if (basemessage instanceof NotePadMessage) {
+                gameData.setScores((NotePadMessage) basemessage);
+                System.out.println("!!!!!" + Arrays.deepToString(gameData.getScores().getBetTricksPerPlayerPerRound()));
 
             } else if (basemessage instanceof TextMessage) {
                 String msg = ((TextMessage) basemessage).toString();
@@ -239,6 +278,18 @@ public class GameActivity extends AppCompatActivity {
 
     private void dealOnePlayerCardOnTable() {
         wizardClient.sendMessage(new CardMessage(sliderAdapter.getSelectedCard()));
+    }
+
+    public boolean enteredPrediction(int keycode, KeyEvent keyevent) {
+        if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER) {
+            short betTricks = Short.parseShort(et_vorhersage.getText().toString());
+            et_vorhersage.setEnabled(false);
+            wizardClient.sendMessage(new NotePadMessage(gameData.getScores(), (short) gameData.getActivePlayer(), betTricks));
+            return true;
+        } else {
+            System.out.println("No NotePadMessage sent!");
+            return false;
+        }
     }
 
 
