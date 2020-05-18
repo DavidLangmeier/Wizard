@@ -160,7 +160,7 @@ public class Game {
             activePlayerID = -1; // deactivate all players while showing full trick on table
             broadcastGameState(); // send to show full trick on table
             activePlayerIndex = checkTrickWinner();
-
+            writeTookTricksToNotePad();
             trickRoundTurn = 0;
             table.clear();
             updateDealerAndActivePlayer();
@@ -181,6 +181,7 @@ public class Game {
             checkTrickWinner();
             trickRoundTurn = 0;
             betTricksCounter = 0;
+            writeTookTricksToNotePad();
             clearBetTricks = true;
             table.clear();
 
@@ -255,7 +256,7 @@ public class Game {
         return highestCard.getPlayedBy();
     }
 
-    public void writeToNotePad(Notepad scores, short playerID, short betTricks) {
+    public void writeBetTricksToNotePad(Notepad scores, short playerID, short betTricks) {
         clearBetTricks = false;
         scores.setBetTricksPerPlayerPerRound(playerID, betTricks, currentRound);
         this.scores = scores;
@@ -269,6 +270,11 @@ public class Game {
             updateDealerAndActivePlayer();
             broadcastGameState();
         }
+    }
+
+    public void writeTookTricksToNotePad(){
+        scores.setTookTricksPerPlayerPerRound((short)checkTrickWinner(), currentRound);
+        broadcastGameState();
     }
 
 }

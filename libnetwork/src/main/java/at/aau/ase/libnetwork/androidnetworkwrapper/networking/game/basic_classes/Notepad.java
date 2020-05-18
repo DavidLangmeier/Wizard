@@ -46,11 +46,11 @@ public class Notepad {
         return betTricksPerPlayerPerRound;
     }
 
-    public void setTookTricksPerPlayerPerRound(short[][] tookTricksPerPlayerPerRound) {
-        this.tookTricksPerPlayerPerRound = tookTricksPerPlayerPerRound;
+    public void setTookTricksPerPlayerPerRound(short playerID, int currentRound) {
+        this.tookTricksPerPlayerPerRound[playerID][currentRound-1] +=1;
     }
 
     public short[][] getTookTricksPerPlayerPerRound() {
-        return pointsPerPlayerPerRound;
+        return tookTricksPerPlayerPerRound;
     }
 }

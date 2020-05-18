@@ -182,6 +182,7 @@ public class GameActivity extends AppCompatActivity {
             } else if (basemessage instanceof NotePadMessage) {
                 gameData.setScores((NotePadMessage) basemessage);
                 System.out.println(Arrays.deepToString(gameData.getScores().getBetTricksPerPlayerPerRound()));
+                System.out.println(Arrays.deepToString(gameData.getScores().getTookTricksPerPlayerPerRound()));
 
             } else if (basemessage instanceof TextMessage) {
                 String msg = ((TextMessage) basemessage).toString();
