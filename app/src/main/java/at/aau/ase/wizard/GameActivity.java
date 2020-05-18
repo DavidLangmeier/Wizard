@@ -7,13 +7,19 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
@@ -31,6 +37,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.T
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.DEAL;
@@ -38,7 +45,7 @@ import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_ac
 import static com.esotericsoftware.minlog.Log.*;
 
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity  {
     private Button btnPlaySelectedCard;
     private Button btnDeal;
     private String etShowCard;
@@ -52,6 +59,7 @@ public class GameActivity extends AppCompatActivity {
     private Player myPlayer = LobbyActivity.getMyPlayer();
     private static GameData gameData = LobbyActivity.getGameData();
     private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
+    private Dialog dialog;
     private TextView tv_serverMsg;
 
 
@@ -68,6 +76,7 @@ public class GameActivity extends AppCompatActivity {
         //wizardClient = WizardClient.getInstance(); // new instance would get new connectionID, has to be fixed
         startCallback();
 
+
         //myPlayer = LobbyActivity.getMyPlayer(); // use intent extra if problems with activity lifecycle occur
         //myPlayer = (Player) getIntent().getSerializableExtra("myPlayer"); // does not work properly - use bundle?
         info("@GAME_ACTIVITY: My Playername=" + myPlayer.getName() + ", connectionID=" + myPlayer.getConnectionID());
@@ -79,8 +88,8 @@ public class GameActivity extends AppCompatActivity {
         btnDeal.setOnClickListener(v -> dealCards());
         btnDeal.setEnabled(true);
         tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
+        dialog = new Dialog(this);
         tv_serverMsg = findViewById(R.id.game_textView_serverMsg);
-
         ivTable1 = findViewById(R.id.tableCard1);
         ivTable2 = findViewById(R.id.tableCard2);
         ivTable3 = findViewById(R.id.tableCard3);
@@ -116,6 +125,234 @@ public class GameActivity extends AppCompatActivity {
         ivShowTrumpCard.setOnClickListener(v -> showTrump());
     }
 
+    public void ShowPopupBlockofTruth(View v) {
+        TextView txtclose;
+        TextView np_Rounds;
+        TextView np_vorherSagePlayer;
+        TextView np_pointsPlayer;
+        TextView np_PlayerNames;
+        Switch sw_changeViewPointsStiche;
+        TextView np_textChangePointsStiche;
+
+
+        dialog.setContentView(R.layout.activity_game_popup);
+        txtclose = (TextView) dialog.findViewById(R.id.txtclose);
+
+        txtclose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        //ersetzung durch daten erhalten von server----------------------------------------------------------------------
+        Notepad testNodepade = new Notepad((short) 5);
+        testNodepade.testFillPointsPlayerround();
+
+
+        //----------------------switch-------------------------
+        np_textChangePointsStiche=(TextView)dialog.findViewById(R.id.tv_stichepunkte);
+        sw_changeViewPointsStiche=(Switch)dialog.findViewById(R.id.sw_switch1);
+
+        sw_changeViewPointsStiche.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                TextView np_vorherSagePlayerTrue;
+                if(isChecked){
+                    np_textChangePointsStiche.setText("Punkte per Runde");
+                    testNodepade.testFillPointsPlayerround();
+                    for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
+                        String testPlayerpoints1 = "";
+                        switch (i) {
+                            case 0:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points1);
+                                break;
+                            case 1:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points2);
+                                break;
+                            case 2:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points3);
+                                break;
+                            case 3:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points4);
+                                break;
+                            case 4:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points5);
+                                break;
+                            case 5:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
+                                break;
+
+                            default:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
+                        }
+                        for (int j = 0; j < testNodepade.pointsPerPlayerPerRound[i].length; j++) {
+                            testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.pointsPerPlayerPerRound[i][j]);
+                            testPlayerpoints1 = testPlayerpoints1 + System.lineSeparator();
+                        }
+                        np_vorherSagePlayerTrue.setText(testPlayerpoints1);
+                    }
+
+
+                }else{
+                    np_textChangePointsStiche.setText("Stiche per Runde");
+                    testNodepade.testFillPointsPlayerround2();
+                    for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
+                        String testPlayerpoints1 = "";
+                        switch (i) {
+                            case 0:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points1);
+                                break;
+                            case 1:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points2);
+                                break;
+                            case 2:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points3);
+                                break;
+                            case 3:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points4);
+                                break;
+                            case 4:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points5);
+                                break;
+                            case 5:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
+                                break;
+
+                            default:
+                                np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
+                        }
+                        for (int j = 0; j < testNodepade.pointsPerPlayerPerRound[i].length; j++) {
+                            testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.pointsPerPlayerPerRound[i][j]);
+                            testPlayerpoints1 = testPlayerpoints1 + System.lineSeparator();
+                        }
+                        np_vorherSagePlayerTrue.setText(testPlayerpoints1);
+                    }
+                }
+            }
+        });
+
+
+
+
+        //-------------------------------Runden Befüllen   1-20---------------------------
+        np_Rounds = (TextView) dialog.findViewById(R.id.tv_rounds);
+        String round = "";
+
+        short[] RoundsArray = new short[21];
+        for (int i = 0; i < RoundsArray.length; i++) {
+            RoundsArray[i] = (short) i;
+        }
+        for (int i = 1; i < RoundsArray.length; i++) {
+            round = round + String.valueOf(RoundsArray[i]);
+            round = round + System.lineSeparator();
+        }
+        np_Rounds.setText(round);
+
+
+        //-----------------------Player Befüllung Namen ---------------------------
+
+
+        np_PlayerNames = (TextView) dialog.findViewById(R.id.tv_player1);
+        for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
+
+            switch (i) {
+                case 0:
+                    np_PlayerNames = (TextView) dialog.findViewById(R.id.tv_player1);
+                    break;
+                case 1:
+                    np_PlayerNames = (TextView) dialog.findViewById(R.id.tv_player2);
+                    break;
+                case 2:
+                    np_PlayerNames = (TextView) dialog.findViewById(R.id.tv_player3);
+                    break;
+                case 3:
+                    np_PlayerNames = (TextView) dialog.findViewById(R.id.tv_player4);
+                    break;
+                case 4:
+                    np_PlayerNames = (TextView) dialog.findViewById(R.id.tv_player5);
+                    break;
+                case 5:
+                    np_PlayerNames = (TextView) dialog.findViewById(R.id.tv_player6);
+                    break;
+
+                default:
+                    np_PlayerNames = (TextView) dialog.findViewById(R.id.tv_player6);
+            }
+            np_PlayerNames.setText(testNodepade.playerNamesList.get(i));
+        }
+
+        //------------------Punkte Ausgabe Player  3 4 5 6-----------------------------------
+
+        for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
+            String testPlayerpoints1 = "";
+            switch (i) {
+                case 0:
+                    np_pointsPlayer = (TextView) dialog.findViewById(R.id.tv_points1);
+                    break;
+                case 1:
+                    np_pointsPlayer = (TextView) dialog.findViewById(R.id.tv_points2);
+                    break;
+                case 2:
+                    np_pointsPlayer = (TextView) dialog.findViewById(R.id.tv_points3);
+                    break;
+                case 3:
+                    np_pointsPlayer = (TextView) dialog.findViewById(R.id.tv_points4);
+                    break;
+                case 4:
+                    np_pointsPlayer = (TextView) dialog.findViewById(R.id.tv_points5);
+                    break;
+                case 5:
+                    np_pointsPlayer = (TextView) dialog.findViewById(R.id.tv_points6);
+                    break;
+
+                default:
+                    np_pointsPlayer = (TextView) dialog.findViewById(R.id.tv_points6);
+            }
+            for (int j = 0; j < testNodepade.pointsPerPlayerPerRound[i].length; j++) {
+                testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.pointsPerPlayerPerRound[i][j]);
+                testPlayerpoints1 = testPlayerpoints1 + System.lineSeparator();
+            }
+            np_pointsPlayer.setText(testPlayerpoints1);
+        }
+        //------------------Vorhersage Ausgabe Player 1 2 3 4 5 6--------------------------
+
+        for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
+            String testVorhersage = "";
+            switch (i) {
+                case 0:
+                    np_vorherSagePlayer = (TextView) dialog.findViewById(R.id.tv_pointstricks1);
+                    break;
+                case 1:
+                    np_vorherSagePlayer = (TextView) dialog.findViewById(R.id.tv_pointstricks2);
+                    break;
+                case 2:
+                    np_vorherSagePlayer = (TextView) dialog.findViewById(R.id.tv_pointstricks3);
+                    break;
+                case 3:
+                    np_vorherSagePlayer = (TextView) dialog.findViewById(R.id.tv_pointstricks4);
+                    break;
+                case 4:
+                    np_vorherSagePlayer = (TextView) dialog.findViewById(R.id.tv_pointstricks5);
+                    break;
+                case 5:
+                    np_vorherSagePlayer = (TextView) dialog.findViewById(R.id.tv_pointstricks6);
+                    break;
+
+                default:
+                    np_vorherSagePlayer = (TextView) dialog.findViewById(R.id.tv_pointstricks6);
+            }
+            for (int j = 0; j < testNodepade.pointsPerPlayerPerRound[i].length; j++) {
+                testVorhersage = testVorhersage + String.valueOf(testNodepade.pointsPerPlayerPerRound[i][j]);
+                testVorhersage = testVorhersage + System.lineSeparator();
+            }
+            np_vorherSagePlayer.setText(testVorhersage);
+        }
+
+        dialog.show();
+    }
+  
     @Override
     protected void onStop() {
         wizardClient.sendMessage(new LifecycleMessage(""+myPlayer.getName()+"left the game"));
@@ -127,8 +364,8 @@ public class GameActivity extends AppCompatActivity {
         wizardClient.sendMessage(new LifecycleMessage(""+myPlayer.getName()+"came back"));
         super.onRestart();
     }
-
-    public void startCallback() {
+  
+  public void startCallback() {
         wizardClient.registerCallback(basemessage -> {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
@@ -140,6 +377,7 @@ public class GameActivity extends AppCompatActivity {
                     runOnUiThread(() ->
                             btnDeal.setEnabled(false));
                 }
+
                 if (gameData.getActivePlayer() == (myPlayer.getConnectionID())) {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(true));

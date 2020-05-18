@@ -16,7 +16,8 @@ public class howto_playpdfActivity extends AppCompatActivity {
         setContentView(R.layout.activity_howto_playpdf);
 
         pdfView = (PDFView) findViewById(R.id.pdfView);
-        pdfView.fromAsset("Spielanleitung_Wizard.pdf").load();
+       // pdfView.fromAsset("Spielanleitung_Wizard.pdf").load();
+        pdfView.fromAsset("Spielanleitung_Wizard5.pdf").load();
     }
 
 }

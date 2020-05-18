@@ -7,10 +7,8 @@
     android:background="#197331"
     tools:context=".GameActivity">
 
-    <!--test  tesat aera -->
-    <!--test  tesat aera -->
-    <!--test  tesat aera -->
-    <!--test  tesat aera -->
+
+
 
 
     <androidx.viewpager2.widget.ViewPager2
@@ -186,5 +184,20 @@
         app:layout_constraintBottom_toTopOf="@+id/viewTrumpCard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewPagerImageSlieder" />
+
+    <!--button Nodepade -->
+    <Button
+        android:onClick="ShowPopupBlockofTruth"
+        android:id="@+id/game_btn_showNodepad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="135dp"
+        android:layout_marginEnd="138dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/buttonsstyls"
+        android:text="Block of Truth" />
 
 </android.widget.RelativeLayout>
