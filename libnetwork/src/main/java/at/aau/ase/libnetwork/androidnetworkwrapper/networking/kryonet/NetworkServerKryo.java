@@ -49,7 +49,7 @@ public class NetworkServerKryo implements NetworkServer, KryoNetComponent {
     /**
      * Send a message to just one client. You need to specify the connectionID of the client you want to send the msg to.
      * connectionID should be part of the player in List<Player> players, which keeps all players known to the server.
-     * @param connectionID. Use the one from player in players.
+     * @param connectionID, use the one from player in players.
      * @param object, the message to be send. Should be subclass of BaseMessage.
      */
     public void sentTo(Integer connectionID, Object object) {
@@ -74,5 +74,21 @@ public class NetworkServerKryo implements NetworkServer, KryoNetComponent {
         if (server.getConnections().length == 0)
             return null;
         return server.getConnections()[0].getID();
+    }
+
+    /**
+     * To disconnect a specific client connection. Used in case a user connects but the game is already running.
+     * @param connectionID, which is to be closed.
+     * @return true if successfully closed and false if the given connection was not closed.
+     */
+    public boolean disconnect(Integer connectionID) {
+        Connection[] connections = server.getConnections();
+        for (Connection c: connections) {
+            if (c.getID() == connectionID) {
+                c.close();
+                return true;
+            }
+        }
+        return false;
     }
 }
