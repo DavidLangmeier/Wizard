@@ -1,7 +1,10 @@
 package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes;
 
 
+import java.util.ArrayList;
+
 public class Notepad {
+
     private static int round = 0;
     private int[][] pointsPerPlayerPerRound;
 
@@ -61,4 +64,33 @@ public class Notepad {
     public int[][] getTookTricksPerPlayerPerRound() {
         return tookTricksPerPlayerPerRound;
     }
+
+    //brauche Notpade classe die mir werte gibt funktion
+    public void testFillPointsPlayerround() {
+        int count = 1;
+        for (int i = 0; i < pointsPerPlayerPerRound.length; i++) {
+            // playerNames[i]="name"+i;
+            playerNamesList.add("name" + i);
+            for (int j = 0; j < pointsPerPlayerPerRound[i].length; j++) {
+                pointsPerPlayerPerRound[i][j] = (short) count;
+                count--;
+
+            }
+        }
+    }
+    //test fill2 für switch case
+        public void testFillPointsPlayerround2(){
+            int count2=1;
+            for(int i=0; i< pointsPerPlayerPerRound.length;i++){
+                // playerNames[i]="name"+i;
+                playerNamesList.add("name"+i);
+                for(int j=0; j<pointsPerPlayerPerRound[i].length;j++){
+                    pointsPerPlayerPerRound[i][j]= (short) count2;
+                    count2++;
+
+                }
+            }
+
+    }
+
 }
