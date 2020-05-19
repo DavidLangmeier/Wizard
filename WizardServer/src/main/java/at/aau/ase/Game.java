@@ -1,9 +1,11 @@
 package at.aau.ase;
 
+import java.util.Arrays;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
@@ -11,6 +13,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.END;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
@@ -30,6 +33,8 @@ public class Game {
     private int activePlayerIndex; // refers to activePlayers index in list "players"
     private WizardServer server;
     private int trickRoundTurn;
+    private int betTricksCounter;
+    private boolean clearBetTricks;
 
 
     public Game(WizardServer server, List<Player> players) {
@@ -39,8 +44,9 @@ public class Game {
         this.table = new Hand();
         this.scores = new Notepad((short) players.size());
         this.totalRounds = 60 / players.size();
-        this.currentRound = 19;
+        this.currentRound = 2;
         this.trickRoundTurn = 0;
+        this.betTricksCounter = 0;
         this.playerHands = new Hand[players.size()];
         for (int i = 0; i < players.size(); i++) {
             this.playerHands[i] = new Hand();
@@ -49,6 +55,7 @@ public class Game {
         this.dealer = players.get((currentRound % players.size())).getConnectionID();
         //this.activePlayer = players.get(0).getConnectionID();
         this.activePlayerID = -1;
+        this.clearBetTricks = false;
     }
 
     public void startGame() {
@@ -63,7 +70,7 @@ public class Game {
 
     public void broadcastGameState() {
         System.out.println("GAME: Broadcasting gameState");
-        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID));
+        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID, betTricksCounter, clearBetTricks));
         System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
     }
 
@@ -123,7 +130,7 @@ public class Game {
             System.out.println(table.getCards().get(i) + " is now on Table!");
         }
         //server.sentTo(players.get(activePlayer-1).getConnectionID(), new HandMessage(playerHands[activePlayer-1]));
-        server.sentTo(activePlayerID, new HandMessage(playerHands[activePlayerIndex]));
+        server.sentTo(activePlayerID, new HandMessage(playerHands[activePlayerIndex], clearBetTricks));
 
         checkCurrentTrickRound();
         updateDealerAndActivePlayer();
@@ -157,7 +164,7 @@ public class Game {
             activePlayerID = -1; // deactivate all players while showing full trick on table
             broadcastGameState(); // send to show full trick on table
             activePlayerIndex = checkTrickWinner();
-
+            writeTookTricksToNotePad();
             trickRoundTurn = 0;
             table.clear();
             updateDealerAndActivePlayer();
@@ -177,6 +184,10 @@ public class Game {
             broadcastGameState(); // send to show full trick on table
             checkTrickWinner();
             trickRoundTurn = 0;
+            betTricksCounter = 0;
+            writeTookTricksToNotePad();
+            calculatePointsPerPlayerPerRound();
+            clearBetTricks = true;
             table.clear();
 
             // wait some time before sending cleared table
@@ -250,7 +261,68 @@ public class Game {
         return highestCard.getPlayedBy();
     }
 
+
+    public void writeBetTricksToNotePad(Notepad scores, int playerID, int betTricks) {
+        clearBetTricks = false;
+        scores.setBetTricksPerPlayerPerRound(playerID, betTricks, currentRound);
+        this.scores = scores;
+        System.out.println(Arrays.deepToString(scores.getBetTricksPerPlayerPerRound()));
+        server.broadcastMessage(new NotePadMessage(this.scores));
+        //server.sentTo(activePlayerID, new NotePadMessage(this.scores));
+        System.out.println("GAME: Trickroundturn: " + trickRoundTurn);
+        //to check, when it's time to start with trickround
+        if (betTricksCounter < players.size()) {
+            betTricksCounter++;
+            activePlayerIndex = (activePlayerIndex + 1) % players.size();
+            activePlayerID = players.get(activePlayerIndex).getConnectionID();
+            updateDealerAndActivePlayer();
+            broadcastGameState();
+        }
+    }
+
+    public void writeTookTricksToNotePad() {
+        scores.setTookTricksPerPlayerPerRound(checkTrickWinner(), currentRound);
+        //broadcastGameState();
+    }
+
+    public void calculatePointsPerPlayerPerRound() {
+        int pointsPerPlayerPerRound;
+        for (int i = 0; i < players.size(); i++) {
+            if (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1] == scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]) {
+                pointsPerPlayerPerRound = (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
+                System.out.println("IF Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
+                System.out.println(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
+                scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
+            } else {
+                pointsPerPlayerPerRound = (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]));
+                System.out.println("ELSE Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
+                System.out.println(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
+                scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
+            }
+        }
+        server.broadcastMessage(new NotePadMessage(this.scores));
+    }
+
     public boolean isGamerunning() {
         return gamerunning;
     }
+
+    //checks if bet is allowed
+    public boolean checkBet(int bet) {
+        boolean checkBet;
+        int sum = 0;
+        for (int i = 0; i < players.size()-1; i++) {
+            int index = (((currentRound+1)+i) % players.size());
+            sum += scores.getBetTricksPerPlayerPerRound()[index][currentRound - 1];
+        }
+        if (((bet - sum) == currentRound) || ((bet - sum) == -currentRound)) {
+            checkBet = false;
+        } else checkBet = (bet - sum) != 0;
+        return checkBet;
+    }
+
+    public boolean checkBetTricksCounter(){
+        return betTricksCounter < players.size()-1;
+    }
 }
+

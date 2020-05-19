@@ -4,54 +4,66 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classe
 import java.util.ArrayList;
 
 public class Notepad {
-    private static short round = 0;
-    public short[][] pointsPerPlayerPerRound;
-    public ArrayList<String>playerNamesList;
+
+    private static int round = 0;
+    private int[][] pointsPerPlayerPerRound;
+    public ArrayList<String> playerNamesList;
 
     //to use later
-    short[][] betTricksPerPlayerPerRound;
-    short[][] tookTricksPerPlayerPerRound;
+    private int[][] betTricksPerPlayerPerRound;
+    private int[][] tookTricksPerPlayerPerRound;
 
-    public Notepad() {}
-
-    public Notepad(short numberOfPlayers) {
-        playerNamesList=new ArrayList<String>();
-        switch(numberOfPlayers){
-            case 3:
-                this.pointsPerPlayerPerRound = new short[3][20];
-                break;
-            case 4:
-                this.pointsPerPlayerPerRound = new short[4][15];
-                break;
-            case 5:
-                this.pointsPerPlayerPerRound = new short[5][12];
-                break;
-            case 6:
-                this.pointsPerPlayerPerRound = new short[6][10];
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + numberOfPlayers);
-        }
+    public Notepad() {
     }
 
-    public static short getRound() {
+    public Notepad(int numberOfPlayers) {
+        this.pointsPerPlayerPerRound = new int[numberOfPlayers][60 / numberOfPlayers];
+        this.betTricksPerPlayerPerRound = new int[numberOfPlayers][60 / numberOfPlayers];
+        this.tookTricksPerPlayerPerRound = new int[numberOfPlayers][60 / numberOfPlayers];
+    }
+
+    public static int getRound() {
         return round;
     }
 
 
-    public short [][] getTotalPointsPerPlayer(short[][] pointsPerPlayerPerRound) {
-        short [][] totalPoints = new short[pointsPerPlayerPerRound.length][1];
+    public int[][] getTotalPointsPerPlayer() {
+        int[][] totalPoints = new int[pointsPerPlayerPerRound.length][1];
         for (int i = 0; i < pointsPerPlayerPerRound.length; i++) {
             for (int j = 0; j < pointsPerPlayerPerRound[i].length; j++) {
-            totalPoints [i][0] +=pointsPerPlayerPerRound[i][j];
+                totalPoints[i][0] += pointsPerPlayerPerRound[i][j];
             }
 
         }
         return totalPoints;
     }
 
-    public static void setRound(short round) {
+    public static void setRound(int round) {
         Notepad.round = round;
+    }
+
+    public void setPointsPerPlayerPerRound(int playerID, int pointsForThisRound, int currentRound) {
+        this.pointsPerPlayerPerRound[playerID][currentRound - 1] = pointsForThisRound;
+    }
+
+    public int[][] getPointsPerPlayerPerRound() {
+        return pointsPerPlayerPerRound;
+    }
+
+    public void setBetTricksPerPlayerPerRound(int playerID, int betTricks, int currentRound) {
+        this.betTricksPerPlayerPerRound[playerID][currentRound - 1] = betTricks;
+    }
+
+    public int[][] getBetTricksPerPlayerPerRound() {
+        return betTricksPerPlayerPerRound;
+    }
+
+    public void setTookTricksPerPlayerPerRound(int playerID, int currentRound) {
+        this.tookTricksPerPlayerPerRound[playerID][currentRound - 1] += 1;
+    }
+
+    public int[][] getTookTricksPerPlayerPerRound() {
+        return tookTricksPerPlayerPerRound;
     }
 
     //brauche Notpade classe die mir werte gibt funktion
@@ -61,30 +73,26 @@ public class Notepad {
             // playerNames[i]="name"+i;
             playerNamesList.add("name" + i);
             for (int j = 0; j < pointsPerPlayerPerRound[i].length; j++) {
-                pointsPerPlayerPerRound[i][j] = (short) count;
+                pointsPerPlayerPerRound[i][j] = count;
                 count--;
 
             }
         }
     }
-    //test fill2 für switch case
-        public void testFillPointsPlayerround2(){
-            int count2=1;
-            for(int i=0; i< pointsPerPlayerPerRound.length;i++){
-                // playerNames[i]="name"+i;
-                playerNamesList.add("name"+i);
-                for(int j=0; j<pointsPerPlayerPerRound[i].length;j++){
-                    pointsPerPlayerPerRound[i][j]= (short) count2;
-                    count2++;
 
-                }
+    //test fill2 für switch case
+    public void testFillPointsPlayerround2() {
+        int count2 = 1;
+        for (int i = 0; i < pointsPerPlayerPerRound.length; i++) {
+            // playerNames[i]="name"+i;
+            playerNamesList.add("name" + i);
+            for (int j = 0; j < pointsPerPlayerPerRound[i].length; j++) {
+                pointsPerPlayerPerRound[i][j] = count2;
+                count2++;
+
             }
+        }
 
     }
-
-
-
-
-
 
 }
