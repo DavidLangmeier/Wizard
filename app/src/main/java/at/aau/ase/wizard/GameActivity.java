@@ -200,9 +200,9 @@ public class GameActivity extends AppCompatActivity {
                         addCardsToSlideView(gameData.getMyHand().getCards()));
 
             } else if (basemessage instanceof NotePadMessage) {
+                info("GAME_ACTIVITY: recieved scores!");
                 gameData.setScores((NotePadMessage) basemessage);
-                System.out.println(Arrays.deepToString(gameData.getScores().getBetTricksPerPlayerPerRound()));
-                System.out.println(Arrays.deepToString(gameData.getScores().getTookTricksPerPlayerPerRound()));
+                System.out.println(Arrays.deepToString(gameData.getScores().getPointsPerPlayerPerRound()));
 
             } else if (basemessage instanceof TextMessage) {
                 String msg = ((TextMessage) basemessage).toString();
@@ -325,7 +325,7 @@ public class GameActivity extends AppCompatActivity {
         if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER) {
             short betTricks = Short.parseShort(et_vorhersage.getText().toString());
             et_vorhersage.setEnabled(false);
-            wizardClient.sendMessage(new NotePadMessage(gameData.getScores(), (short) gameData.getActivePlayer(), betTricks));
+            wizardClient.sendMessage(new NotePadMessage(gameData.getScores(), gameData.getActivePlayer(), betTricks));
             return true;
         } else {
             System.out.println("No NotePadMessage sent!");

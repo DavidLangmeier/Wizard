@@ -1,5 +1,6 @@
 package at.aau.ase;
 
+import java.util.Arrays;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
@@ -12,6 +13,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.END;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
@@ -184,6 +186,7 @@ public class Game {
             trickRoundTurn = 0;
             betTricksCounter = 0;
             writeTookTricksToNotePad();
+            calculatePointsPerPlayerPerRound();
             clearBetTricks = true;
             table.clear();
 
@@ -259,11 +262,12 @@ public class Game {
     }
 
 
-    public void writeBetTricksToNotePad(Notepad scores, short playerID, short betTricks) {
+    public void writeBetTricksToNotePad(Notepad scores, int playerID, int betTricks) {
         clearBetTricks = false;
         scores.setBetTricksPerPlayerPerRound(playerID, betTricks, currentRound);
         this.scores = scores;
-        server.sentTo(activePlayerID, new NotePadMessage(this.scores));
+        server.broadcastMessage(new NotePadMessage(this.scores));
+        //server.sentTo(activePlayerID, new NotePadMessage(this.scores));
         System.out.println("GAME: Trickroundturn: " + trickRoundTurn);
         //to check, when it's time to start with trickround
         if (betTricksCounter < players.size()) {
@@ -276,8 +280,26 @@ public class Game {
     }
 
     public void writeTookTricksToNotePad(){
-        scores.setTookTricksPerPlayerPerRound((short)checkTrickWinner(), currentRound);
-        broadcastGameState();
+        scores.setTookTricksPerPlayerPerRound(checkTrickWinner(), currentRound);
+        //broadcastGameState();
+    }
+
+    public void calculatePointsPerPlayerPerRound(){
+        int pointsPerPlayerPerRound;
+        for (int i = 0; i < players.size(); i++) {
+            if(scores.getBetTricksPerPlayerPerRound()[i][currentRound-1] == scores.getTookTricksPerPlayerPerRound()[i][currentRound-1]){
+                pointsPerPlayerPerRound = (scores.getBetTricksPerPlayerPerRound()[i][currentRound-1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
+                System.out.println("IF Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
+                System.out.println(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
+                scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID()-1, pointsPerPlayerPerRound, currentRound);
+            }else{
+                pointsPerPlayerPerRound = (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound-1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound-1]));
+                System.out.println("ELSE Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
+                System.out.println(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
+                scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID()-1, pointsPerPlayerPerRound, currentRound);
+            }
+        }
+        server.broadcastMessage(new NotePadMessage(this.scores));
     }
 
     public boolean isGamerunning() {

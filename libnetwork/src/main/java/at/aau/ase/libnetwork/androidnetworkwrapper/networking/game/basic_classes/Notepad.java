@@ -2,29 +2,29 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classe
 
 
 public class Notepad {
-    private static short round = 0;
-    public short[][] pointsPerPlayerPerRound;
+    private static int round = 0;
+    private int[][] pointsPerPlayerPerRound;
 
     //to use later
-    short[][] betTricksPerPlayerPerRound;
-    short[][] tookTricksPerPlayerPerRound;
+    private int[][] betTricksPerPlayerPerRound;
+    private int[][] tookTricksPerPlayerPerRound;
 
     public Notepad() {
     }
 
-    public Notepad(short numberOfPlayers) {
-        this.pointsPerPlayerPerRound = new short[numberOfPlayers][60/numberOfPlayers];
-        this.betTricksPerPlayerPerRound = new short[numberOfPlayers][60/numberOfPlayers];
-        this.tookTricksPerPlayerPerRound = new short[numberOfPlayers][60/numberOfPlayers];
+    public Notepad(int numberOfPlayers) {
+        this.pointsPerPlayerPerRound = new int[numberOfPlayers][60/numberOfPlayers];
+        this.betTricksPerPlayerPerRound = new int[numberOfPlayers][60/numberOfPlayers];
+        this.tookTricksPerPlayerPerRound = new int[numberOfPlayers][60/numberOfPlayers];
     }
 
-    public static short getRound() {
+    public static int getRound() {
         return round;
     }
 
 
-    public short[][] getTotalPointsPerPlayer() {
-        short[][] totalPoints = new short[pointsPerPlayerPerRound.length][1];
+    public int[][] getTotalPointsPerPlayer() {
+        int[][] totalPoints = new int[pointsPerPlayerPerRound.length][1];
         for (int i = 0; i < pointsPerPlayerPerRound.length; i++) {
             for (int j = 0; j < pointsPerPlayerPerRound[i].length; j++) {
                 totalPoints[i][0] += pointsPerPlayerPerRound[i][j];
@@ -34,23 +34,31 @@ public class Notepad {
         return totalPoints;
     }
 
-    public static void setRound(short round) {
+    public static void setRound(int round) {
         Notepad.round = round;
     }
 
-    public void setBetTricksPerPlayerPerRound(short playerID, short betTricks, int currentRound) {
+    public void setPointsPerPlayerPerRound(int playerID, int pointsForThisRound, int currentRound) {
+        this.pointsPerPlayerPerRound[playerID][currentRound-1] = pointsForThisRound;
+    }
+
+    public int[][] getPointsPerPlayerPerRound() {
+        return pointsPerPlayerPerRound;
+    }
+
+    public void setBetTricksPerPlayerPerRound(int playerID, int betTricks, int currentRound) {
         this.betTricksPerPlayerPerRound[playerID][currentRound-1] = betTricks;
     }
 
-    public short[][] getBetTricksPerPlayerPerRound() {
+    public int[][] getBetTricksPerPlayerPerRound() {
         return betTricksPerPlayerPerRound;
     }
 
-    public void setTookTricksPerPlayerPerRound(short playerID, int currentRound) {
+    public void setTookTricksPerPlayerPerRound(int playerID, int currentRound) {
         this.tookTricksPerPlayerPerRound[playerID][currentRound-1] +=1;
     }
 
-    public short[][] getTookTricksPerPlayerPerRound() {
+    public int[][] getTookTricksPerPlayerPerRound() {
         return tookTricksPerPlayerPerRound;
     }
 }

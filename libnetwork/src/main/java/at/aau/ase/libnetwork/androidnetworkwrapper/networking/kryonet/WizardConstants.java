@@ -29,6 +29,12 @@ public class WizardConstants {
     public  static final Integer MIN_NUM_PLAYERS = 3;
 
     /**
+     * to calculate points per player after each round
+     */
+    public static final Integer MULTIPLIER_TOOK_TRICKS = 10;
+    public static final Integer ADDEND_BET_TRICKS_CORRECTLY = 20;
+
+    /**
      * Classes to be send over the network. Since they need to be registered, just add them here to this array.
      * Also any classes, which are just used for parameters in the messages need to be listed.
      */
@@ -46,8 +52,8 @@ public class WizardConstants {
             PlayerMessage.class,
             LobbyMessage.class,
             ArrayList.class,
-            short[][].class,
-            short[].class,
+            int[][].class,
+            int[].class,
             Color.class,
             Value.class,
             NotePadMessage.class,
