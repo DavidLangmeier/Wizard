@@ -115,7 +115,11 @@ public class ServerCallback implements Callback<BaseMessage> {
         } else if(message instanceof NotePadMessage){
             info("Recieved Notepad to enter prediction!");
             NotePadMessage msg = (NotePadMessage) message;
-            game.writeBetTricksToNotePad(msg.getScores(), (msg.getActivePlayer()-1), msg.getBetTricks());
+            if(!(game.checkBet(msg.getBetTrick())) && (!game.checkBetTricksCounter())){
+                server.sentTo(msg.getActivePlayer(), new ErrorMessage("X"));
+            }else{
+                game.writeBetTricksToNotePad(msg.getScores(), (msg.getActivePlayer() - 1), msg.getBetTrick());
+            }
 
         } else{
             info("Received message cannot be handled correctly!");

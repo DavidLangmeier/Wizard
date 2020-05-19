@@ -266,6 +266,7 @@ public class Game {
         clearBetTricks = false;
         scores.setBetTricksPerPlayerPerRound(playerID, betTricks, currentRound);
         this.scores = scores;
+        System.out.println(Arrays.deepToString(scores.getBetTricksPerPlayerPerRound()));
         server.broadcastMessage(new NotePadMessage(this.scores));
         //server.sentTo(activePlayerID, new NotePadMessage(this.scores));
         System.out.println("GAME: Trickroundturn: " + trickRoundTurn);
@@ -279,24 +280,24 @@ public class Game {
         }
     }
 
-    public void writeTookTricksToNotePad(){
+    public void writeTookTricksToNotePad() {
         scores.setTookTricksPerPlayerPerRound(checkTrickWinner(), currentRound);
         //broadcastGameState();
     }
 
-    public void calculatePointsPerPlayerPerRound(){
+    public void calculatePointsPerPlayerPerRound() {
         int pointsPerPlayerPerRound;
         for (int i = 0; i < players.size(); i++) {
-            if(scores.getBetTricksPerPlayerPerRound()[i][currentRound-1] == scores.getTookTricksPerPlayerPerRound()[i][currentRound-1]){
-                pointsPerPlayerPerRound = (scores.getBetTricksPerPlayerPerRound()[i][currentRound-1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
+            if (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1] == scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]) {
+                pointsPerPlayerPerRound = (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
                 System.out.println("IF Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
                 System.out.println(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
-                scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID()-1, pointsPerPlayerPerRound, currentRound);
-            }else{
-                pointsPerPlayerPerRound = (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound-1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound-1]));
+                scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
+            } else {
+                pointsPerPlayerPerRound = (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]));
                 System.out.println("ELSE Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
                 System.out.println(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
-                scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID()-1, pointsPerPlayerPerRound, currentRound);
+                scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
             }
         }
         server.broadcastMessage(new NotePadMessage(this.scores));
@@ -305,4 +306,23 @@ public class Game {
     public boolean isGamerunning() {
         return gamerunning;
     }
+
+    //checks if bet is allowed
+    public boolean checkBet(int bet) {
+        boolean checkBet;
+        int sum = 0;
+        for (int i = 0; i < players.size()-1; i++) {
+            int index = (((currentRound+1)+i) % players.size());
+            sum += scores.getBetTricksPerPlayerPerRound()[index][currentRound - 1];
+        }
+        if (((bet - sum) == currentRound) || ((bet - sum) == -currentRound)) {
+            checkBet = false;
+        } else checkBet = (bet - sum) != 0;
+        return checkBet;
+    }
+
+    public boolean checkBetTricksCounter(){
+        return betTricksCounter < players.size()-1;
+    }
 }
+

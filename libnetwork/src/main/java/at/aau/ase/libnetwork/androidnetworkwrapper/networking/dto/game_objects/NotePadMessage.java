@@ -5,14 +5,14 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 public class NotePadMessage extends BaseMessage{
     private Notepad scores;
     private int activePlayer;
-    private int betTricks;
+    private int betTrick;
 
     public NotePadMessage(){}
 
     public NotePadMessage(Notepad scores, int activePlayer, int betTricks){
         this.scores = scores;
         this.activePlayer = activePlayer;
-        this.betTricks = betTricks;
+        this.betTrick = betTricks;
     }
     public NotePadMessage(Notepad scores) {
         this.scores = scores;
@@ -26,8 +26,8 @@ public class NotePadMessage extends BaseMessage{
         return activePlayer;
     }
 
-    public int getBetTricks() {
-        return betTricks;
+    public int getBetTrick() {
+        return betTrick;
     }
 
     public void setScores(Notepad scores) {

@@ -182,14 +182,7 @@ public class GameActivity extends AppCompatActivity {
                     runOnUiThread(() ->
                             btnPlaySelectedCard.setEnabled(false));
                 }
-                /*if(gameData.getActivePlayer() == myPlayer.getConnectionID() && btnPlaySelectedCard.isEnabled()){
-                    runOnUiThread(() ->
-                            et_vorhersage.setVisibility(View.VISIBLE));
-                } else {
-                    runOnUiThread(() ->
-                            et_vorhersage.setVisibility(View.INVISIBLE));
 
-                }*/
                 ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
                 runOnUiThread(() -> showTableCards(cardsOnTable));
 
@@ -219,6 +212,14 @@ public class GameActivity extends AppCompatActivity {
             } else if (basemessage instanceof LifecycleMessage) {
                 LifecycleMessage msg = (LifecycleMessage) basemessage;
                 runOnUiThread(() -> tv_serverMsg.setText(msg.getMsg()));
+
+            } else if (basemessage instanceof ErrorMessage){
+                ErrorMessage msg = (ErrorMessage) basemessage;
+                runOnUiThread(() -> {
+                    et_vorhersage.setEnabled(true);
+                    et_vorhersage.setText(msg.getError());
+                });
+                //et_vorhersage.setOnKeyListener((v, keyCode, keyEvent) -> enteredPrediction(keyCode, keyEvent));
             }
 
         });
