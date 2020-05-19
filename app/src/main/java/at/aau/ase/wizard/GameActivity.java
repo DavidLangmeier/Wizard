@@ -179,7 +179,7 @@ public class GameActivity extends AppCompatActivity  {
                 if(isChecked){
                     np_textChangePointsStiche.setText("Punkte per Runde");
                     testNodepade.testFillPointsPlayerround();
-                    for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
+                    for (int i = 0; i < testNodepade.getPointsPerPlayerPerRound().length; i++) {
                         String testPlayerpoints1 = "";
                         switch (i) {
                             case 0:
@@ -204,8 +204,8 @@ public class GameActivity extends AppCompatActivity  {
                             default:
                                 np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
                         }
-                        for (int j = 0; j < testNodepade.pointsPerPlayerPerRound[i].length; j++) {
-                            testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.pointsPerPlayerPerRound[i][j]);
+                        for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
+                            testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]);
                             testPlayerpoints1 = testPlayerpoints1 + System.lineSeparator();
                         }
                         np_vorherSagePlayerTrue.setText(testPlayerpoints1);
@@ -215,7 +215,7 @@ public class GameActivity extends AppCompatActivity  {
                 }else{
                     np_textChangePointsStiche.setText("Stiche per Runde");
                     testNodepade.testFillPointsPlayerround2();
-                    for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
+                    for (int i = 0; i < testNodepade.getPointsPerPlayerPerRound().length; i++) {
                         String testPlayerpoints1 = "";
                         switch (i) {
                             case 0:
@@ -240,8 +240,8 @@ public class GameActivity extends AppCompatActivity  {
                             default:
                                 np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
                         }
-                        for (int j = 0; j < testNodepade.pointsPerPlayerPerRound[i].length; j++) {
-                            testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.pointsPerPlayerPerRound[i][j]);
+                        for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
+                            testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]);
                             testPlayerpoints1 = testPlayerpoints1 + System.lineSeparator();
                         }
                         np_vorherSagePlayerTrue.setText(testPlayerpoints1);
@@ -272,7 +272,7 @@ public class GameActivity extends AppCompatActivity  {
 
 
         np_PlayerNames = (TextView) dialog.findViewById(R.id.tv_player1);
-        for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
+        for (int i = 0; i < testNodepade.getPointsPerPlayerPerRound().length; i++) {
 
             switch (i) {
                 case 0:
@@ -302,7 +302,7 @@ public class GameActivity extends AppCompatActivity  {
 
         //------------------Punkte Ausgabe Player  3 4 5 6-----------------------------------
 
-        for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
+        for (int i = 0; i < testNodepade.getPointsPerPlayerPerRound().length; i++) {
             String testPlayerpoints1 = "";
             switch (i) {
                 case 0:
@@ -327,15 +327,15 @@ public class GameActivity extends AppCompatActivity  {
                 default:
                     np_pointsPlayer = (TextView) dialog.findViewById(R.id.tv_points6);
             }
-            for (int j = 0; j < testNodepade.pointsPerPlayerPerRound[i].length; j++) {
-                testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.pointsPerPlayerPerRound[i][j]);
+            for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
+                testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]);
                 testPlayerpoints1 = testPlayerpoints1 + System.lineSeparator();
             }
             np_pointsPlayer.setText(testPlayerpoints1);
         }
         //------------------Vorhersage Ausgabe Player 1 2 3 4 5 6--------------------------
 
-        for (int i = 0; i < testNodepade.pointsPerPlayerPerRound.length; i++) {
+        for (int i = 0; i < testNodepade.getPointsPerPlayerPerRound().length; i++) {
             String testVorhersage = "";
             switch (i) {
                 case 0:
@@ -360,8 +360,8 @@ public class GameActivity extends AppCompatActivity  {
                 default:
                     np_vorherSagePlayer = (TextView) dialog.findViewById(R.id.tv_pointstricks6);
             }
-            for (int j = 0; j < testNodepade.pointsPerPlayerPerRound[i].length; j++) {
-                testVorhersage = testVorhersage + String.valueOf(testNodepade.pointsPerPlayerPerRound[i][j]);
+            for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
+                testVorhersage = testVorhersage + String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]);
                 testVorhersage = testVorhersage + System.lineSeparator();
             }
             np_vorherSagePlayer.setText(testVorhersage);

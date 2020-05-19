@@ -7,6 +7,7 @@ public class Notepad {
 
     private static int round = 0;
     private int[][] pointsPerPlayerPerRound;
+    public ArrayList<String> playerNamesList;
 
     //to use later
     private int[][] betTricksPerPlayerPerRound;
@@ -16,9 +17,9 @@ public class Notepad {
     }
 
     public Notepad(int numberOfPlayers) {
-        this.pointsPerPlayerPerRound = new int[numberOfPlayers][60/numberOfPlayers];
-        this.betTricksPerPlayerPerRound = new int[numberOfPlayers][60/numberOfPlayers];
-        this.tookTricksPerPlayerPerRound = new int[numberOfPlayers][60/numberOfPlayers];
+        this.pointsPerPlayerPerRound = new int[numberOfPlayers][60 / numberOfPlayers];
+        this.betTricksPerPlayerPerRound = new int[numberOfPlayers][60 / numberOfPlayers];
+        this.tookTricksPerPlayerPerRound = new int[numberOfPlayers][60 / numberOfPlayers];
     }
 
     public static int getRound() {
@@ -42,7 +43,7 @@ public class Notepad {
     }
 
     public void setPointsPerPlayerPerRound(int playerID, int pointsForThisRound, int currentRound) {
-        this.pointsPerPlayerPerRound[playerID][currentRound-1] = pointsForThisRound;
+        this.pointsPerPlayerPerRound[playerID][currentRound - 1] = pointsForThisRound;
     }
 
     public int[][] getPointsPerPlayerPerRound() {
@@ -50,7 +51,7 @@ public class Notepad {
     }
 
     public void setBetTricksPerPlayerPerRound(int playerID, int betTricks, int currentRound) {
-        this.betTricksPerPlayerPerRound[playerID][currentRound-1] = betTricks;
+        this.betTricksPerPlayerPerRound[playerID][currentRound - 1] = betTricks;
     }
 
     public int[][] getBetTricksPerPlayerPerRound() {
@@ -58,7 +59,7 @@ public class Notepad {
     }
 
     public void setTookTricksPerPlayerPerRound(int playerID, int currentRound) {
-        this.tookTricksPerPlayerPerRound[playerID][currentRound-1] +=1;
+        this.tookTricksPerPlayerPerRound[playerID][currentRound - 1] += 1;
     }
 
     public int[][] getTookTricksPerPlayerPerRound() {
@@ -72,24 +73,25 @@ public class Notepad {
             // playerNames[i]="name"+i;
             playerNamesList.add("name" + i);
             for (int j = 0; j < pointsPerPlayerPerRound[i].length; j++) {
-                pointsPerPlayerPerRound[i][j] = (short) count;
+                pointsPerPlayerPerRound[i][j] = count;
                 count--;
 
             }
         }
     }
-    //test fill2 für switch case
-        public void testFillPointsPlayerround2(){
-            int count2=1;
-            for(int i=0; i< pointsPerPlayerPerRound.length;i++){
-                // playerNames[i]="name"+i;
-                playerNamesList.add("name"+i);
-                for(int j=0; j<pointsPerPlayerPerRound[i].length;j++){
-                    pointsPerPlayerPerRound[i][j]= (short) count2;
-                    count2++;
 
-                }
+    //test fill2 für switch case
+    public void testFillPointsPlayerround2() {
+        int count2 = 1;
+        for (int i = 0; i < pointsPerPlayerPerRound.length; i++) {
+            // playerNames[i]="name"+i;
+            playerNamesList.add("name" + i);
+            for (int j = 0; j < pointsPerPlayerPerRound[i].length; j++) {
+                pointsPerPlayerPerRound[i][j] = count2;
+                count2++;
+
             }
+        }
 
     }
 
