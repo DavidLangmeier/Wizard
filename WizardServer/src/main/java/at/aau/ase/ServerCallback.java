@@ -107,10 +107,8 @@ public class ServerCallback implements Callback<BaseMessage> {
             info("Recieved Card to put on Table!");
             CardMessage msg = (CardMessage) message;
             info("SERVER_CALLBACK: CARD: " + msg.getCard().toString());
-            System.out.println("SERVER_CALLBACK: Card object id: " + msg.getCard().hashCode());
+            info("SERVER_CALLBACK: Card object id: " + msg.getCard().hashCode());
             game.dealOnePlayerCardToTable(msg.getCard());
-            //info("trying to put playerCard to Table");
-            //game.broadcastGameState();
 
         } else if(message instanceof NotePadMessage){
             info("Recieved Notepad to enter prediction!");
