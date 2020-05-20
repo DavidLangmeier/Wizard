@@ -281,12 +281,10 @@ public class Game {
             }
 
             // if current highest card has not trump color but compared card has trump color
-            else if (currentRound != 20) {
-                if ((highestCard.getColor() != trump) &&
-                        (card.getColor() == trump)) {
-                    System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
-                    highestCard = card;
-                }
+            else if ((currentRound != 20) && (highestCard.getColor() != trump) &&
+                    (card.getColor() == trump)) {
+                System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
+                highestCard = card;
             }
 
             // if current highest card is Jester and compared card is not Jester
