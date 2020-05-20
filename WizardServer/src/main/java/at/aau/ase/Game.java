@@ -1,8 +1,8 @@
 package at.aau.ase;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
@@ -16,6 +16,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
+import static com.esotericsoftware.minlog.Log.*;
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.END;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
@@ -55,37 +56,36 @@ public class Game {
         }
         this.trump = null;
         this.dealer = players.get((currentRound % players.size())).getConnectionID();
-        //this.activePlayer = players.get(0).getConnectionID();
         this.activePlayerID = -1;
         this.clearBetTricks = false;
     }
 
     public void startGame() {
-        System.out.println("GAME: New Game started! Showing connected players:");
+        info("GAME: New Game started! Showing connected players:");
         gamerunning = true;
         printPlayers();
 
         // Send START to all users -> @client: trigger intent which starts gameActivity
-        System.out.println("GAME: Broadcasting START now.");
+        info("GAME: Broadcasting START now.");
         server.broadcastMessage(new ActionMessage(START));
     }
 
     public void broadcastGameState() {
-        System.out.println("GAME: Broadcasting gameState");
+        info("GAME: Broadcasting gameState");
         server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID, betTricksCounter, clearBetTricks));
-        System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
+        info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
     }
 
     public void dealCards() {
-        System.out.println("GAME: Dealing Cards.");
+        info("GAME: Dealing Cards.");
         deck = new Deck();
         deck.shuffle();
 
         // deal cards to playerHands serverside | round=5 hardcoded, has to be changed later
         for (int i = 0; i < currentRound; i++) {
             for (int j = 0; j < players.size(); j++) {
-                System.out.println("GAME: Dealing to hand #" + j + " with players.size of " + players.size());
-                System.out.println("GAME: current card = " + deck.getCards().get(0).toString());
+                info("GAME: Dealing to hand #" + j + " with players.size of " + players.size());
+                info("GAME: current card = " + deck.getCards().get(0).toString());
                 deck.dealCard(deck.getCards().get(0), playerHands[j]);
             }
         }
@@ -96,8 +96,8 @@ public class Game {
             Hand currentHand = playerHands[i];
             currentHandMessage.setHand(currentHand);
             server.sentTo(players.get(i).getConnectionID(), currentHandMessage);
-            System.out.println("GAME: Hand sent for Player " + i);
-            System.out.println(currentHand.showCardsInHand());
+            info("GAME: Hand sent for Player " + i);
+            info(currentHand.showCardsInHand());
         }
 
         trump = setTrump();
@@ -112,15 +112,15 @@ public class Game {
         // set trump color, rounds 1-19 have a trump, 20 has no trump
         if (currentRound != 20) {
             trumpColor = deck.getCards().get(0).getColor();
-            System.out.println("GAME: Current TRUMP = " + trumpColor.getColorName());
+            info("GAME: Current TRUMP = " + trumpColor.getColorName());
         } else {
             trumpColor = Color.NOCOLOR;
         }
 
         // if trump is wizard or jester a random color is set
         if (trumpColor == Color.WIZARD || trumpColor == Color.JESTER) {
-            System.out.println("GAME: Current TRUMP = " + trumpColor.getColorName() +"is not valid! Random color generating...");
-            int randomNr = new Random().nextInt(3);
+            info("GAME: Current TRUMP = " + trumpColor.getColorName() +"is not valid! Random color generating...");
+            int randomNr = new SecureRandom().nextInt(3);
 
             switch (randomNr) {
                 case 0:
@@ -138,6 +138,10 @@ public class Game {
                 case 3:
                     trumpColor = Color.BLUE;
                     break;
+
+                default:
+                    info("ERROR! Could not generate random trump color!");
+                    break;
             }
         }
 
@@ -152,24 +156,22 @@ public class Game {
 
     public void printPlayers() {
         for (int i = 0; i < players.size(); i++) {
-            System.out.println("GAME: Player " + i + ", name=" + players.get(i).getName()
+            info("GAME: Player " + i + ", name=" + players.get(i).getName()
                     + ", connectionID=" + players.get(i).getConnectionID());
         }
 
     }
 
     public void dealOnePlayerCardToTable(Card cardToPutOnTable) {
-        System.out.println("GAME: Card recieved: " + cardToPutOnTable.toString() + " Trying to put on Table...");
-        //System.out.println("GAME: Card object id: " + cardToPutOnTable.hashCode());
-        System.out.println("GAME: Dealer: " + dealer);
-        System.out.println("GAME: Size of PlayerHands: " + playerHands.length);
+        info("GAME: Card recieved: " + cardToPutOnTable.toString() + " Trying to put on Table...");
+        info("GAME: Dealer: " + dealer);
+        info("GAME: Size of PlayerHands: " + playerHands.length);
 
         cardToPutOnTable.setPlayedBy(activePlayerIndex);
         playerHands[activePlayerIndex].dealCard(cardToPutOnTable, table);
         for (int i = 0; i < table.getCards().size(); i++) {
-            System.out.println(table.getCards().get(i) + " is now on Table!");
+            info(table.getCards().get(i) + " is now on Table!");
         }
-        //server.sentTo(players.get(activePlayer-1).getConnectionID(), new HandMessage(playerHands[activePlayer-1]));
         server.sentTo(activePlayerID, new HandMessage(playerHands[activePlayerIndex], clearBetTricks));
 
         checkCurrentTrickRound();
@@ -185,7 +187,7 @@ public class Game {
     public void updateDealerAndActivePlayer() {
         this.dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
         this.activePlayerID = players.get(activePlayerIndex).getConnectionID();
-        System.out.println("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
+        info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
     }
 
     // checks if a trickRound is over and handles the remaining rounds of the game
@@ -197,7 +199,7 @@ public class Game {
             activePlayerIndex = (activePlayerIndex + 1) % players.size();
             updateDealerAndActivePlayer();
             broadcastGameState();
-            System.out.println("GAME: Current trick still incomplete. TrickRoundTurn=" + trickRoundTurn);
+            info("GAME: Current trick still incomplete. TrickRoundTurn=" + trickRoundTurn);
 
             // trick is complete, current round is still incomplete
         } else if ((trickRoundTurn == players.size() - 1) && (!playerHands[activePlayerIndex].getCards().isEmpty())) {
@@ -208,7 +210,7 @@ public class Game {
             trickRoundTurn = 0;
             table.clear();
             updateDealerAndActivePlayer();
-            System.out.println("GAME: Trick complete. Table cleared - new trickRound starting.");
+            info("GAME: Trick complete. Table cleared - new trickRound starting.");
 
             // wait some time before sending cleared table
             try {
@@ -245,7 +247,7 @@ public class Game {
                 dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
                 dealCards();
             } else {
-                System.out.println("GAME: Last round played, Game is complete.");
+                info("GAME: Last round played, Game is complete.");
                 server.broadcastMessage(new TextMessage("Last round played, Game is complete."));
 
                 // wait some time before sending Action END
@@ -268,7 +270,6 @@ public class Game {
 
             // First Wizard on the table wins the trick
             if (card.getValue().getValueCode() == 14) {
-                System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
                 highestCard = card;
                 break;
             }
@@ -277,26 +278,23 @@ public class Game {
             else if ((card.getColor().getColorCode() == highestCard.getColor().getColorCode()) &&
                     (card.getValue().getValueCode() > highestCard.getValue().getValueCode())) {
                 highestCard = card;
-                System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
             }
 
             // if current highest card has not trump color but compared card has trump color
             else if ((currentRound != 20) && (highestCard.getColor() != trump) &&
                     (card.getColor() == trump)) {
-                System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
                 highestCard = card;
             }
 
             // if current highest card is Jester and compared card is not Jester
             else if ((highestCard.getValue().getValueCode() == 0) &&
                     (card.getValue().getValueCode() != 0)) {
-                System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
                 highestCard = card;
             }
         }
         String trickWinner = "Card: " + highestCard.toString() + " played by " + players.get(highestCard.getPlayedBy()).getName()
                 + " has won the last trick";
-        System.out.println("GAME: " + trickWinner);
+        info("GAME: " + trickWinner);
         server.broadcastMessage(new TextMessage(trickWinner));
         return highestCard.getPlayedBy();
     }
@@ -306,10 +304,9 @@ public class Game {
         clearBetTricks = false;
         scores.setBetTricksPerPlayerPerRound(playerID, betTricks, currentRound);
         this.scores = scores;
-        System.out.println(Arrays.deepToString(scores.getBetTricksPerPlayerPerRound()));
+        info(Arrays.deepToString(scores.getBetTricksPerPlayerPerRound()));
         server.broadcastMessage(new NotePadMessage(this.scores));
-        //server.sentTo(activePlayerID, new NotePadMessage(this.scores));
-        System.out.println("GAME: Trickroundturn: " + trickRoundTurn);
+        info("GAME: Trickroundturn: " + trickRoundTurn);
         //to check, when it's time to start with trickround
         if (betTricksCounter < players.size()) {
             betTricksCounter++;
@@ -330,13 +327,13 @@ public class Game {
         for (int i = 0; i < players.size(); i++) {
             if (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1] == scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]) {
                 pointsPerPlayerPerRound = (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
-                System.out.println("IF Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
-                System.out.println(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
+                info("IF Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
+                info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
                 scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
             } else {
                 pointsPerPlayerPerRound = (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]));
-                System.out.println("ELSE Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
-                System.out.println(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
+                info("ELSE Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
+                info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
                 scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
             }
         }

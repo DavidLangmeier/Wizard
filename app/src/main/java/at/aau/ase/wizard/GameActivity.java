@@ -15,20 +15,17 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -395,7 +392,7 @@ public class GameActivity extends AppCompatActivity  {
                             btnDeal.setEnabled(false));
                 }
 
-                System.err.println("Active Player: " + gameData.getActivePlayer() + ", Connection ID my Player: " + myPlayer.getConnectionID());
+                info("Active Player: " + gameData.getActivePlayer() + ", Connection ID my Player: " + myPlayer.getConnectionID());
 
                 if(((StateMessage) basemessage).isClearBetTricks()){
                     runOnUiThread(() -> {
@@ -551,8 +548,9 @@ public class GameActivity extends AppCompatActivity  {
                 ivTable4.setVisibility(View.INVISIBLE);
                 ivTable5.setVisibility(View.INVISIBLE);
                 ivTable6.setVisibility(View.INVISIBLE);
+                break;
             default:
-                System.out.println("Table Hand too short or too big! Something strange happened...");
+                info("Table Hand too short or too big! Something strange happened...");
         }
     }
 
