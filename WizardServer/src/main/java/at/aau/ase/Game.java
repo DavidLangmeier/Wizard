@@ -114,7 +114,7 @@ public class Game {
             trumpColor = deck.getCards().get(0).getColor();
             info("GAME: Current TRUMP = " + trumpColor.getColorName());
         } else {
-            trumpColor = Color.NOCOLOR;
+            trumpColor = Color.JESTER;
         }
 
         // if trump is wizard or jester a random color is set
