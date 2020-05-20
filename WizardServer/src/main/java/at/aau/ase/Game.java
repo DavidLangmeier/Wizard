@@ -114,7 +114,7 @@ public class Game {
             trumpColor = deck.getCards().get(0).getColor();
             System.out.println("GAME: Current TRUMP = " + trumpColor.getColorName());
         } else {
-            trumpColor = null;
+            trumpColor = Color.NOCOLOR;
         }
 
         // if trump is wizard or jester a random color is set
@@ -214,7 +214,7 @@ public class Game {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new Error(e);
             }
             broadcastGameState();
 
@@ -234,7 +234,7 @@ public class Game {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new Error(e);
             }
 
             broadcastGameState();
@@ -252,7 +252,7 @@ public class Game {
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    throw new Error(e);
                 }
                 // End-Msg should trigger the client going to Endscreen Activity
                 server.broadcastMessage(new ActionMessage(END));

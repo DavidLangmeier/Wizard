@@ -6,7 +6,8 @@ public enum Color {
     GREEN(2, "Green"),
     RED(3, "Red"),
     YELLOW(4, "Yellow"),
-    WIZARD(14,"Wizard");
+    WIZARD(14,"Wizard"),
+    NOCOLOR(99, "NoColor" );
 
     private final int colorCode;
     private final String colorName;
