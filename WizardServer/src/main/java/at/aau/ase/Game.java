@@ -2,6 +2,7 @@ package at.aau.ase;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
@@ -99,18 +100,54 @@ public class Game {
             System.out.println(currentHand.showCardsInHand());
         }
 
-        // set trump card, rounds 1-19 have a trump, 20 has no trump
-        if (currentRound != 20) {
-            trump = deck.getCards().get(0).getColor();
-            System.out.println("GAME: Current TRUMP = " + trump.getColorName());
-            server.broadcastMessage(new TextMessage("Current Trump is " + trump.getColorName()));
-        } else {
-            trump = null;
-        }
-
+        trump = setTrump();
         activePlayerIndex = (currentRound + 1) % players.size();
         activePlayerID = players.get(activePlayerIndex).getConnectionID();
         broadcastGameState();
+    }
+
+    public Color setTrump() {
+        Color trumpColor;
+
+        // set trump color, rounds 1-19 have a trump, 20 has no trump
+        if (currentRound != 20) {
+            trumpColor = deck.getCards().get(0).getColor();
+            System.out.println("GAME: Current TRUMP = " + trumpColor.getColorName());
+        } else {
+            trumpColor = null;
+        }
+
+        // if trump is wizard or jester a random color is set
+        if (trumpColor == Color.WIZARD || trumpColor == Color.JESTER) {
+            System.out.println("GAME: Current TRUMP = " + trumpColor.getColorName() +"is not valid! Random color generating...");
+            int randomNr = new Random().nextInt(3);
+
+            switch (randomNr) {
+                case 0:
+                    trumpColor = Color.YELLOW;
+                    break;
+
+                case 1:
+                    trumpColor = Color.RED;
+                    break;
+
+                case 2:
+                    trumpColor = Color.GREEN;
+                    break;
+
+                case 3:
+                    trumpColor = Color.BLUE;
+                    break;
+            }
+        }
+
+        if (trumpColor != null) {
+            server.broadcastMessage(new TextMessage("Current Trump is " + trumpColor.getColorName()));
+        } else {
+            server.broadcastMessage(new TextMessage("Last round has no Trump!"));
+        }
+
+        return trumpColor;
     }
 
     public void printPlayers() {
