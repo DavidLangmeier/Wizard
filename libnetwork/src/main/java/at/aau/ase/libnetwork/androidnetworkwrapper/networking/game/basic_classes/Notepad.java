@@ -20,6 +20,7 @@ public class Notepad {
         this.pointsPerPlayerPerRound = new int[numberOfPlayers][60 / numberOfPlayers];
         this.betTricksPerPlayerPerRound = new int[numberOfPlayers][60 / numberOfPlayers];
         this.tookTricksPerPlayerPerRound = new int[numberOfPlayers][60 / numberOfPlayers];
+        this.playerNamesList = new ArrayList<>();
     }
 
     public static int getRound() {
