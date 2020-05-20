@@ -3,6 +3,7 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
@@ -11,7 +12,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 public class StateMessage extends BaseMessage {
     Hand table;         // for the cards within 1 trickround
     Notepad scores;
-    Card trump;
+    Color trump;
     int roundsLeft;
     int currentRound;
     int dealer;
@@ -22,7 +23,7 @@ public class StateMessage extends BaseMessage {
     public StateMessage() {
     }
 
-    public StateMessage(Hand table, Notepad scores, Card trump, int roundsLeft,
+    public StateMessage(Hand table, Notepad scores, Color trump, int roundsLeft,
                         int dealer, int activePlayer, int betTricksCounter, boolean clearBetTricks) {
         this.table = table;
         this.scores = scores;
@@ -42,7 +43,7 @@ public class StateMessage extends BaseMessage {
         return scores;
     }
 
-    public Card getTrump() {
+    public Color getTrump() {
         return trump;
     }
 

@@ -9,6 +9,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.N
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
@@ -27,7 +28,7 @@ public class Game {
     private int totalRounds;
     private int currentRound;
     private Hand[] playerHands; // if indexed with "activePlayer" put -1
-    private Card trump;
+    private Color trump;
     private int dealer;
     private int activePlayerID;   // refers to connectionID of player
     private int activePlayerIndex; // refers to activePlayers index in list "players"
@@ -44,7 +45,7 @@ public class Game {
         this.table = new Hand();
         this.scores = new Notepad((short) players.size());
         this.totalRounds = 60 / players.size();
-        this.currentRound = 2;
+        this.currentRound = 1;
         this.trickRoundTurn = 0;
         this.betTricksCounter = 0;
         this.playerHands = new Hand[players.size()];
@@ -98,16 +99,18 @@ public class Game {
             System.out.println(currentHand.showCardsInHand());
         }
 
-        // set trump card
+        // set trump card, rounds 1-19 have a trump, 20 has no trump
         if (currentRound != 20) {
-            trump = deck.getCards().get(0);
-            System.out.println("GAME: Current TRUMP = " + trump.toString());
-            //deck.remove(trump);
+            trump = deck.getCards().get(0).getColor();
+            System.out.println("GAME: Current TRUMP = " + trump.getColorName());
+            server.broadcastMessage(new TextMessage("Current Trump is " + trump.getColorName()));
+        } else {
+            trump = null;
         }
+
         activePlayerIndex = (currentRound + 1) % players.size();
         activePlayerID = players.get(activePlayerIndex).getConnectionID();
         broadcastGameState();
-        server.broadcastMessage(new TextMessage("Current Trump: " + trump.toString()));
     }
 
     public void printPlayers() {
@@ -241,10 +244,12 @@ public class Game {
             }
 
             // if current highest card has not trump color but compared card has trump color
-            else if ((highestCard.getColor().getColorCode() != trump.getColor().getColorCode()) &&
-                    (card.getColor().getColorCode() == trump.getColor().getColorCode())) {
-                System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
-                highestCard = card;
+            else if (currentRound != 20) {
+                if ((highestCard.getColor() != trump) &&
+                        (card.getColor() == trump)) {
+                    System.out.println("GAME: " + card.toString() + " is better than " + highestCard.toString());
+                    highestCard = card;
+                }
             }
 
             // if current highest card is Jester and compared card is not Jester
@@ -311,8 +316,8 @@ public class Game {
     public boolean checkBet(int bet) {
         boolean checkBet;
         int sum = 0;
-        for (int i = 0; i < players.size()-1; i++) {
-            int index = (((currentRound+1)+i) % players.size());
+        for (int i = 0; i < players.size() - 1; i++) {
+            int index = (((currentRound + 1) + i) % players.size());
             sum += scores.getBetTricksPerPlayerPerRound()[index][currentRound - 1];
         }
         if (((bet - sum) == currentRound) || ((bet - sum) == -currentRound)) {
@@ -321,8 +326,8 @@ public class Game {
         return checkBet;
     }
 
-    public boolean checkBetTricksCounter(){
-        return betTricksCounter < players.size()-1;
+    public boolean checkBetTricksCounter() {
+        return betTricksCounter < players.size() - 1;
     }
 }
 
