@@ -195,7 +195,7 @@
 
     <!--button Nodepade -->
     <Button
-        android:onClick="ShowPopupBlockofTruth"
+        android:onClick="showNodepad"
         android:id="@+id/game_btn_showNodepad"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
