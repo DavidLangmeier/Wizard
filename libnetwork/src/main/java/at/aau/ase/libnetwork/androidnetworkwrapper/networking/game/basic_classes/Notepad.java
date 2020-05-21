@@ -9,7 +9,6 @@ public class Notepad {
     private int[][] pointsPerPlayerPerRound;
     public ArrayList<String> playerNamesList;
 
-    //to use later
     private int[][] betTricksPerPlayerPerRound;
     private int[][] tookTricksPerPlayerPerRound;
 

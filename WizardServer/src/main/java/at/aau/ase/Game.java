@@ -16,6 +16,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
+
 import static com.esotericsoftware.minlog.Log.*;
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.END;
@@ -40,7 +41,7 @@ public class Game {
     private boolean clearBetTricks;
 
 
-    public Game(WizardServer server, List<Player> players) {
+    Game(WizardServer server, List<Player> players) {
         this.server = server;
         this.players = players;
         this.deck = new Deck();
@@ -60,7 +61,7 @@ public class Game {
         this.clearBetTricks = false;
     }
 
-    public void startGame() {
+    void startGame() {
         info("GAME: New Game started! Showing connected players:");
         gamerunning = true;
         printPlayers();
@@ -70,13 +71,13 @@ public class Game {
         server.broadcastMessage(new ActionMessage(START));
     }
 
-    public void broadcastGameState() {
+    void broadcastGameState() {
         info("GAME: Broadcasting gameState");
         server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID, betTricksCounter, clearBetTricks));
         info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
     }
 
-    public void dealCards() {
+    void dealCards() {
         info("GAME: Dealing Cards.");
         deck = new Deck();
         deck.shuffle();
@@ -106,7 +107,7 @@ public class Game {
         broadcastGameState();
     }
 
-    public Color setTrump() {
+    Color setTrump() {
         Color trumpColor;
 
         // set trump color, rounds 1-19 have a trump, 20 has no trump
@@ -119,7 +120,7 @@ public class Game {
 
         // if trump is wizard or jester a random color is set
         if (trumpColor == Color.WIZARD || trumpColor == Color.JESTER) {
-            info("GAME: Current TRUMP = " + trumpColor.getColorName() +"is not valid! Random color generating...");
+            info("GAME: Current TRUMP = " + trumpColor.getColorName() + "is not valid! Random color generating...");
             int randomNr = new SecureRandom().nextInt(3);
 
             switch (randomNr) {
@@ -154,7 +155,7 @@ public class Game {
         return trumpColor;
     }
 
-    public void printPlayers() {
+    void printPlayers() {
         for (int i = 0; i < players.size(); i++) {
             info("GAME: Player " + i + ", name=" + players.get(i).getName()
                     + ", connectionID=" + players.get(i).getConnectionID());
@@ -162,7 +163,7 @@ public class Game {
 
     }
 
-    public void dealOnePlayerCardToTable(Card cardToPutOnTable) {
+    void dealOnePlayerCardToTable(Card cardToPutOnTable) {
         info("GAME: Card recieved: " + cardToPutOnTable.toString() + " Trying to put on Table...");
         info("GAME: Dealer: " + dealer);
         info("GAME: Size of PlayerHands: " + playerHands.length);
@@ -184,14 +185,14 @@ public class Game {
     }
 
     // better not refer directly to current round, as it is not sure that the connectionIDs go like 1,2,3...
-    public void updateDealerAndActivePlayer() {
+    void updateDealerAndActivePlayer() {
         this.dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
         this.activePlayerID = players.get(activePlayerIndex).getConnectionID();
         info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
     }
 
     // checks if a trickRound is over and handles the remaining rounds of the game
-    public void checkCurrentTrickRound() {
+    void checkCurrentTrickRound() {
 
         // trick is still incomplete
         if (trickRoundTurn < players.size() - 1) {
@@ -263,7 +264,7 @@ public class Game {
     }
 
     // returns trick-winners index in list "players"
-    public int checkTrickWinner() {
+    int checkTrickWinner() {
         Card highestCard = table.getCards().get(0);
 
         for (Card card : table.getCards()) {
@@ -300,7 +301,7 @@ public class Game {
     }
 
 
-    public void writeBetTricksToNotePad(Notepad scores, int playerID, int betTricks) {
+    void writeBetTricksToNotePad(Notepad scores, int playerID, int betTricks) {
         clearBetTricks = false;
         scores.setBetTricksPerPlayerPerRound(playerID, betTricks, currentRound);
         this.scores = scores;
@@ -317,12 +318,11 @@ public class Game {
         }
     }
 
-    public void writeTookTricksToNotePad() {
+    void writeTookTricksToNotePad() {
         scores.setTookTricksPerPlayerPerRound(checkTrickWinner(), currentRound);
-        //broadcastGameState();
     }
 
-    public void calculatePointsPerPlayerPerRound() {
+    void calculatePointsPerPlayerPerRound() {
         int pointsPerPlayerPerRound;
         for (int i = 0; i < players.size(); i++) {
             if (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1] == scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]) {
@@ -340,25 +340,32 @@ public class Game {
         server.broadcastMessage(new NotePadMessage(this.scores));
     }
 
-    public boolean isGamerunning() {
+    boolean isGamerunning() {
         return gamerunning;
     }
 
     //checks if bet is allowed
-    public boolean checkBet(int bet) {
-        boolean checkBet;
-        int sum = 0;
-        for (int i = 0; i < players.size() - 1; i++) {
-            int index = (((currentRound + 1) + i) % players.size());
-            sum += scores.getBetTricksPerPlayerPerRound()[index][currentRound - 1];
-        }
-        if (((bet - sum) == currentRound) || ((bet - sum) == -currentRound)) {
+    boolean checkBet(int bet) {
+        boolean checkBet = true;
+        if (bet > currentRound || bet < 0) {
             checkBet = false;
-        } else checkBet = (bet - sum) != 0;
+        }
+        if(!checkBetTricksCounter()){
+            int sum = 0;
+            for (int i = 0; i < players.size() - 1; i++) {
+                int index = (((currentRound + 1) + i) % players.size());
+                sum += scores.getBetTricksPerPlayerPerRound()[index][currentRound - 1];
+            }
+            if (((bet + sum) == currentRound) && !checkBetTricksCounter()){
+                checkBet = false;
+            }
+
+        }
         return checkBet;
     }
 
-    public boolean checkBetTricksCounter() {
+    //checks if player is last player of this trickround
+    boolean checkBetTricksCounter() {
         return betTricksCounter < players.size() - 1;
     }
 }
