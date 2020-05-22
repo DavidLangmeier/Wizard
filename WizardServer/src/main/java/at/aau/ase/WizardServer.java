@@ -8,7 +8,6 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.B
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkServerKryo;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 
 import static com.esotericsoftware.minlog.Log.*;
 

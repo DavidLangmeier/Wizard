@@ -28,7 +28,7 @@ import static com.esotericsoftware.minlog.Log.*;
 
 public class LobbyActivity extends AppCompatActivity {
     private Button btnStartGame;
-    private static WizardClient wizardClient = null;
+    private WizardClient wizardClient = null;
     private EditText etUsername = null;
     private TextView tvError = null;
     private List<String> playersOnline = new ArrayList<>();

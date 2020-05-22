@@ -63,11 +63,10 @@ public class GameActivity extends AppCompatActivity {
     private ImageView ivTable6;
     private ViewPager2 viewPager2;
     private TextView tv_showTextTrumpf;
-    private static WizardClient wizardClient;// = WizardClient.getInstance();//LobbyActivity.getWizardClient();
+    private WizardClient wizardClient;
     private List<SliderItem> sliderItems = new ArrayList<>(); //Zeigt scrollHand
-    //private Player myPlayer = LobbyActivity.getMyPlayer();
     private Player myPlayer;
-    private static GameData gameData;// = LobbyActivity.getGameData();
+    private GameData gameData;
     private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
     private Dialog dialog;
     private TextView tvServerMsg;
