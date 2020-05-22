@@ -28,7 +28,8 @@ public class LobbyListAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater=context.getLayoutInflater();
-        View rowView=inflater.inflate(R.layout.lobby_listview_row, null,true);
+        View rowView = inflater.inflate(R.layout.lobby_listview_row, null,false);
+        //View rowView = View.inflate(context, R.layout.lobby_listview_row, parent);
 
         TextView tvName = (TextView) rowView.findViewById(R.id.etLobbyListRow);
         ImageView ivIcon = (ImageView) rowView.findViewById(R.id.ivLobbyListRow);

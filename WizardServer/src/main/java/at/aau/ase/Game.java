@@ -14,6 +14,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.END;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
+import static com.esotericsoftware.minlog.Log.*;
 
 public class Game {
     private boolean gamerunning = false;
@@ -167,7 +168,8 @@ public class Game {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                error("Error while waiting to send \"cleared table\". Trick complete but current round is still incomplete.", e);
+                Thread.currentThread().interrupt();
             }
             broadcastGameState();
 
@@ -183,7 +185,8 @@ public class Game {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                error("Error while waiting to send \"cleared table\". Trick complete and current round is over.", e);
+                Thread.currentThread().interrupt();
             }
 
             broadcastGameState();
@@ -201,7 +204,8 @@ public class Game {
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    error("Error while waiting to send \"Action END\".", e);
+                    Thread.currentThread().interrupt();
                 }
                 // End-Msg should trigger the client going to Endscreen Activity
                 server.broadcastMessage(new ActionMessage(END));

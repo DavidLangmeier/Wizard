@@ -34,11 +34,6 @@ public class WizardServer extends NetworkServerKryo {
         }
     }
 
-    public void test() {
-        Integer id = super.getLastConnectionID();
-        super.sentTo(id, new TextMessage("Just send to connectionID "+id));
-    }
-
     public static  void main(String[] args) {
         WizardServer server = new WizardServer();
 

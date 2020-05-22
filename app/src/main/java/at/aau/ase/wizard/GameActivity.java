@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 
 import java.util.ArrayList;
@@ -47,10 +49,11 @@ public class GameActivity extends AppCompatActivity {
     private ImageView ivTable1, ivTable2, ivTable3, ivTable4, ivTable5, ivTable6;
     private ViewPager2 viewPager2;
     private TextView tv_showTextTrumpf;
-    private static WizardClient wizardClient = LobbyActivity.getWizardClient();
+    private static WizardClient wizardClient;// = WizardClient.getInstance();//LobbyActivity.getWizardClient();
     private List<SliderItem> sliderItems = new ArrayList<>(); //Zeigt scrollHand
-    private Player myPlayer = LobbyActivity.getMyPlayer();
-    private static GameData gameData = LobbyActivity.getGameData();
+    //private Player myPlayer = LobbyActivity.getMyPlayer();
+    private Player myPlayer;
+    private static GameData gameData;// = LobbyActivity.getGameData();
     private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
     private TextView tv_serverMsg;
 
@@ -65,7 +68,14 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        //wizardClient = WizardClient.getInstance(); // new instance would get new connectionID, has to be fixed
+
+        String s1 = getIntent().getStringExtra("myPlayer");
+        myPlayer = new Gson().fromJson(s1, Player.class);
+
+        String s2 = getIntent().getStringExtra("gameData");
+        gameData = new Gson().fromJson(s2, GameData.class);
+
+        wizardClient = WizardClient.getInstance(); // new instance would get new connectionID, has to be fixed
         startCallback();
 
         //myPlayer = LobbyActivity.getMyPlayer(); // use intent extra if problems with activity lifecycle occur
