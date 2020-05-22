@@ -7,9 +7,13 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 public class HandMessage extends BaseMessage {
     private Hand hand;
+    boolean clearBetTricks;
 
-    public HandMessage(Hand hand){
+    public HandMessage() {}
+
+    public HandMessage(Hand hand, boolean clearBetTricks){
         this.hand = hand;
+        this.clearBetTricks = clearBetTricks;
     }
 
     public Hand getHand(){
@@ -22,6 +26,10 @@ public class HandMessage extends BaseMessage {
 
     public ArrayList <Card> getCardsInHand(){
         return hand.getCards();
+    }
+
+    public boolean getClearBetTricks(){
+        return this.clearBetTricks;
     }
 
     @Override

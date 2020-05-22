@@ -2,8 +2,7 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects;
 
 public class TextMessage extends BaseMessage {
 
-    public TextMessage() {
-    }
+    public TextMessage() {}
 
     public TextMessage(String text) {
         this.text = text;
@@ -13,6 +12,6 @@ public class TextMessage extends BaseMessage {
 
     @Override
     public String toString() {
-        return String.format("TextMessage: %s", text);
+        return String.format("Server: %s", text);
     }
 }

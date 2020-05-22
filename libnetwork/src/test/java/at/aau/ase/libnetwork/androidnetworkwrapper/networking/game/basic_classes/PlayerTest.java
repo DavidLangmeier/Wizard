@@ -2,7 +2,6 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classe
 
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 
@@ -17,19 +16,19 @@ public class PlayerTest {
     @Test
     public void testForSettingAndGetID0() {
         p1 = new Player("Luki");
-        Assert.assertEquals(0, p1.getId());
+        Assert.assertEquals(0, p1.getPlayer_id());
     }
 
     @Test
     public void testForSettingAndGetID1() {
         p2 = new Player("Andi");
-        Assert.assertEquals(1, p2.getId());
+        Assert.assertEquals(1, p2.getPlayer_id());
     }
 
     @Test
     public void testForSettingAndGetID2() {
         p3 = new Player("Kevin");
-        Assert.assertEquals(2, p3.getId());
+        Assert.assertEquals(2, p3.getPlayer_id());
     }
 
     @Test

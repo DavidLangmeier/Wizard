@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,66 +7,205 @@
     android:background="#197331"
     tools:context=".GameActivity">
 
+
+
+
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerImageSlieder"
+        android:layout_width="417dp"
+        android:layout_height="126dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="198dp"
+        android:paddingStart="160dp"
+        android:paddingEnd="158dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toTopOf="@+id/play_Card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintStart_toStartOf="parent">
+    </androidx.viewpager2.widget.ViewPager2>
+
+
     <TextView
-        android:id="@+id/game_textView_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:id="@+id/game_textView_serverMsg"
+        android:layout_width="383dp"
+        android:layout_height="61dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="fitXY"
         android:text="@string/game_textView_title"
-        android:textSize="30sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/game_btn_shuffleCards"
+        android:id="@+id/play_Card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="@string/game_btn_shuffleCards"
+        android:layout_above="@+id/game_btn_dealOutCards"
+        android:layout_alignStart="@+id/game_btn_dealOutCards"
+        android:layout_alignEnd="@+id/game_btn_dealOutCards"
+        android:layout_marginStart="19dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginBottom="12dp"
+        android:scaleType="fitXY"
+        android:text="@string/play_card"
         app:layout_constraintBottom_toTopOf="@+id/game_btn_dealOutCards"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.371"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/game_btn_dealOutCards"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="135dp"
+        android:layout_marginEnd="138dp"
+        android:layout_marginBottom="54dp"
+        android:scaleType="fitXY"
         android:text="@string/game_btn_dealOutCards"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/game_textView_serverResponse"
-        android:layout_width="356dp"
-        android:layout_height="74dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/game_textView_title" />
-
-    <EditText
-        android:id="@+id/etn_showCard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="cardShow"
-        app:layout_constraintBottom_toTopOf="@+id/game_btn_shuffleCards"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.38"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/im_firstCard"
-        android:layout_width="166dp"
-        android:layout_height="247dp"
-        app:layout_constraintBottom_toTopOf="@+id/etn_showCard"
+        android:id="@+id/viewTrumpCard"
+        android:layout_width="57dp"
+        android:layout_height="59dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="332dp"
+        android:layout_marginBottom="13dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/tableCard1"
+        android:layout_width="104dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="49dp"
+        android:layout_marginTop="119dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/tableCard2"
+        android:layout_width="104dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="89dp"
+        android:layout_marginTop="119dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/tableCard3"
+        android:layout_width="104dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="129dp"
+        android:layout_marginTop="119dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/tableCard4"
+        android:layout_width="104dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="169dp"
+        android:layout_marginTop="119dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/tableCard5"
+        android:layout_width="104dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="219dp"
+        android:layout_marginTop="119dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/tableCard6"
+        android:layout_width="104dp"
+        android:layout_height="133dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="259dp"
+        android:layout_marginTop="119dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY" />
+
+    <EditText
+        android:id="@+id/etn_Vorhersage"
+        android:layout_width="113dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="132dp"
+        android:scaleType="fitXY"
+        android:digits="0123456789"
+        android:ems="10"
+        android:hint="@string/str_vorhersage"
+        android:inputType="number"
+        android:maxLength="2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.937"
+        app:layout_constraintStart_toEndOf="@+id/play_Card"
+        app:layout_constraintTop_toBottomOf="@+id/viewPagerImageSlieder" />
+
+    <TextView
+        android:id="@+id/tv_trumpftext"
+        android:layout_width="78dp"
+        android:layout_height="56dp"
+        android:layout_alignStart="@+id/viewTrumpCard"
+        android:layout_alignEnd="@+id/viewTrumpCard"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="-11dp"
+        android:layout_marginTop="55dp"
+        android:layout_marginEnd="-10dp"
+        android:layout_marginBottom="72dp"
+        android:scaleType="fitXY"
+        android:text="11 Green"
+        android:textColor="#FFFF00"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/viewTrumpCard"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/game_textView_serverResponse" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@+id/viewPagerImageSlieder" />
+
+    <!--button Nodepade -->
+    <Button
+        android:onClick="showNodepad"
+        android:id="@+id/game_btn_showNodepad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="135dp"
+        android:layout_marginEnd="138dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/buttonsstyls"
+        android:text="Block of Truth" />
+
+</android.widget.RelativeLayout>

@@ -14,19 +14,20 @@ import static org.junit.Assert.assertEquals;
 public class HandTest {
 
     private Hand hand = new Hand();
+    private Deck testDeck = new Deck();
     private Card card = new Card(Color.BLUE, Value.EIGHT);
 
     @Test
     public void testForAddToHand() {
         ArrayList<Card> playerCardsTest = new ArrayList<>();
-        playerCardsTest.add(card);
-        hand.add(card);
+        playerCardsTest.add(testDeck.getCards().get(0));
+        hand.add(testDeck.getCards().get(0));
         assertEquals(playerCardsTest, hand.getCards());
     }
 
     @Test
     public void testForClearHand() {
-        hand.add(card);
+        hand.add(testDeck.getCards().get(0));
         assertEquals(1, hand.getCards().size());
         hand.clear();
         assertEquals(0, hand.getCards().size());
@@ -34,33 +35,29 @@ public class HandTest {
 
     @Test
     public void testForShowCardsInHand() {
-        Card card1 = new Card(Color.GREEN, Value.TWELVE);
-        Card card2 = new Card(Color.BLUE, Value.ONE);
-        Card card3 = new Card(Color.YELLOW, Value.THREE);
-        Card card4 = new Card(Color.RED, Value.ELEVEN);
 
-        hand.add(card);
-        hand.add(card1);
-        hand.add(card2);
-        hand.add(card3);
-        hand.add(card4);
+        hand.add(testDeck.getCards().get(0));
+        hand.add(testDeck.getCards().get(1));
+        hand.add(testDeck.getCards().get(2));
+        hand.add(testDeck.getCards().get(3));
+        hand.add(testDeck.getCards().get(4));
 
         assertEquals(5, hand.getCards().size());
-        assertEquals(("Blue Eight\n" + "Green Twelve\n" + "Blue One\n" + "Yellow Three\n" + "Red Eleven\n"), hand.showCardsInHand());
+        assertEquals(("Jester Jester\n" + "Jester Jester\n" + "Jester Jester\n" + "Jester Jester\n" + "Blue One\n"), hand.showCardsInHand());
     }
 
     @Test
     public void testForDealCard() {
         Hand gameDesk = new Hand();
-        hand.add(card);
+        hand.add(testDeck.getCards().get(0));
         assertEquals(1, hand.getCards().size());
         assertEquals(0, gameDesk.getCards().size());
-        assertEquals(true, hand.dealCard(card, gameDesk));
-        hand.dealCard(card, gameDesk);
+        assertEquals(true, hand.dealCard(testDeck.getCards().get(0), gameDesk));
+        hand.dealCard(testDeck.getCards().get(0), gameDesk);
 
         assertEquals(0, hand.getCards().size());
         assertEquals(1, gameDesk.getCards().size());
-        assertEquals(false, hand.dealCard(card, gameDesk));
+        assertEquals(false, hand.dealCard(testDeck.getCards().get(0), gameDesk));
 
     }
 

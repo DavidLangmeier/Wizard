@@ -2,8 +2,10 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
-public class PlayerMessage {
+public class PlayerMessage extends BaseMessage {
     private Player player;
+
+    public PlayerMessage() {}
 
     public PlayerMessage(Player player){
         this.player = player;
@@ -23,8 +25,8 @@ public class PlayerMessage {
     public String toString(){
         String playerInformation = "";
         playerInformation += "Player name:\t" + player.getName() + "\n";
-        playerInformation += "Bet tricks:\t" + Player.getBetTricks() + "\n";
-        playerInformation += "Took tricks:\t" + player.getTookTricks() + "\n";
+        playerInformation += "Player ID:\t" + player.getPlayer_id() + "\n";
+        playerInformation += "Connection ID:\t" + player.getConnectionID() + "\n";
         return playerInformation;
     }
 

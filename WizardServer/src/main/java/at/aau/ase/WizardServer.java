@@ -1,37 +1,43 @@
 package at.aau.ase;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkServerKryo;
 
 import static com.esotericsoftware.minlog.Log.*;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkServerKryo;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 
-public class WizardServer {
-    public static  void main(String[] args) {
-        NetworkServerKryo server = new NetworkServerKryo();
-        server.registerClass(TextMessage.class);
+/**
+ * Class used to access the network on the serverside.
+ */
+public class WizardServer extends NetworkServerKryo {
+
+    private static List<Player> players = new ArrayList<>();
+
+    public WizardServer()  {
+        super();
+        DEBUG();
+        for (Class<BaseMessage> c: WizardConstants.getWizardNetworkClasses()) {
+            super.registerClass(c);
+        }
+        debug("WizardNetworkClasses registered");
         try {
-            server.start();
+            super.start();
+            debug("Server started");
         } catch (IOException e) {
             error("Server start failed", e);
         }
-        server.registerCallback(basemessage -> {
-            if (basemessage instanceof TextMessage) {
-                info(basemessage.toString());
-                server.broadcastMessage(
-                        new TextMessage("Hi client, I'm the server and I'm waiting for requests!\nDid you say: "
-                                + ((TextMessage) basemessage).text
-                                + "\nat "
-                                + LocalDateTime.now().toString()
-                                + " ?"
-                        ));
-            }
-            else {
-                info("Received message is not a Textmessage!");
-                server.broadcastMessage(new TextMessage("Please send a Textmessage!"));
-            }
-        });
-        info("Server started and Callback registered. Listening ...");
     }
+
+    public static  void main(String[] args) {
+        WizardServer server = new WizardServer();
+
+        server.registerCallback(new ServerCallback(server,players));
+        info("Server started and ServerCallback registered. Listening ...");
+    }
+
 }
