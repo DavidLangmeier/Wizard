@@ -62,7 +62,7 @@ public class GameActivity extends AppCompatActivity {
     private ImageView ivTable5;
     private ImageView ivTable6;
     private ViewPager2 viewPager2;
-    private TextView tv_showTextTrumpf;
+    private TextView tvShowTextTrumpf;
     private WizardClient wizardClient;
     private List<SliderItem> sliderItems = new ArrayList<>(); //Zeigt scrollHand
     private Player myPlayer;
@@ -93,9 +93,6 @@ public class GameActivity extends AppCompatActivity {
         wizardClient = WizardClient.getInstance(); // new instance would get new connectionID, has to be fixed
         startCallback();
 
-
-        //myPlayer = LobbyActivity.getMyPlayer(); // use intent extra if problems with activity lifecycle occur
-        //myPlayer = (Player) getIntent().getSerializableExtra("myPlayer"); // does not work properly - use bundle?
         info("@GAME_ACTIVITY: My Playername=" + myPlayer.getName() + ", connectionID=" + myPlayer.getConnectionID());
 
         btnPlaySelectedCard = findViewById(R.id.play_Card);
@@ -104,7 +101,7 @@ public class GameActivity extends AppCompatActivity {
         btnDeal = findViewById(R.id.game_btn_dealOutCards);
         btnDeal.setOnClickListener(v -> dealCards());
         btnDeal.setEnabled(true);
-        tv_showTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
+        tvShowTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
         dialog = new Dialog(this);
         tvServerMsg = findViewById(R.id.game_textView_serverMsg);
 
@@ -206,17 +203,17 @@ public class GameActivity extends AppCompatActivity {
     public void fillRoundsNumber() {
         TextView npRounds;
         npRounds = (TextView) dialog.findViewById(R.id.tv_rounds);
-        String round = "";
 
         short[] roundsArray = new short[21];
         for (int i = 0; i < roundsArray.length; i++) {
             roundsArray[i] = (short) i;
         }
+        StringBuilder round = new StringBuilder();
         for (int i = 1; i < roundsArray.length; i++) {
-            round = round + String.valueOf(roundsArray[i]);
-            round = round + System.lineSeparator();
+            round.append(String.valueOf(roundsArray[i]));
+            round.append(System.lineSeparator());
         }
-        npRounds.setText(round);
+        npRounds.setText(round.toString());
     }
 
     public void showNamesOfPlayers(Notepad testNodepade) {
@@ -255,7 +252,6 @@ public class GameActivity extends AppCompatActivity {
         TextView npVorhersageplayer;
 
         for (int i = 0; i < testNodepade.getPointsPerPlayerPerRound().length; i++) {
-            String testVorhersage = "";
             switch (i) {
                 case 0:
                     npVorhersageplayer = (TextView) dialog.findViewById(R.id.tv_pointstricks1);
@@ -279,26 +275,26 @@ public class GameActivity extends AppCompatActivity {
                 default:
                     npVorhersageplayer = (TextView) dialog.findViewById(R.id.tv_pointstricks6);
             }
+            StringBuilder testVorhersage = new StringBuilder();
             for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
-                testVorhersage = testVorhersage + String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]);
-                testVorhersage = testVorhersage + System.lineSeparator();
+                testVorhersage.append(String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]));
+                testVorhersage.append(System.lineSeparator());
             }
-            npVorhersageplayer.setText(testVorhersage);
+            npVorhersageplayer.setText(testVorhersage.toString());
         }
     }
 
     //Tatsächliche Stiche (switch) für Nodepad
     private void actualTricks(Notepad testNodepade) {
-        String TricksPerRound = "Stiche per Runde";
+        String tricksPerRound = "Stiche per Runde";
         TextView npVorherSagePlayerTrue;
         TextView npTextChangePointsStiche;
 
         npTextChangePointsStiche = (TextView) dialog.findViewById(R.id.tv_stichepunkte);
-        npTextChangePointsStiche.setText(TricksPerRound);
+        npTextChangePointsStiche.setText(tricksPerRound);
         testNodepade.testFillPointsPlayerround2();
 
         for (int i = 0; i < testNodepade.getPointsPerPlayerPerRound().length; i++) {
-            String testPlayerpoints1 = "";
             switch (i) {
                 case 0:
                     npVorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points1);
@@ -322,54 +318,55 @@ public class GameActivity extends AppCompatActivity {
                 default:
                     npVorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
             }
+            StringBuilder testPlayerpoints1 = new StringBuilder();
             for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
-                testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]);
-                testPlayerpoints1 = testPlayerpoints1 + System.lineSeparator();
+                testPlayerpoints1.append(String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]));
+                testPlayerpoints1.append(System.lineSeparator());
             }
-            npVorherSagePlayerTrue.setText(testPlayerpoints1);
+            npVorherSagePlayerTrue.setText(testPlayerpoints1.toString());
         }
     }
 
     //Erreichten Punkte für Nodepad (switch)
     private void actualPoints(Notepad testNodepade) {
-        String PointsPerRound = "Punkte per Runde";
-        TextView np_vorherSagePlayerTrue;
+        String pointsPerRound = "Punkte per Runde";
+        TextView npVorherSagePlayerTrue;
         TextView npTextChangePointsStiche;
 
         npTextChangePointsStiche = (TextView) dialog.findViewById(R.id.tv_stichepunkte);
-        npTextChangePointsStiche.setText(PointsPerRound);
+        npTextChangePointsStiche.setText(pointsPerRound);
         testNodepade.testFillPointsPlayerround();
 
         for (int i = 0; i < testNodepade.getPointsPerPlayerPerRound().length; i++) {
-            String testPlayerpoints1 = "";
             switch (i) {
                 case 0:
-                    np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points1);
+                    npVorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points1);
                     break;
                 case 1:
-                    np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points2);
+                    npVorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points2);
                     break;
                 case 2:
-                    np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points3);
+                    npVorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points3);
                     break;
                 case 3:
-                    np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points4);
+                    npVorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points4);
                     break;
                 case 4:
-                    np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points5);
+                    npVorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points5);
                     break;
                 case 5:
-                    np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
+                    npVorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
                     break;
 
                 default:
-                    np_vorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
+                    npVorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
             }
+            StringBuilder testPlayerpoints1 = new StringBuilder();
             for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
-                testPlayerpoints1 = testPlayerpoints1 + String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]);
-                testPlayerpoints1 = testPlayerpoints1 + System.lineSeparator();
+                testPlayerpoints1.append(String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]));
+                testPlayerpoints1.append(System.lineSeparator());
             }
-            np_vorherSagePlayerTrue.setText(testPlayerpoints1);
+            npVorherSagePlayerTrue.setText(testPlayerpoints1);
         }
     }
 
@@ -440,7 +437,7 @@ public class GameActivity extends AppCompatActivity {
             } else if (basemessage instanceof NotePadMessage) {
                 info("GAME_ACTIVITY: recieved scores!");
                 gameData.setScores((NotePadMessage) basemessage);
-                System.out.println(Arrays.deepToString(gameData.getScores().getPointsPerPlayerPerRound()));
+                info(Arrays.deepToString(gameData.getScores().getPointsPerPlayerPerRound()));
 
             } else if (basemessage instanceof TextMessage) {
                 String msg = ((TextMessage) basemessage).toString();
@@ -464,7 +461,6 @@ public class GameActivity extends AppCompatActivity {
                     etVorhersage.setEnabled(true);
                     etVorhersage.setText(msg.getError());
                 });
-                //et_vorhersage.setOnKeyListener((v, keyCode, keyEvent) -> enteredPrediction(keyCode, keyEvent));
             }
 
         });
@@ -475,10 +471,10 @@ public class GameActivity extends AppCompatActivity {
     public void showTrump() {
         Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
         ivShowTrumpCard.startAnimation(aniRotateClk);
-        if (tv_showTextTrumpf.getVisibility() == View.VISIBLE) {
-            tv_showTextTrumpf.setVisibility(View.INVISIBLE);
+        if (tvShowTextTrumpf.getVisibility() == View.VISIBLE) {
+            tvShowTextTrumpf.setVisibility(View.INVISIBLE);
         } else {
-            tv_showTextTrumpf.setVisibility(View.VISIBLE);
+            tvShowTextTrumpf.setVisibility(View.VISIBLE);
         }
     }
 
@@ -492,12 +488,12 @@ public class GameActivity extends AppCompatActivity {
 
         } else {//show Card
             ivShowTrumpCard.setImageResource(id);
-            tv_showTextTrumpf.setText(trumpHand.getCards().get(0).toString());
+            tvShowTextTrumpf.setText(trumpHand.getCards().get(0).toString());
         }
     }
 
     //------------Methode SPIELKARTEN vom Server Anzeigen in spielhand//--------------------------
-    public void addCardsToSlideView(ArrayList<Card> ppPlayerCards) {
+    public void addCardsToSlideView(List<Card> ppPlayerCards) {
         //myHand.setCards(ppPlayerCards);
         sliderItems.clear(); //Clear wennn neue Carten von Server geschickt werden
 
@@ -514,7 +510,7 @@ public class GameActivity extends AppCompatActivity {
         viewPager2.setAdapter(sliderAdapter = new SliderAdapter(sliderItems, viewPager2));
     }
 
-    private void showTableCards(ArrayList<Card> cards) {
+    private void showTableCards(List<Card> cards) {
         int cardID;
         //Issue removed critical dubplication "drawable"
         final String defTypedrawable = "drawable";
@@ -577,7 +573,7 @@ public class GameActivity extends AppCompatActivity {
             wizardClient.sendMessage(new NotePadMessage(gameData.getScores(), gameData.getActivePlayer(), betTricks));
             return true;
         } else {
-            System.out.println("No NotePadMessage sent!");
+            info("No NotePadMessage sent!");
             return false;
         }
     }
