@@ -51,7 +51,7 @@ dependencies {
     implementation group: 'com.esotericsoftware.minlog', name: 'minlog', version: '1.2'
 
     implementation project(':libnetwork')
-
+    implementation 'com.google.code.gson:gson:2.8.6'
     //ViewPager
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
 

@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +28,13 @@ import static com.esotericsoftware.minlog.Log.*;
 
 public class LobbyActivity extends AppCompatActivity {
     private Button btnStartGame;
-    private static WizardClient wizardClient = null;
+    private WizardClient wizardClient = null;
     private EditText etUsername = null;
-    private ListView lvPlayers = null;
     private TextView tvError = null;
     private List<String> playersOnline = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter = null;
-    private static Player myPlayer;
-    private static GameData gameData;
+    private Player myPlayer;
+    private GameData gameData;
 
 
     @Override
@@ -47,7 +48,7 @@ public class LobbyActivity extends AppCompatActivity {
         tvError = findViewById(R.id.lobby_error);
         etUsername = findViewById(R.id.lobby_edittext_username);
         etUsername.setOnKeyListener((v,keyCode,keyEvent) -> enteredUsername(keyCode,keyEvent));
-        lvPlayers = findViewById(R.id.lobby_list_players);
+        ListView lvPlayers = findViewById(R.id.lobby_list_players);
         Integer[] icons = new Integer[]{
                 R.drawable.circled1_64,
                 R.drawable.circled2_64,
@@ -79,8 +80,9 @@ public class LobbyActivity extends AppCompatActivity {
                     info(basemessage.toString());
                     gameData = new GameData();
                     Intent intent = new Intent(this, GameActivity.class);
-                    //intent.putExtra("myPlayer", myPlayer);
                     wizardClient.deregisterCallback();
+                    intent.putExtra("myPlayer", (new Gson()).toJson(myPlayer));
+                    intent.putExtra("gameData", (new Gson()).toJson(gameData));
                     startActivity(intent);
                 }
                 else if (basemessage instanceof PlayerMessage) {
@@ -136,17 +138,5 @@ public class LobbyActivity extends AppCompatActivity {
 
     private void startGame() {
         wizardClient.sendMessage(new ActionMessage(START));
-    }
-
-    public static WizardClient getWizardClient() {
-        return wizardClient;
-    }
-
-    public static Player getMyPlayer() {
-        return myPlayer;
-    }
-
-    public static GameData getGameData() {
-        return gameData;
     }
 }

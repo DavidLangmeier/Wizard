@@ -37,91 +37,111 @@ public class ServerCallback implements Callback<BaseMessage> {
     @Override
     public void callback(BaseMessage message) {
         if (message instanceof LobbyMessage) {
-            LobbyMessage msg = (LobbyMessage) message;
-            info("New user " + msg.getNewUsername());
-            Integer newPlayerID = server.getLastConnectionID();
-            Player newplayer = new Player(msg.getNewUsername(), newPlayerID);
-            if (game != null) {
-                if (game.isGamerunning()) { // if game is already running send back info and close connection
-                    server.sentTo(newPlayerID, new ErrorMessage("Game is already in progress, join later"));
-                    //server.disconnect(newPlayerID);
-                    debug("Send error msg, that game is already runnning");
-                }
-            } else {
-                players.add(newplayer);
-                info("Broadcasting newplayer as LobbyMessage.");
-                server.broadcastMessage(new LobbyMessage(players));
-
-                PlayerMessage newPlayerMsg = new PlayerMessage(newplayer);
-                info("Sending playerMessage to new Player.");
-                server.sentTo(newplayer.getConnectionID(), newPlayerMsg);
-            }
+            handleLobbyMessage((LobbyMessage) message);
         } else if (message instanceof GoodbyeMessage) {
-            GoodbyeMessage msg = (GoodbyeMessage) message;
-            Player playerLeaving = msg.getPlayer();
-            if (playerLeaving != null) { // Player closed app
-                info("User " + playerLeaving.getName() + " left: " + msg.getGoodbye());
-                for (Player p : players) {
-                    if (p.getPlayer_id() == playerLeaving.getConnectionID()) {
-                        this.players.remove(p);
-                    }
-                }
-                server.broadcastMessage(msg);
-            } else { // Player tried to join a running game in progress
-                info("Late joining user connection closed: "+msg.getGoodbye());
-            }
-        } else if(message instanceof LifecycleMessage) {
-            info("Received LifecycleMessage: "+((LifecycleMessage) message).getMsg());
-            server.broadcastMessage(message);
+            handleGoodbyeMessage((GoodbyeMessage) message);
+        } else if (message instanceof LifecycleMessage) {
+            handleLifecycleMessage((LifecycleMessage) message);
         } else if (message instanceof ActionMessage) {
-            info("Received ActionMessage.");
-            ActionMessage msg = (ActionMessage) message;
-
-            switch (msg.getActionType()) {
-                case START:
-                    info("Received Action START. Creating new game.");
-                    game = new Game(server, players);
-                    info("Starting game.");
-                    game.startGame();
-                    break;
-
-                case DEAL:
-                    info("Received Action DEAL.");
-                    game.dealCards();
-                    break;
-
-                case READY:
-                    info("Received Action READY.");
-                    playersReady++;
-                    info(playersReady + "/" + players.size() + " users are ready.");
-                    if (playersReady >= players.size()) {
-                        game.broadcastGameState();
-                    }
-                    break;
-
-                default:
-                    info("Unknown Action. Cannot handle Message");
-            }
-
+            handleActionMessage((ActionMessage) message);
         } else if (message instanceof CardMessage) {
-            info("Recieved Card to put on Table!");
-            CardMessage msg = (CardMessage) message;
-            info("SERVER_CALLBACK: CARD: " + msg.getCard().toString());
-            info("SERVER_CALLBACK: Card object id: " + msg.getCard().hashCode());
-            game.dealOnePlayerCardToTable(msg.getCard());
-
-        } else if(message instanceof NotePadMessage){
-            info("Recieved Notepad to enter prediction!");
-            NotePadMessage msg = (NotePadMessage) message;
-            if(!(game.checkBet(msg.getBetTrick()))){
-                server.sentTo(msg.getActivePlayer(), new ErrorMessage("X"));
-            }else{
-                game.writeBetTricksToNotePad(msg.getScores(), (msg.getActivePlayer() - 1), msg.getBetTrick());
-            }
-
-        } else{
+            handleCardMessage((CardMessage) message);
+        } else if (message instanceof NotePadMessage) {
+            handleNotepadMessage((NotePadMessage) message);
+        } else {
             info("Received message cannot be handled correctly!");
             server.broadcastMessage(new TextMessage("Server could not handle sent message correctly!"));
+        }
+    }
+
+    private void handleNotepadMessage(NotePadMessage message) {
+        info("Recieved Notepad to enter prediction!");
+        NotePadMessage msg = message;
+        if(!(game.checkBet(msg.getBetTrick()))){
+            server.sentTo(msg.getActivePlayer(), new ErrorMessage("X"));
+        }else{
+            game.writeBetTricksToNotePad(msg.getScores(), (msg.getActivePlayer() - 1), msg.getBetTrick());
+        }
+    }
+
+    private void handleCardMessage(CardMessage message) {
+        info("Recieved Card to put on Table!");
+        CardMessage msg = message;
+        info("SERVER_CALLBACK: CARD: " + msg.getCard().toString());
+        info("SERVER_CALLBACK: Card object id: " + msg.getCard().hashCode());
+        game.dealOnePlayerCardToTable(msg.getCard());
+    }
+
+    private void handleActionMessage(ActionMessage message) {
+        info("Received ActionMessage.");
+        ActionMessage msg = message;
+
+        switch (msg.getActionType()) {
+            case START:
+                info("Received Action START. Creating new game.");
+                game = new Game(server, players);
+                info("Starting game.");
+                game.startGame();
+                break;
+
+            case DEAL:
+                info("Received Action DEAL.");
+                game.dealCards();
+                break;
+
+            case READY:
+                info("Received Action READY.");
+                playersReady++;
+                info(playersReady + "/" + players.size() + " users are ready.");
+                if (playersReady >= players.size()) {
+                    game.broadcastGameState();
+                }
+                break;
+
+            default:
+                info("Unknown Action. Cannot handle Message");
+        }
+    }
+
+    private void handleLifecycleMessage(LifecycleMessage message) {
+        info("Received LifecycleMessage: "+message.getMsg());
+        server.broadcastMessage(message);
+    }
+
+    private void handleGoodbyeMessage(GoodbyeMessage message) {
+        GoodbyeMessage msg = message;
+        Player playerLeaving = msg.getPlayer();
+        if (playerLeaving != null) { // Player closed app
+            info("User " + playerLeaving.getName() + " left: " + msg.getGoodbye());
+            for (Player p : players) {
+                if (p.getPlayer_id() == playerLeaving.getConnectionID()) {
+                    this.players.remove(p);
+                }
+            }
+            server.broadcastMessage(msg);
+        } else { // Player tried to join a running game in progress
+            info("Late joining user connection closed: "+msg.getGoodbye());
+        }
+    }
+
+    private void handleLobbyMessage(LobbyMessage message) {
+        LobbyMessage msg = message;
+        info("New user " + msg.getNewUsername());
+        Integer newPlayerID = server.getLastConnectionID();
+        Player newplayer = new Player(msg.getNewUsername(), newPlayerID);
+        if (game != null) {
+            if (game.isGamerunning()) { // if game is already running send back info and close connection
+                server.sentTo(newPlayerID, new ErrorMessage("Game is already in progress, join later"));
+                debug("Send error msg, that game is already runnning");
+            }
+        } else {
+            players.add(newplayer);
+            info("Broadcasting newplayer as LobbyMessage.");
+            server.broadcastMessage(new LobbyMessage(players));
+
+            PlayerMessage newPlayerMsg = new PlayerMessage(newplayer);
+            info("Sending playerMessage to new Player.");
+            server.sentTo(newplayer.getConnectionID(), newPlayerMsg);
         }
     }
 

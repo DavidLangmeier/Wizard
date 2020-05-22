@@ -8,7 +8,6 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.B
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.NetworkServerKryo;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 
 import static com.esotericsoftware.minlog.Log.*;
 
@@ -32,11 +31,6 @@ public class WizardServer extends NetworkServerKryo {
         } catch (IOException e) {
             error("Server start failed", e);
         }
-    }
-
-    public void test() {
-        Integer id = super.getLastConnectionID();
-        super.sentTo(id, new TextMessage("Just send to connectionID "+id));
     }
 
     public static  void main(String[] args) {

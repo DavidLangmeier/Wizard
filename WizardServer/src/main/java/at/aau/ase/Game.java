@@ -217,7 +217,8 @@ public class Game {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-                throw new Error(e);
+                error("Error while waiting to send \"cleared table\". Trick complete but current round is still incomplete.", e);
+                Thread.currentThread().interrupt();
             }
             broadcastGameState();
 
@@ -237,7 +238,8 @@ public class Game {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-                throw new Error(e);
+                error("Error while waiting to send \"cleared table\". Trick complete and current round is over.", e);
+                Thread.currentThread().interrupt();
             }
 
             broadcastGameState();
@@ -255,7 +257,8 @@ public class Game {
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
-                    throw new Error(e);
+                    error("Error while waiting to send \"Action END\".", e);
+                    Thread.currentThread().interrupt();
                 }
                 // End-Msg should trigger the client going to Endscreen Activity
                 server.broadcastMessage(new ActionMessage(END));
