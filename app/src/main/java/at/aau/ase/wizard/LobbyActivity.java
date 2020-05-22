@@ -139,16 +139,4 @@ public class LobbyActivity extends AppCompatActivity {
     private void startGame() {
         wizardClient.sendMessage(new ActionMessage(START));
     }
-
-    public WizardClient getWizardClient() {
-        return wizardClient;
-    }
-
-    public Player getMyPlayer() {
-        return myPlayer;
-    }
-
-    public GameData getGameData() {
-        return gameData;
-    }
 }
