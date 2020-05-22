@@ -34,8 +34,4 @@ public class Deck extends Hand {
         Collections.shuffle(cards);
         this.setCards(cards);
     }
-
-    public void remove(Card card) {
-        this.remove(card);
-    }
 }

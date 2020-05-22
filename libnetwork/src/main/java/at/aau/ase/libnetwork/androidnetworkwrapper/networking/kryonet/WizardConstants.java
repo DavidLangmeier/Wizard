@@ -10,6 +10,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.G
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
@@ -26,6 +27,12 @@ public class WizardConstants {
      * Minimum numbers of payers/clients necessary to access the to gamescreen button in the lobby.
      */
     public  static final Integer MIN_NUM_PLAYERS = 3;
+
+    /**
+     * to calculate points per player after each round
+     */
+    public static final Integer MULTIPLIER_TOOK_TRICKS = 10;
+    public static final Integer ADDEND_BET_TRICKS_CORRECTLY = 20;
 
     /**
      * Classes to be send over the network. Since they need to be registered, just add them here to this array.
@@ -45,10 +52,11 @@ public class WizardConstants {
             PlayerMessage.class,
             LobbyMessage.class,
             ArrayList.class,
-            short[][].class,
-            short[].class,
+            int[][].class,
+            int[].class,
             Color.class,
             Value.class,
+            NotePadMessage.class,
             ErrorMessage.class,
             GoodbyeMessage.class,
             LifecycleMessage.class

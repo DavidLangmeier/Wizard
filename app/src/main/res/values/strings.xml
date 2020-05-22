@@ -14,4 +14,21 @@
     <string name="lobby_et_username">Enter your Name</string>
     <string name="str_vorhersage">Vorhersage?</string>
     <string name="play_card">PLAY CARD</string>
+    <string name="popup_closeX">X</string>
+    <!-- test string arrays -->
+    <string-array name="list_items">
+        <item>20</item>
+        <item>10</item>
+        <item>10</item>
+        <item>70</item>
+    </string-array>
+
+    <!-- Scrollable Table Values -->
+    <string name="title_activity_scrollabletable">Scrollable Table</string>
+    <string name="col0Text">col0</string>
+    <string name="col1Text">col1</string>
+    <string name="col2Text">col2</string>
+    <string name="col3Text">col3</string>
+    <string name="col4Text">col4</string>
+    <string name="col5Text">col5</string>
 </resources>

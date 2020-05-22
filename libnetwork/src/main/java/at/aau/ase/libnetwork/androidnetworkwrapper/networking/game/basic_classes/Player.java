@@ -8,8 +8,6 @@ public class Player implements Serializable {
     static AtomicInteger nextID = new AtomicInteger();
     private int player_id;
     String name;
-    private static short betTricks;
-    private short tookTricks;
     private Integer connectionID;
 
     public Player() {}
@@ -30,24 +28,8 @@ public class Player implements Serializable {
         this.name = name;
     }
 
-    public void setBetTricks(short betTricks) {
-        Player.betTricks = betTricks;
-    }
-
-    public void setTookTricks(short tookTricks) {
-        this.tookTricks = tookTricks;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public short getTookTricks() {
-        return this.tookTricks;
-    }
-
-    public static short getBetTricks() {
-        return betTricks;
     }
 
     public int getPlayer_id() {
@@ -55,9 +37,5 @@ public class Player implements Serializable {
     }
     public Integer getConnectionID() {
         return connectionID;
-    }
-
-    public void setConnectionID(Integer connectionID) {
-        this.connectionID = connectionID;
     }
 }

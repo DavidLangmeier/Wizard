@@ -10,6 +10,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.G
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
@@ -106,12 +107,19 @@ public class ServerCallback implements Callback<BaseMessage> {
             info("Recieved Card to put on Table!");
             CardMessage msg = (CardMessage) message;
             info("SERVER_CALLBACK: CARD: " + msg.getCard().toString());
-            System.out.println("SERVER_CALLBACK: Card object id: " + msg.getCard().hashCode());
+            info("SERVER_CALLBACK: Card object id: " + msg.getCard().hashCode());
             game.dealOnePlayerCardToTable(msg.getCard());
-            //info("trying to put playerCard to Table");
-            //game.broadcastGameState();
 
-        } else {
+        } else if(message instanceof NotePadMessage){
+            info("Recieved Notepad to enter prediction!");
+            NotePadMessage msg = (NotePadMessage) message;
+            if(!(game.checkBet(msg.getBetTrick()))){
+                server.sentTo(msg.getActivePlayer(), new ErrorMessage("X"));
+            }else{
+                game.writeBetTricksToNotePad(msg.getScores(), (msg.getActivePlayer() - 1), msg.getBetTrick());
+            }
+
+        } else{
             info("Received message cannot be handled correctly!");
             server.broadcastMessage(new TextMessage("Server could not handle sent message correctly!"));
         }

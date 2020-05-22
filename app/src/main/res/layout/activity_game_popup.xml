@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="380dp"
+    android:layout_height="390dp"
+    android:background="@color/colorPrimaryDark"
+    android:padding="4dp"
+    android:layout_gravity="right">
+
+    <TextView
+        android:id="@+id/txtclose"
+        android:layout_width="33dp"
+        android:layout_height="36dp"
+        android:layout_gravity="end"
+        android:background="@drawable/kreisbackground"
+        android:gravity="center"
+        android:text="@string/popup_closeX"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold" />
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_0"
+            android:height="30dp"
+            android:width="25dp"
+            android:textColor="@color/colorWhite"
+            android:text="Round"
+            android:singleLine="true"
+            android:textSize="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+                       />
+        <TextView
+            android:id="@+id/tv_player1"
+            android:height="30dp"
+            android:width="57dp"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="player1" />
+
+        <TextView
+            android:id="@+id/tv_player2"
+            android:height="30dp"
+            android:width="57dp"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="player2" />
+
+        <TextView
+            android:id="@+id/tv_player3"
+            android:height="30dp"
+            android:width="57dp"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="player3" />
+        <TextView
+            android:id="@+id/tv_player4"
+            android:height="30dp"
+            android:width="57dp"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_boarder_rechtange"
+            />
+        <TextView
+            android:id="@+id/tv_player5"
+            android:height="30dp"
+            android:width="57dp"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_boarder_rechtange"
+             />
+        <TextView
+            android:id="@+id/tv_player6"
+            android:height="30dp"
+            android:width="57dp"
+            android:singleLine="true"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_boarder_rechtange"
+             />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="303dp">
+
+        <TextView
+            android:id="@+id/tv_rounds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:width="25dp"
+            android:height="300dp"
+            android:textSize="12dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="rounds"
+            android:textColor="@color/colorWhite" />
+
+        <TextView
+            android:id="@+id/tv_points1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="300dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="points1"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_pointstricks1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="300dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="pointstricks1"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_points2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="300dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="points2"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_pointstricks2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="300dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="pointstricks2"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_points3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="300dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="points3"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_pointstricks3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="300dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:text="pointstricks3"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_points4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="300dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_pointstricks4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="300dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_points5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="300dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_pointstricks5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="300dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_points6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="300dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:textColor="@color/colorWhite" />
+        <TextView
+            android:id="@+id/tv_pointstricks6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:width="28dp"
+            android:height="300dp"
+            android:background="@drawable/text_view_boarder_rechtange"
+            android:textColor="@color/colorWhite" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <Switch
+            android:id="@+id/sw_switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:checked="true"
+            android:text="SwitchVIEW" />
+
+        <TextView
+            android:id="@+id/tv_stichepunkte"
+            android:layout_width="221dp"
+            android:layout_height="wrap_content"
+            android:text="Punkte per Runde"
+            android:textColor="@color/colorWhite" />
+
+    </TableRow>
+
+
+</LinearLayout>

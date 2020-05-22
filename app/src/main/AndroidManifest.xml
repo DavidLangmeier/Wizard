@@ -23,6 +23,7 @@
         </activity>
         <activity android:name=".LobbyActivity" />
         <activity android:name=".howto_playpdfActivity"/>
+        <activity android:name=".ScrollableTablePopup" />
     </application>
 
 </manifest>

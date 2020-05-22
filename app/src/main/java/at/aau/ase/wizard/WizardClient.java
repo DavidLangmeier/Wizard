@@ -14,14 +14,15 @@ import static com.esotericsoftware.minlog.Log.*;
  */
 public class WizardClient extends NetworkClientKryo {
 
-    //private String hostname = "192.168.178.35";
-    private String hostname = "se2-demo.aau.at";
+    private String hostname = "192.168.1.80";
+    //private String hostname = "se2-demo.aau.at";
+
     private static WizardClient wizardClient = null;
 
     private WizardClient() {
         super();
         DEBUG();
-        for (Class<BaseMessage> c: WizardConstants.getWizardNetworkClasses()) {
+        for (Class<BaseMessage> c : WizardConstants.getWizardNetworkClasses()) {
             super.registerClass(c);
         }
         debug("WizardNetworkClasses registered");
@@ -29,7 +30,7 @@ public class WizardClient extends NetworkClientKryo {
             try {
                 super.connect(hostname);
             } catch (IOException e) {
-                error("Could not establish network connection to server "+hostname, e);
+                error("Could not establish network connection to server " + hostname, e);
             }
         }).start();
         debug("Network connection established");
@@ -37,6 +38,7 @@ public class WizardClient extends NetworkClientKryo {
 
     /**
      * Static method to get an instance of the network client.
+     *
      * @return An instance of WizardClient, which can be used to send messages to the server
      */
     public static WizardClient getInstance() {
@@ -48,12 +50,13 @@ public class WizardClient extends NetworkClientKryo {
     /**
      * Send a message to the server. The message has to be a subclass of BaseMessage.
      * All our defined messagetypes should extend BaseMessage and provide a default constructor.
+     *
      * @param message, can be MessageType we have defined.
      */
     @Override
     public void sendMessage(BaseMessage message) {
         new Thread(() ->
-            super.sendMessage(message)
+                super.sendMessage(message)
         ).start();
     }
 }

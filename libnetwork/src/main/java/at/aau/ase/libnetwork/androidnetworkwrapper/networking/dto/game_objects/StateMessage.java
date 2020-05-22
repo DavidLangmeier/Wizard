@@ -3,6 +3,7 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
@@ -11,23 +12,27 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 public class StateMessage extends BaseMessage {
     Hand table;         // for the cards within 1 trickround
     Notepad scores;
-    Card trump;
+    Color trump;
     int roundsLeft;
     int currentRound;
     int dealer;
     int activePlayer;
+    int betTricksCounter;
+    boolean clearBetTricks;
 
     public StateMessage() {
     }
 
-    public StateMessage(Hand table, Notepad scores, Card trump, int roundsLeft,
-                        int dealer, int activePlayer) {
+    public StateMessage(Hand table, Notepad scores, Color trump, int roundsLeft,
+                        int dealer, int activePlayer, int betTricksCounter, boolean clearBetTricks) {
         this.table = table;
         this.scores = scores;
         this.roundsLeft = roundsLeft;
         this.trump = trump;
         this.dealer = dealer;
         this.activePlayer = activePlayer;
+        this.betTricksCounter = betTricksCounter;
+        this.clearBetTricks = clearBetTricks;
     }
 
     public Hand getTable() {
@@ -38,7 +43,7 @@ public class StateMessage extends BaseMessage {
         return scores;
     }
 
-    public Card getTrump() {
+    public Color getTrump() {
         return trump;
     }
 
@@ -52,6 +57,14 @@ public class StateMessage extends BaseMessage {
 
     public int getActivePlayer() {
         return activePlayer;
+    }
+
+    public int getBetTricksCounter() {
+        return betTricksCounter;
+    }
+
+    public boolean isClearBetTricks() {
+        return clearBetTricks;
     }
 
     public int getCurrentRound() {

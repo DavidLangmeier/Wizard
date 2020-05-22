@@ -7,10 +7,8 @@
     android:background="#197331"
     tools:context=".GameActivity">
 
-    <!--test  tesat aera -->
-    <!--test  tesat aera -->
-    <!--test  tesat aera -->
-    <!--test  tesat aera -->
+
+
 
 
     <androidx.viewpager2.widget.ViewPager2
@@ -21,10 +19,12 @@
         android:layout_marginBottom="198dp"
         android:paddingStart="160dp"
         android:paddingEnd="158dp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toTopOf="@+id/play_Card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.499"
-        app:layout_constraintStart_toStartOf="parent"></androidx.viewpager2.widget.ViewPager2>
+        app:layout_constraintStart_toStartOf="parent">
+    </androidx.viewpager2.widget.ViewPager2>
 
 
     <TextView
@@ -35,6 +35,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
+        android:scaleType="fitXY"
         android:text="@string/game_textView_title"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,6 +52,7 @@
         android:layout_marginStart="19dp"
         android:layout_marginEnd="21dp"
         android:layout_marginBottom="12dp"
+        android:scaleType="fitXY"
         android:text="@string/play_card"
         app:layout_constraintBottom_toTopOf="@+id/game_btn_dealOutCards"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,6 +69,7 @@
         android:layout_marginStart="135dp"
         android:layout_marginEnd="138dp"
         android:layout_marginBottom="54dp"
+        android:scaleType="fitXY"
         android:text="@string/game_btn_dealOutCards"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,6 +84,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="332dp"
         android:layout_marginBottom="13dp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -93,7 +97,7 @@
         android:layout_marginStart="49dp"
         android:layout_marginTop="119dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside" />
+        android:scaleType="fitXY" />
 
     <ImageView
         android:id="@+id/tableCard2"
@@ -104,7 +108,7 @@
         android:layout_marginStart="89dp"
         android:layout_marginTop="119dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside" />
+        android:scaleType="fitXY" />
 
     <ImageView
         android:id="@+id/tableCard3"
@@ -115,7 +119,7 @@
         android:layout_marginStart="129dp"
         android:layout_marginTop="119dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside" />
+        android:scaleType="fitXY" />
 
     <ImageView
         android:id="@+id/tableCard4"
@@ -126,7 +130,7 @@
         android:layout_marginStart="169dp"
         android:layout_marginTop="119dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside" />
+        android:scaleType="fitXY" />
 
     <ImageView
         android:id="@+id/tableCard5"
@@ -137,7 +141,7 @@
         android:layout_marginStart="219dp"
         android:layout_marginTop="119dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside" />
+        android:scaleType="fitXY" />
 
     <ImageView
         android:id="@+id/tableCard6"
@@ -148,7 +152,7 @@
         android:layout_marginStart="259dp"
         android:layout_marginTop="119dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside" />
+        android:scaleType="fitXY" />
 
     <EditText
         android:id="@+id/etn_Vorhersage"
@@ -159,6 +163,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="132dp"
+        android:scaleType="fitXY"
         android:digits="0123456789"
         android:ems="10"
         android:hint="@string/str_vorhersage"
@@ -180,11 +185,27 @@
         android:layout_marginTop="55dp"
         android:layout_marginEnd="-10dp"
         android:layout_marginBottom="72dp"
+        android:scaleType="fitXY"
         android:text="11 Green"
         android:textColor="#FFFF00"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/viewTrumpCard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewPagerImageSlieder" />
+
+    <!--button Nodepade -->
+    <Button
+        android:onClick="showNodepad"
+        android:id="@+id/game_btn_showNodepad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="135dp"
+        android:layout_marginEnd="138dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/buttonsstyls"
+        android:text="Block of Truth" />
 
 </android.widget.RelativeLayout>
