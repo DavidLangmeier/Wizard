@@ -197,7 +197,7 @@ public class GameActivity extends AppCompatActivity {
 
 
         //Befüllung der Runden Zahl
-        fillRoundsNumber();
+        fillRoundsNumber(gameDataScores);
         //Player Namen Nodepad Befüllung
         showNamesOfPlayers(gameDataScores);
         //Aktuelle Punkte Nodepad Befüllung
@@ -210,12 +210,19 @@ public class GameActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void fillRoundsNumber() {
+    public void fillRoundsNumber(Notepad gameDataScores) {
+        int rundenDisplay;
+        int kartenAnzahl;
         TextView npRounds;
         npRounds = (TextView) dialog.findViewById(R.id.tv_rounds);
 
+        kartenAnzahl = 60;
+        rundenDisplay = kartenAnzahl / (gameDataScores.getTotalPointsPerPlayer().length);
+
+        //60/3=20  60/4=15  60/5=12 60 /6=10
+
         //Befüllung mit Werten Array
-        short[] roundsArray = new short[21];
+        short[] roundsArray = new short[rundenDisplay + 1];
         for (int i = 0; i < roundsArray.length; i++) {
             roundsArray[i] = (short) i;
         }
@@ -325,6 +332,7 @@ public class GameActivity extends AppCompatActivity {
             }
             StringBuilder testVorhersage = new StringBuilder();
             for (int j = 0; j < testNodepade.getBetTricksPerPlayerPerRound()[i].length; j++) {
+                testVorhersage.append("  ");
                 testVorhersage.append(String.valueOf(testNodepade.getBetTricksPerPlayerPerRound()[i][j]));
                 testVorhersage.append(System.lineSeparator());
             }
@@ -340,7 +348,6 @@ public class GameActivity extends AppCompatActivity {
 
         npTextChangePointsStiche = (TextView) dialog.findViewById(R.id.tv_stichepunkte);
         npTextChangePointsStiche.setText(tricksPerRound);
-        //testNodepade.testFillPointsPlayerround2();
 
         for (int i = 0; i < testNodepade.getTookTricksPerPlayerPerRound().length; i++) {
             switch (i) {
@@ -368,10 +375,12 @@ public class GameActivity extends AppCompatActivity {
             }
             StringBuilder testPlayerpoints1 = new StringBuilder();
             for (int j = 0; j < testNodepade.getTookTricksPerPlayerPerRound()[i].length; j++) {
+                //testPlayerpoints1.append("  ");
                 testPlayerpoints1.append(String.valueOf(testNodepade.getTookTricksPerPlayerPerRound()[i][j]));
                 testPlayerpoints1.append(System.lineSeparator());
             }
             npVorherSagePlayerTrue.setText(testPlayerpoints1.toString());
+            npVorherSagePlayerTrue.setTextColor(Color.YELLOW);
         }
     }
 
@@ -415,6 +424,7 @@ public class GameActivity extends AppCompatActivity {
                 testPlayerpoints1.append(System.lineSeparator());
             }
             npVorherSagePlayerTrue.setText(testPlayerpoints1);
+            npVorherSagePlayerTrue.setTextColor(Color.WHITE);
         }
     }
 
