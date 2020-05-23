@@ -169,11 +169,15 @@ public class GameActivity extends AppCompatActivity {
         //Notepad gameDataScores = new Notepad((short) 3);
         //gameDataScores.testFillPointsPlayerround();
         Notepad gameDataScores = gameData.getScores();
-        info("....................getPointsPerPlayerPerRound......................"+Arrays.deepToString(gameData.getScores().getPointsPerPlayerPerRound()));
-        info("....................getBetTricksPerPlayerPerRound......................"+Arrays.deepToString(gameData.getScores().getBetTricksPerPlayerPerRound()));
-        info(".....................getTookTricksPerPlayerPerRound....................."+Arrays.deepToString(gameData.getScores().getTookTricksPerPlayerPerRound()));
-        info("......................playerNamesList...................."+(gameData.getScores().playerNamesList));
+        info("....................getPointsPerPlayerPerRound......................" + Arrays.deepToString(gameData.getScores().getPointsPerPlayerPerRound()));
+        info("....................getBetTricksPerPlayerPerRound......................" + Arrays.deepToString(gameData.getScores().getBetTricksPerPlayerPerRound()));
+        info(".....................getTookTricksPerPlayerPerRound....................." + Arrays.deepToString(gameData.getScores().getTookTricksPerPlayerPerRound()));
+        info("......................playerNamesList...................." + (gameData.getScores().playerNamesList));
 
+        info(".....................getRoundsLeft...................................." + (gameData.getRoundsLeft()));
+        info(".....................ActivePlayer.................................." + (gameData.getActivePlayer()));
+        info(".....................Notepad.getRound................................" + (Notepad.getRound()));
+        info("......................getTotalPointsPerPlayer()....................." + Arrays.deepToString(gameData.getScores().getTotalPointsPerPlayer()));
         //----------------------switch-------------------------
 
         swChangeViewPointsStiche = (Switch) dialog.findViewById(R.id.sw_switch1);
@@ -200,6 +204,8 @@ public class GameActivity extends AppCompatActivity {
         actualPoints(gameDataScores);
         //Vorhersage Stiche Nodepad Befüllung
         predictedTricks(gameDataScores);
+        //Summe totalPunkte Befüllung
+        totalPointsPlayer(gameDataScores);
 
         dialog.show();
     }
@@ -208,10 +214,12 @@ public class GameActivity extends AppCompatActivity {
         TextView npRounds;
         npRounds = (TextView) dialog.findViewById(R.id.tv_rounds);
 
+        //Befüllung mit Werten Array
         short[] roundsArray = new short[21];
         for (int i = 0; i < roundsArray.length; i++) {
             roundsArray[i] = (short) i;
         }
+        //Anzeige in Textfeld
         StringBuilder round = new StringBuilder();
         for (int i = 1; i < roundsArray.length; i++) {
             round.append(String.valueOf(roundsArray[i]));
@@ -248,6 +256,42 @@ public class GameActivity extends AppCompatActivity {
                     npPlayerNames = (TextView) dialog.findViewById(R.id.tv_player6);
             }
             npPlayerNames.setText(testNodepade.playerNamesList.get(i));
+        }
+    }
+
+    public void totalPointsPlayer(Notepad testNodepade) {
+        TextView npTotalPoints;
+
+        for (int i = 0; i < testNodepade.getTotalPointsPerPlayer().length; i++) {
+            String npTotalPointsAnzeige = "";
+            switch (i) {
+                case 0:
+                    npTotalPoints = (TextView) dialog.findViewById(R.id.tv_summe1);
+                    break;
+                case 1:
+                    npTotalPoints = (TextView) dialog.findViewById(R.id.tv_summe2);
+                    break;
+                case 2:
+                    npTotalPoints = (TextView) dialog.findViewById(R.id.tv_summe3);
+                    break;
+                case 3:
+                    npTotalPoints = (TextView) dialog.findViewById(R.id.tv_summe4);
+                    break;
+                case 4:
+                    npTotalPoints = (TextView) dialog.findViewById(R.id.tv_summe5);
+                    break;
+                case 5:
+                    npTotalPoints = (TextView) dialog.findViewById(R.id.tv_summe6);
+                    break;
+
+                default:
+                    npTotalPoints = (TextView) dialog.findViewById(R.id.tv_summe6);
+            }
+            for (int j = 0; j < testNodepade.getTotalPointsPerPlayer()[i].length; j++) {
+                npTotalPointsAnzeige = npTotalPointsAnzeige + String.valueOf(testNodepade.getTotalPointsPerPlayer()[i][j]);
+            }
+
+            npTotalPoints.setText(npTotalPointsAnzeige.toString());
         }
     }
 
