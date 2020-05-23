@@ -166,9 +166,13 @@ public class GameActivity extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         //ersetzung durch daten erhalten von server----------------------------------------------------------------------
-        Notepad testNodepade = new Notepad((short) 3);
-        testNodepade.testFillPointsPlayerround();
-
+        //Notepad gameDataScores = new Notepad((short) 3);
+        //gameDataScores.testFillPointsPlayerround();
+        Notepad gameDataScores = gameData.getScores();
+        info("....................getPointsPerPlayerPerRound......................"+Arrays.deepToString(gameData.getScores().getPointsPerPlayerPerRound()));
+        info("....................getBetTricksPerPlayerPerRound......................"+Arrays.deepToString(gameData.getScores().getBetTricksPerPlayerPerRound()));
+        info(".....................getTookTricksPerPlayerPerRound....................."+Arrays.deepToString(gameData.getScores().getTookTricksPerPlayerPerRound()));
+        info("......................playerNamesList...................."+(gameData.getScores().playerNamesList));
 
         //----------------------switch-------------------------
 
@@ -180,9 +184,9 @@ public class GameActivity extends AppCompatActivity {
 
                 if (isChecked) {
                     //wenn Switch isCheck fill with Points
-                    actualPoints(testNodepade);
+                    actualPoints(gameDataScores);
                 } else {
-                    actualTricks(testNodepade);
+                    actualTricks(gameDataScores);
                 }
             }
         });
@@ -191,11 +195,11 @@ public class GameActivity extends AppCompatActivity {
         //Befüllung der Runden Zahl
         fillRoundsNumber();
         //Player Namen Nodepad Befüllung
-        showNamesOfPlayers(testNodepade);
+        showNamesOfPlayers(gameDataScores);
         //Aktuelle Punkte Nodepad Befüllung
-        actualPoints(testNodepade);
+        actualPoints(gameDataScores);
         //Vorhersage Stiche Nodepad Befüllung
-        predictedTricks(testNodepade);
+        predictedTricks(gameDataScores);
 
         dialog.show();
     }
@@ -219,7 +223,7 @@ public class GameActivity extends AppCompatActivity {
     public void showNamesOfPlayers(Notepad testNodepade) {
         TextView npPlayerNames;
 
-        for (int i = 0; i < testNodepade.getPointsPerPlayerPerRound().length; i++) {
+        for (int i = 0; i < testNodepade.playerNamesList.size(); i++) {
             switch (i) {
                 case 0:
                     npPlayerNames = (TextView) dialog.findViewById(R.id.tv_player1);
@@ -251,7 +255,7 @@ public class GameActivity extends AppCompatActivity {
     public void predictedTricks(Notepad testNodepade) {
         TextView npVorhersageplayer;
 
-        for (int i = 0; i < testNodepade.getPointsPerPlayerPerRound().length; i++) {
+        for (int i = 0; i < testNodepade.getBetTricksPerPlayerPerRound().length; i++) {
             switch (i) {
                 case 0:
                     npVorhersageplayer = (TextView) dialog.findViewById(R.id.tv_pointstricks1);
@@ -276,8 +280,8 @@ public class GameActivity extends AppCompatActivity {
                     npVorhersageplayer = (TextView) dialog.findViewById(R.id.tv_pointstricks6);
             }
             StringBuilder testVorhersage = new StringBuilder();
-            for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
-                testVorhersage.append(String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]));
+            for (int j = 0; j < testNodepade.getBetTricksPerPlayerPerRound()[i].length; j++) {
+                testVorhersage.append(String.valueOf(testNodepade.getBetTricksPerPlayerPerRound()[i][j]));
                 testVorhersage.append(System.lineSeparator());
             }
             npVorhersageplayer.setText(testVorhersage.toString());
@@ -292,9 +296,9 @@ public class GameActivity extends AppCompatActivity {
 
         npTextChangePointsStiche = (TextView) dialog.findViewById(R.id.tv_stichepunkte);
         npTextChangePointsStiche.setText(tricksPerRound);
-        testNodepade.testFillPointsPlayerround2();
+        //testNodepade.testFillPointsPlayerround2();
 
-        for (int i = 0; i < testNodepade.getPointsPerPlayerPerRound().length; i++) {
+        for (int i = 0; i < testNodepade.getTookTricksPerPlayerPerRound().length; i++) {
             switch (i) {
                 case 0:
                     npVorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points1);
@@ -319,8 +323,8 @@ public class GameActivity extends AppCompatActivity {
                     npVorherSagePlayerTrue = (TextView) dialog.findViewById(R.id.tv_points6);
             }
             StringBuilder testPlayerpoints1 = new StringBuilder();
-            for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
-                testPlayerpoints1.append(String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]));
+            for (int j = 0; j < testNodepade.getTookTricksPerPlayerPerRound()[i].length; j++) {
+                testPlayerpoints1.append(String.valueOf(testNodepade.getTookTricksPerPlayerPerRound()[i][j]));
                 testPlayerpoints1.append(System.lineSeparator());
             }
             npVorherSagePlayerTrue.setText(testPlayerpoints1.toString());
@@ -335,7 +339,7 @@ public class GameActivity extends AppCompatActivity {
 
         npTextChangePointsStiche = (TextView) dialog.findViewById(R.id.tv_stichepunkte);
         npTextChangePointsStiche.setText(pointsPerRound);
-        testNodepade.testFillPointsPlayerround();
+        //testNodepade.testFillPointsPlayerround();
 
         for (int i = 0; i < testNodepade.getPointsPerPlayerPerRound().length; i++) {
             switch (i) {
@@ -479,10 +483,11 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void dealTrumpCard() {
+        final String defTypedrawable = "drawable";
         trumpHand.clear();
         deck.dealCard(deck.getCards().get(0), trumpHand);
 
-        int id = getResources().getIdentifier(trumpHand.getCards().get(0).getPictureFileId(), "drawable", getPackageName());
+        int id = getResources().getIdentifier(trumpHand.getCards().get(0).getPictureFileId(), defTypedrawable, getPackageName());
         if (id == 0) {//if the pictureID is false show Error Logo
             ivShowTrumpCard.setImageResource((R.drawable.z0error));
 
@@ -494,12 +499,13 @@ public class GameActivity extends AppCompatActivity {
 
     //------------Methode SPIELKARTEN vom Server Anzeigen in spielhand//--------------------------
     public void addCardsToSlideView(List<Card> ppPlayerCards) {
+        final String defTypedrawable = "drawable";
         //myHand.setCards(ppPlayerCards);
         sliderItems.clear(); //Clear wennn neue Carten von Server geschickt werden
 
         for (int i = 0; i < ppPlayerCards.size(); i++) {
             //umwandlung Color.Red, Value.Five in drawable picture alternativ (sliderItems.add(new SliderItem(R.drawable.red0eight));
-            int id = getResources().getIdentifier(ppPlayerCards.get(i).getPictureFileId(), "drawable", getPackageName());
+            int id = getResources().getIdentifier(ppPlayerCards.get(i).getPictureFileId(), defTypedrawable, getPackageName());
 
             if (id == 0) {//if the pictureID is false show Error Logo zero
                 sliderItems.add(new SliderItem((R.drawable.z0error), ppPlayerCards.get(i)));
@@ -507,7 +513,7 @@ public class GameActivity extends AppCompatActivity {
                 sliderItems.add(new SliderItem(id, ppPlayerCards.get(i)));
             }
         }
-        viewPager2.setAdapter(sliderAdapter = new SliderAdapter(sliderItems, viewPager2));
+        viewPager2.setAdapter(sliderAdapter = new SliderAdapter(sliderItems));
     }
 
     private void showTableCards(List<Card> cards) {
