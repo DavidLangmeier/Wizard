@@ -70,7 +70,7 @@ public class Notepad {
     public void testFillPointsPlayerround() {
         int count = 1;
         for (int i = 0; i < pointsPerPlayerPerRound.length; i++) {
-            // playerNames[i]="name"+i;
+
             playerNamesList.add("name" + i);
             for (int j = 0; j < pointsPerPlayerPerRound[i].length; j++) {
                 pointsPerPlayerPerRound[i][j] = count;
@@ -84,7 +84,7 @@ public class Notepad {
     public void testFillPointsPlayerround2() {
         int count2 = 1;
         for (int i = 0; i < pointsPerPlayerPerRound.length; i++) {
-            // playerNames[i]="name"+i;
+
             playerNamesList.add("name" + i);
             for (int j = 0; j < pointsPerPlayerPerRound[i].length; j++) {
                 pointsPerPlayerPerRound[i][j] = count2;

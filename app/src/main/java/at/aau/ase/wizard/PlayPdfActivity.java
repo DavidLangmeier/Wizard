@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.barteksc.pdfviewer.PDFView;
 
-public class howto_playpdfActivity extends AppCompatActivity {
+public class PlayPdfActivity extends AppCompatActivity {
     PDFView pdfView;
 
     @Override
@@ -16,7 +16,7 @@ public class howto_playpdfActivity extends AppCompatActivity {
         setContentView(R.layout.activity_howto_playpdf);
 
         pdfView = (PDFView) findViewById(R.id.pdfView);
-       // pdfView.fromAsset("Spielanleitung_Wizard.pdf").load();
+
         pdfView.fromAsset("Spielanleitung_Wizard5.pdf").load();
     }
 

@@ -42,7 +42,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void openHowToPlayActivity() {
-        Intent intent2 = new Intent(this, howto_playpdfActivity.class);
+        Intent intent2 = new Intent(this, PlayPdfActivity.class);
         startActivity(intent2);
     }
     
