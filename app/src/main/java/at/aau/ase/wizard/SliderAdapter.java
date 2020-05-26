@@ -24,7 +24,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     private List<SliderItem> sliderItems;
     private int selectedICard=0;
     private Card selectedCard;
-
+    private int positionIfnothingIsSelected;
 
     SliderAdapter(List<SliderItem> sliderItems) {
         this.sliderItems = sliderItems;
@@ -34,6 +34,8 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     @NonNull
     @Override
     public SliderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //Spielt die Karte aus die Gelb Hinterlegt ist
+        selectedCard=sliderItems.get(positionIfnothingIsSelected).getSelectedCard();
         return new SliderViewHolder(
                 LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.slide_card_container,
@@ -61,6 +63,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                 notifyItemChanged(previousSelectetItem);
                 holder.imageView.setBackgroundColor(Color.parseColor("#fcdb19"));
                 selectedCard = sliderItems.get(position).getSelectedCard();
+                positionIfnothingIsSelected =position;
             }
         });
     }
