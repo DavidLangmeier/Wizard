@@ -146,10 +146,10 @@ public class Game {
             }
         }
 
-        if (trumpColor != null) {
+        if (currentRound < 20) {
             server.broadcastMessage(new TextMessage("Current Trump is " + trumpColor.getColorName()));
         } else {
-            server.broadcastMessage(new TextMessage("Last round has no Trump!"));
+            server.broadcastMessage(new TextMessage("LAST ROUND HAS NO TRUMP!"));
         }
 
         return trumpColor;
@@ -214,12 +214,7 @@ public class Game {
             info("GAME: Trick complete. Table cleared - new trickRound starting.");
 
             // wait some time before sending cleared table
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                error("Error while waiting to send \"cleared table\". Trick complete but current round is still incomplete.", e);
-                Thread.currentThread().interrupt();
-            }
+            waitSafe(WizardConstants.TIME_TO_WAIT_SHORT);
             broadcastGameState();
 
             // trick is complete, current round is over
@@ -235,12 +230,7 @@ public class Game {
             table.clear();
 
             // wait some time before sending cleared table
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                error("Error while waiting to send \"cleared table\". Trick complete and current round is over.", e);
-                Thread.currentThread().interrupt();
-            }
+            waitSafe(WizardConstants.TIME_TO_WAIT_MEDIUM);
 
             broadcastGameState();
 
@@ -254,12 +244,7 @@ public class Game {
                 server.broadcastMessage(new TextMessage("Last round played, Game is complete."));
 
                 // wait some time before sending Action END
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    error("Error while waiting to send \"Action END\".", e);
-                    Thread.currentThread().interrupt();
-                }
+                waitSafe(WizardConstants.TIME_TO_WAIT_LONG);
                 // End-Msg should trigger the client going to Endscreen Activity
                 server.broadcastMessage(new ActionMessage(END));
             }
@@ -370,6 +355,15 @@ public class Game {
     //checks if player is last player of this trickround
     boolean checkBetTricksCounter() {
         return betTricksCounter < players.size() - 1;
+    }
+
+    void waitSafe(long timeToWait) {
+        try {
+            Thread.sleep(timeToWait);
+        } catch (InterruptedException e) {
+            error("GAME: Error while waiting.", e);
+            Thread.currentThread().interrupt();
+        }
     }
 }
 

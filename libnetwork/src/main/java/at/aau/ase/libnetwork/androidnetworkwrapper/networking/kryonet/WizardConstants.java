@@ -35,6 +35,13 @@ public class WizardConstants {
     public static final Integer ADDEND_BET_TRICKS_CORRECTLY = 20;
 
     /**
+     * waiting times in ms
+     */
+    public static final long TIME_TO_WAIT_SHORT = 3000;
+    public static final long TIME_TO_WAIT_MEDIUM = 5000;
+    public static final long TIME_TO_WAIT_LONG = 7000;
+
+    /**
      * Classes to be send over the network. Since they need to be registered, just add them here to this array.
      * Also any classes, which are just used for parameters in the messages need to be listed.
      */
