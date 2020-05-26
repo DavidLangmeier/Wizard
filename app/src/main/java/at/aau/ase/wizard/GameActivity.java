@@ -71,6 +71,7 @@ public class GameActivity extends AppCompatActivity {
     private Dialog dialog;
     private TextView tvServerMsg;
     private EditText etVorhersage;
+    private List playersOnline = new ArrayList<>();
 
 
     Hand myHand = new Hand(); //Test PlayerHand
@@ -89,6 +90,9 @@ public class GameActivity extends AppCompatActivity {
 
         String s2 = getIntent().getStringExtra("gameData");
         gameData = new Gson().fromJson(s2, GameData.class);
+
+        String s3 = getIntent().getStringExtra("playersOnline");
+        playersOnline = new Gson().fromJson(s3, List.class);
 
         wizardClient = WizardClient.getInstance(); // new instance would get new connectionID, has to be fixed
         startCallback();
