@@ -55,6 +55,12 @@ public class GameActivity extends AppCompatActivity {
     private Button btnPlaySelectedCard;
     private Button btnDeal;
     private ImageView ivShowTrumpCard;
+    private TextView tvActivePlayer1;
+    private TextView tvActivePlayer2;
+    private TextView tvActivePlayer3;
+    private TextView tvActivePlayer4;
+    private TextView tvActivePlayer5;
+    private TextView tvActivePlayer6;
     private ImageView ivTable1;
     private ImageView ivTable2;
     private ImageView ivTable3;
@@ -121,6 +127,19 @@ public class GameActivity extends AppCompatActivity {
         ivTable4 = findViewById(R.id.tableCard4);
         ivTable5 = findViewById(R.id.tableCard5);
         ivTable6 = findViewById(R.id.tableCard6);
+
+        tvActivePlayer1 = findViewById(R.id.tv_p1);
+        tvActivePlayer2 = findViewById(R.id.tv_p2);
+        tvActivePlayer3 = findViewById(R.id.tv_p3);
+        tvActivePlayer4 = findViewById(R.id.tv_p4);
+        tvActivePlayer5 = findViewById(R.id.tv_p5);
+        tvActivePlayer6 = findViewById(R.id.tv_p6);
+
+        tvActivePlayer4.setVisibility(View.INVISIBLE);
+        tvActivePlayer5.setVisibility(View.INVISIBLE);
+        tvActivePlayer6.setVisibility(View.INVISIBLE);
+
+        runOnUiThread(this::setPlayerViews); //fills player names in correct Textview);
 
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
         //sliderItems = new ArrayList<>();    //List of Images from drawable
@@ -451,10 +470,10 @@ public class GameActivity extends AppCompatActivity {
                 gameData.updateState((StateMessage) basemessage);
                 if (gameData.getDealer() == (myPlayer.getConnectionID())) {
                     runOnUiThread(() ->
-                            btnDeal.setEnabled(true));
+                            btnDeal.setEnabled(true)); // to remove by David
                 } else {
                     runOnUiThread(() ->
-                            btnDeal.setEnabled(false));
+                            btnDeal.setEnabled(false)); // to remove by David
                 }
 
                 info("Active Player: " + gameData.getActivePlayer() + ", Connection ID my Player: " + myPlayer.getConnectionID());
@@ -467,8 +486,10 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 if (gameData.getActivePlayer() == (myPlayer.getConnectionID())) {
-                    runOnUiThread(() ->
-                            btnPlaySelectedCard.setEnabled(true));
+                    runOnUiThread(() -> {
+                        btnPlaySelectedCard.setEnabled(true);
+                    });
+
 
                     if (gameData.getBetTricksCounter() < gameData.getScores().getTotalPointsPerPlayer().length) {
                         info("!!!!!!!!! Trickround: " + gameData.getBetTricksCounter() + " score size: " + gameData.getScores().getTotalPointsPerPlayer().length);
@@ -476,6 +497,7 @@ public class GameActivity extends AppCompatActivity {
                             etVorhersage.setEnabled(true);
                             etVorhersage.setVisibility(View.VISIBLE);
                             btnPlaySelectedCard.setEnabled(false);
+                            runOnUiThread(this::setTvActivePlayer);
                         });
                     } else {
                         runOnUiThread(() ->
@@ -489,6 +511,7 @@ public class GameActivity extends AppCompatActivity {
 
                 ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
                 runOnUiThread(() -> showTableCards(cardsOnTable));
+                runOnUiThread(this::setTvActivePlayer);
 
             } else if (basemessage instanceof HandMessage) {
                 info("GAME_ACTIVITY: Hand recieved.");
@@ -619,6 +642,57 @@ public class GameActivity extends AppCompatActivity {
                 break;
             default:
                 info("Table Hand too short or too big! Something strange happened...");
+        }
+    }
+
+    private void setPlayerViews() {
+        switch (playersOnline.size()) {
+            case 6:
+                tvActivePlayer6.setText(playersOnline.get(5).toString());
+                tvActivePlayer6.setVisibility(View.VISIBLE);
+            case 5:
+                tvActivePlayer5.setText(playersOnline.get(4).toString());
+                tvActivePlayer5.setVisibility(View.VISIBLE);
+            case 4:
+                tvActivePlayer4.setText(playersOnline.get(3).toString());
+                tvActivePlayer4.setVisibility(View.VISIBLE);
+            case 3:
+                tvActivePlayer3.setText(playersOnline.get(2).toString());
+                tvActivePlayer2.setText(playersOnline.get(1).toString());
+                tvActivePlayer1.setText(playersOnline.get(0).toString());
+                break;
+
+            default:
+                info("GAME_ACTIVITY: No Players active.");
+        }
+    }
+
+    private void showActivePlayers(TextView activePlayer) {
+        tvActivePlayer1.setEnabled(false);
+        tvActivePlayer2.setEnabled(false);
+        tvActivePlayer3.setEnabled(false);
+        tvActivePlayer4.setEnabled(false);
+        tvActivePlayer5.setEnabled(false);
+        tvActivePlayer6.setEnabled(false);
+
+        activePlayer.setEnabled(true);
+    }
+
+    private void setTvActivePlayer() {
+        if (gameData.getActivePlayer() == 1) {
+            showActivePlayers(tvActivePlayer1);
+        } else if (gameData.getActivePlayer() == 2) {
+            showActivePlayers(tvActivePlayer2);
+        } else if (gameData.getActivePlayer() == 3) {
+            showActivePlayers(tvActivePlayer3);
+        } else if (gameData.getActivePlayer() == 4) {
+            showActivePlayers(tvActivePlayer4);
+        } else if (gameData.getActivePlayer() == 5) {
+            showActivePlayers(tvActivePlayer5);
+        } else if (gameData.getActivePlayer() == 6) {
+            showActivePlayers(tvActivePlayer6);
+        } else {
+            info("GAME_ACTIVITY: No active Player to show.");
         }
     }
 
