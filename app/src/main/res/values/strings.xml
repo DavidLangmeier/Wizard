@@ -31,4 +31,17 @@
     <string name="col3Text">col3</string>
     <string name="col4Text">col4</string>
     <string name="col5Text">col5</string>
+    <string name="namep1">nameP1</string>
+    <string name="namep2">nameP2</string>
+    <string name="namep3">nameP3</string>
+    <string name="namep4">nameP4</string>
+    <string name="namep5">nameP5</string>
+    <string name="namep6">nameP6</string>
+    <string name="tablecard1">tableCard1</string>
+    <string name="tablecard2">tableCard2</string>
+    <string name="tablecard3">tableCard3</string>
+    <string name="tablecard4">tableCard4</string>
+    <string name="tablecard5">tableCard5</string>
+    <string name="tablecard6">tableCard6</string>
+    <string name="block_of_truth">BLOCK OF TRUTH</string>
 </resources>

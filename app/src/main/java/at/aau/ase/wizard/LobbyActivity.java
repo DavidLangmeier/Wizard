@@ -83,6 +83,7 @@ public class LobbyActivity extends AppCompatActivity {
                     wizardClient.deregisterCallback();
                     intent.putExtra("myPlayer", (new Gson()).toJson(myPlayer));
                     intent.putExtra("gameData", (new Gson()).toJson(gameData));
+                    intent.putExtra("playersOnline", (new Gson()).toJson(playersOnline));
                     startActivity(intent);
                 }
                 else if (basemessage instanceof PlayerMessage) {
