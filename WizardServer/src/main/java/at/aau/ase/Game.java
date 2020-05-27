@@ -284,7 +284,7 @@ public class Game {
                 highestCard = card;
             }
         }
-        String trickWinner = "Card: " + highestCard.toString() + " played by " + players.get(highestCard.getPlayedBy()).getName()
+        String trickWinner = highestCard.toString() + " played by " + players.get(highestCard.getPlayedBy()).getName()
                 + " has won the last trick";
         info("GAME: " + trickWinner);
         server.broadcastMessage(new TextMessage(trickWinner));

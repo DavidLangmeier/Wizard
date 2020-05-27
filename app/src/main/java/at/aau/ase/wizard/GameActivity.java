@@ -445,7 +445,7 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                tvTrumpColor.setText(gameData.getTrump().getColorName());
+                tvTrumpColor.setText("Trump: " +gameData.getTrump().getColorName());
                 info("Active Player: " + gameData.getActivePlayer() + ", Connection ID my Player: " + myPlayer.getConnectionID());
 
                 if (((StateMessage) basemessage).isClearBetTricks()) {
