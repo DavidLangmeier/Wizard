@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -71,7 +72,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView tvServerMsg;
     private EditText etVorhersage;
     private List playersOnline = new ArrayList<>();
-
+    private MediaPlayer mp3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +122,7 @@ public class GameActivity extends AppCompatActivity {
         runOnUiThread(this::setPlayerViews);
 
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
-
+        mp3 =MediaPlayer.create(this,R.raw.karte0runterlegen);
 
         //Damit mehrere nebeneinander sichbar sind
         viewPager2.setClipToPadding(false);
@@ -147,7 +148,7 @@ public class GameActivity extends AppCompatActivity {
     public void showNodepad(View v) {
         //View wird im XML aufgerufen
         TextView txtclose;
-
+        mp3.start();
         Switch swChangeViewPointsStiche;
 
         dialog.setContentView(R.layout.activity_game_popup);
