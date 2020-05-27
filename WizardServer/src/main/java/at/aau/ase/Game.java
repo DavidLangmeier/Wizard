@@ -69,6 +69,9 @@ public class Game {
         // Send START to all users -> @client: trigger intent which starts gameActivity
         info("GAME: Broadcasting START now.");
         server.broadcastMessage(new ActionMessage(START));
+        server.broadcastMessage(new TextMessage("Shuffling and dealing cards..."));
+        waitSafe(WizardConstants.TIME_TO_WAIT_SHORT);
+        dealCards();
     }
 
     void broadcastGameState() {

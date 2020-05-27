@@ -53,7 +53,6 @@ import static com.esotericsoftware.minlog.Log.*;
 
 public class GameActivity extends AppCompatActivity {
     private Button btnPlaySelectedCard;
-    private Button btnDeal;
     private ImageView ivShowTrumpCard;
     private TextView tvActivePlayer1;
     private TextView tvActivePlayer2;
@@ -100,7 +99,7 @@ public class GameActivity extends AppCompatActivity {
         String s3 = getIntent().getStringExtra("playersOnline");
         playersOnline = new Gson().fromJson(s3, List.class);
 
-        wizardClient = WizardClient.getInstance(); // new instance would get new connectionID, has to be fixed
+        wizardClient = WizardClient.getInstance();
         startCallback();
 
         info("@GAME_ACTIVITY: My Playername=" + myPlayer.getName() + ", connectionID=" + myPlayer.getConnectionID());
@@ -108,9 +107,6 @@ public class GameActivity extends AppCompatActivity {
         btnPlaySelectedCard = findViewById(R.id.play_Card);
         btnPlaySelectedCard.setOnClickListener(v -> dealOnePlayerCardOnTable());
         btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
-        btnDeal = findViewById(R.id.game_btn_dealOutCards);
-        btnDeal.setOnClickListener(v -> dealCards());
-        btnDeal.setEnabled(true);
         tvShowTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
         dialog = new Dialog(this);
         tvServerMsg = findViewById(R.id.game_textView_serverMsg);
@@ -468,13 +464,6 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                if (gameData.getDealer() == (myPlayer.getConnectionID())) {
-                    runOnUiThread(() ->
-                            btnDeal.setEnabled(true)); // to remove by David
-                } else {
-                    runOnUiThread(() ->
-                            btnDeal.setEnabled(false)); // to remove by David
-                }
 
                 info("Active Player: " + gameData.getActivePlayer() + ", Connection ID my Player: " + myPlayer.getConnectionID());
 
