@@ -53,6 +53,7 @@ import static com.esotericsoftware.minlog.Log.*;
 
 public class GameActivity extends AppCompatActivity {
     private Button btnPlaySelectedCard;
+    private TextView tvTrumpColor;
     private TextView tvActivePlayer1;
     private TextView tvActivePlayer2;
     private TextView tvActivePlayer3;
@@ -98,6 +99,7 @@ public class GameActivity extends AppCompatActivity {
         btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
         dialog = new Dialog(this);
         tvServerMsg = findViewById(R.id.game_textView_serverMsg);
+        tvTrumpColor = findViewById(R.id.tv_TrumpColor);
 
         etVorhersage = findViewById(R.id.etn_Vorhersage);
         etVorhersage.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -443,6 +445,7 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
+                tvTrumpColor.setText(gameData.getTrump().getColorName());
                 info("Active Player: " + gameData.getActivePlayer() + ", Connection ID my Player: " + myPlayer.getConnectionID());
 
                 if (((StateMessage) basemessage).isClearBetTricks()) {
