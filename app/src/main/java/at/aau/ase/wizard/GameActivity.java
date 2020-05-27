@@ -199,7 +199,7 @@ public class GameActivity extends AppCompatActivity {
         //Befüllung der Runden Zahl
         fillRoundsNumber(gameDataScores);
         //Player Namen Nodepad Befüllung
-        showNamesOfPlayers(gameDataScores);
+        showNamesOfPlayers((ArrayList<String>) playersOnline);
         //Aktuelle Punkte Nodepad Befüllung
         actualPoints(gameDataScores);
         //Vorhersage Stiche Nodepad Befüllung
@@ -235,10 +235,10 @@ public class GameActivity extends AppCompatActivity {
         npRounds.setText(round.toString());
     }
 
-    public void showNamesOfPlayers(Notepad testNodepade) {
+    public void showNamesOfPlayers(ArrayList<String> playersOnline) {
         TextView npPlayerNames;
 
-        for (int i = 0; i < testNodepade.playerNamesList.size(); i++) {
+        for (int i = 0; i < playersOnline.size(); i++) {
             switch (i) {
                 case 0:
                     npPlayerNames = (TextView) dialog.findViewById(R.id.tv_player1);
@@ -262,7 +262,7 @@ public class GameActivity extends AppCompatActivity {
                 default:
                     npPlayerNames = (TextView) dialog.findViewById(R.id.tv_player6);
             }
-            npPlayerNames.setText(testNodepade.playerNamesList.get(i));
+            npPlayerNames.setText(playersOnline.get(i));
         }
     }
 
@@ -375,13 +375,42 @@ public class GameActivity extends AppCompatActivity {
             }
             StringBuilder testPlayerpoints1 = new StringBuilder();
             for (int j = 0; j < testNodepade.getTookTricksPerPlayerPerRound()[i].length; j++) {
-                //testPlayerpoints1.append("  ");
+                testPlayerpoints1.append("  ");
                 testPlayerpoints1.append(String.valueOf(testNodepade.getTookTricksPerPlayerPerRound()[i][j]));
                 testPlayerpoints1.append(System.lineSeparator());
             }
             npVorherSagePlayerTrue.setText(testPlayerpoints1.toString());
             npVorherSagePlayerTrue.setTextColor(Color.YELLOW);
         }
+    }
+
+    public int findOutRound(Notepad testNodepade) {
+        int count = 0;
+        int runde = 0;
+        int runden3Player = 20;
+        int runden4Player = 15;
+        int runden5Player = 12;
+        int runden6Player = 10;
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
+                if (testNodepade.getPointsPerPlayerPerRound()[i][j] == 0) {
+                    count++;
+                }
+            }
+        }
+        if (testNodepade.getPointsPerPlayerPerRound()[0].length == runden3Player) {
+            runde = runden3Player - count;
+        } else if (testNodepade.getPointsPerPlayerPerRound()[0].length == runden4Player) {
+            runde = runden4Player - count;
+        } else if (testNodepade.getPointsPerPlayerPerRound()[0].length == runden5Player) {
+            runde = runden5Player - count;
+        } else {
+            runde = runden6Player - count;
+        }
+        String runden = runde + " ";
+        //60/3=20  60/4=15  60/5=12 60 /6=10
+        info("....................Anzahl count ......................" + runden);
+        return runde;
     }
 
     //Erreichten Punkte für Nodepad (switch)
@@ -420,6 +449,8 @@ public class GameActivity extends AppCompatActivity {
             }
             StringBuilder testPlayerpoints1 = new StringBuilder();
             for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
+                testPlayerpoints1.append("  ");
+                //if()
                 testPlayerpoints1.append(String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]));
                 testPlayerpoints1.append(System.lineSeparator());
             }
@@ -445,7 +476,7 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                tvTrumpColor.setText("Trump: " +gameData.getTrump().getColorName());
+                tvTrumpColor.setText("Trump: " + gameData.getTrump().getColorName());
                 info("Active Player: " + gameData.getActivePlayer() + ", Connection ID my Player: " + myPlayer.getConnectionID());
 
                 if (((StateMessage) basemessage).isClearBetTricks()) {
@@ -531,6 +562,7 @@ public class GameActivity extends AppCompatActivity {
     public void addCardsToSlideView(List<Card> ppPlayerCards) {
         final String defTypedrawable = "drawable";
         //myHand.setCards(ppPlayerCards);
+
         sliderItems.clear(); //Clear wennn neue Carten von Server geschickt werden
 
         for (int i = 0; i < ppPlayerCards.size(); i++) {
