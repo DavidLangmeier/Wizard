@@ -53,8 +53,7 @@ import static com.esotericsoftware.minlog.Log.*;
 
 public class GameActivity extends AppCompatActivity {
     private Button btnPlaySelectedCard;
-    private Button btnDeal;
-    private ImageView ivShowTrumpCard;
+    private TextView tvTrumpColor;
     private TextView tvActivePlayer1;
     private TextView tvActivePlayer2;
     private TextView tvActivePlayer3;
@@ -68,7 +67,6 @@ public class GameActivity extends AppCompatActivity {
     private ImageView ivTable5;
     private ImageView ivTable6;
     private ViewPager2 viewPager2;
-    private TextView tvShowTextTrumpf;
     private WizardClient wizardClient;
     private List<SliderItem> sliderItems = new ArrayList<>(); //Zeigt scrollHand
     private Player myPlayer;
@@ -80,12 +78,6 @@ public class GameActivity extends AppCompatActivity {
     private List playersOnline = new ArrayList<>();
 
 
-    Hand myHand = new Hand(); //Test PlayerHand
-    Hand table = new Hand(); //Test Table
-    Hand trumpHand = new Hand(); //Test TrumpHand
-    Deck deck = new Deck(); //Test Deck
-
-    // onCreate() is overused, has to be cleaned up
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,33 +85,25 @@ public class GameActivity extends AppCompatActivity {
 
         String s1 = getIntent().getStringExtra("myPlayer");
         myPlayer = new Gson().fromJson(s1, Player.class);
-
         String s2 = getIntent().getStringExtra("gameData");
         gameData = new Gson().fromJson(s2, GameData.class);
-
         String s3 = getIntent().getStringExtra("playersOnline");
         playersOnline = new Gson().fromJson(s3, List.class);
 
-        wizardClient = WizardClient.getInstance(); // new instance would get new connectionID, has to be fixed
+        wizardClient = WizardClient.getInstance();
         startCallback();
-
         info("@GAME_ACTIVITY: My Playername=" + myPlayer.getName() + ", connectionID=" + myPlayer.getConnectionID());
 
         btnPlaySelectedCard = findViewById(R.id.play_Card);
         btnPlaySelectedCard.setOnClickListener(v -> dealOnePlayerCardOnTable());
         btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
-        btnDeal = findViewById(R.id.game_btn_dealOutCards);
-        btnDeal.setOnClickListener(v -> dealCards());
-        btnDeal.setEnabled(true);
-        tvShowTextTrumpf = (TextView) findViewById(R.id.tv_trumpftext);
         dialog = new Dialog(this);
         tvServerMsg = findViewById(R.id.game_textView_serverMsg);
-
+        tvTrumpColor = findViewById(R.id.tv_TrumpColor);
 
         etVorhersage = findViewById(R.id.etn_Vorhersage);
         etVorhersage.setInputType(InputType.TYPE_CLASS_NUMBER);
         etVorhersage.setVisibility(View.INVISIBLE);
-
 
         ivTable1 = findViewById(R.id.tableCard1);
         ivTable2 = findViewById(R.id.tableCard2);
@@ -160,13 +144,7 @@ public class GameActivity extends AppCompatActivity {
             }
         });
         viewPager2.setPageTransformer(compositePageTransformer);
-
         //ende der sichtbarkeit von mehreren hintereinander ----------------------------------------
-        //ImageView
-        ivShowTrumpCard = (ImageView) findViewById(R.id.viewTrumpCard);
-
-        //Animation for display Trumpcard as Text
-        ivShowTrumpCard.setOnClickListener(v -> showTrump());
 
         etVorhersage.setOnKeyListener((v, keyCode, keyEvent) -> enteredPrediction(keyCode, keyEvent));
     }
@@ -217,7 +195,6 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         });
-
 
         //Befüllung der Runden Zahl
         fillRoundsNumber(gameDataScores);
@@ -468,14 +445,7 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                if (gameData.getDealer() == (myPlayer.getConnectionID())) {
-                    runOnUiThread(() ->
-                            btnDeal.setEnabled(true)); // to remove by David
-                } else {
-                    runOnUiThread(() ->
-                            btnDeal.setEnabled(false)); // to remove by David
-                }
-
+                tvTrumpColor.setText("Trump: " +gameData.getTrump().getColorName());
                 info("Active Player: " + gameData.getActivePlayer() + ", Connection ID my Player: " + myPlayer.getConnectionID());
 
                 if (((StateMessage) basemessage).isClearBetTricks()) {
@@ -489,7 +459,6 @@ public class GameActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         btnPlaySelectedCard.setEnabled(true);
                     });
-
 
                     if (gameData.getBetTricksCounter() < gameData.getScores().getTotalPointsPerPlayer().length) {
                         info("!!!!!!!!! Trickround: " + gameData.getBetTricksCounter() + " score size: " + gameData.getScores().getTotalPointsPerPlayer().length);
@@ -530,12 +499,14 @@ public class GameActivity extends AppCompatActivity {
                     tvServerMsg.setText(msg);
                     addCardsToSlideView(gameData.getMyHand().getCards());
                 });
+
             } else if (basemessage instanceof GoodbyeMessage) { // A player closed the app, so stop game and show current points as endresult
                 info("GAME_ACTIVITY: Goodbye received.");
                 runOnUiThread(() -> {
                     Intent intent = new Intent(this, EndscreenActivity.class);
                     startActivity(intent);
                 });
+
             } else if (basemessage instanceof LifecycleMessage) {
                 LifecycleMessage msg = (LifecycleMessage) basemessage;
                 runOnUiThread(() -> tvServerMsg.setText(msg.getMsg()));
@@ -554,28 +525,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void showTrump() {
-        Animation aniRotateClk = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
-        ivShowTrumpCard.startAnimation(aniRotateClk);
-        if (tvShowTextTrumpf.getVisibility() == View.VISIBLE) {
-            tvShowTextTrumpf.setVisibility(View.INVISIBLE);
-        } else {
-            tvShowTextTrumpf.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void dealTrumpCard() {
-        final String defTypedrawable = "drawable";
-        trumpHand.clear();
-        deck.dealCard(deck.getCards().get(0), trumpHand);
-
-        int id = getResources().getIdentifier(trumpHand.getCards().get(0).getPictureFileId(), defTypedrawable, getPackageName());
-        if (id == 0) {//if the pictureID is false show Error Logo
-            ivShowTrumpCard.setImageResource((R.drawable.z0error));
-
-        } else {//show Card
-            ivShowTrumpCard.setImageResource(id);
-            tvShowTextTrumpf.setText(trumpHand.getCards().get(0).toString());
-        }
     }
 
     //------------Methode SPIELKARTEN vom Server Anzeigen in spielhand//--------------------------
@@ -674,7 +623,6 @@ public class GameActivity extends AppCompatActivity {
         tvActivePlayer4.setEnabled(false);
         tvActivePlayer5.setEnabled(false);
         tvActivePlayer6.setEnabled(false);
-
         activePlayer.setEnabled(true);
     }
 
@@ -694,10 +642,6 @@ public class GameActivity extends AppCompatActivity {
         } else {
             info("GAME_ACTIVITY: No active Player to show.");
         }
-    }
-
-    private void dealCards() {
-        wizardClient.sendMessage(new ActionMessage(DEAL));
     }
 
     private void dealOnePlayerCardOnTable() {
