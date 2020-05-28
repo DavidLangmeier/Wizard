@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.CompoundButton;
@@ -542,7 +544,10 @@ public class GameActivity extends AppCompatActivity {
                 ErrorMessage msg = (ErrorMessage) basemessage;
                 runOnUiThread(() -> {
                     etVorhersage.setEnabled(true);
-                    etVorhersage.setText(msg.getError());
+                    Animation shake = AnimationUtils.loadAnimation(GameActivity.this, R.anim.shake);
+                    etVorhersage.startAnimation(shake);
+                    etVorhersage.setHint(msg.getError());
+                    etVorhersage.selectAll();
                 });
             }
 
