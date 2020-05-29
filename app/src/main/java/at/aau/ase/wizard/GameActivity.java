@@ -45,6 +45,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.END;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.READY;
 import static com.esotericsoftware.minlog.Log.*;
 
@@ -529,12 +530,14 @@ public class GameActivity extends AppCompatActivity {
                     addCardsToSlideView(gameData.getMyHand().getCards());
                 });
 
-            } else if (basemessage instanceof GoodbyeMessage) { // A player closed the app, so stop game and show current points as endresult
+            } else if (basemessage instanceof ActionMessage) { // A player closed the app, so stop game and show current points as endresult
                 info("GAME_ACTIVITY: Goodbye received.");
-                runOnUiThread(() -> {
-                    Intent intent = new Intent(this, EndscreenActivity.class);
-                    startActivity(intent);
-                });
+                if(((ActionMessage) basemessage).getActionType() == END) {
+                    runOnUiThread(() -> {
+                        Intent intent = new Intent(this, EndscreenActivity.class);
+                        startActivity(intent);
+                    });
+                }
 
             } else if (basemessage instanceof LifecycleMessage) {
                 LifecycleMessage msg = (LifecycleMessage) basemessage;
