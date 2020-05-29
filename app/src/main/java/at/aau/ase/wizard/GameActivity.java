@@ -530,11 +530,14 @@ public class GameActivity extends AppCompatActivity {
                     addCardsToSlideView(gameData.getMyHand().getCards());
                 });
 
+                //START endscreen activity
             } else if (basemessage instanceof ActionMessage) { // A player closed the app, so stop game and show current points as endresult
-                info("GAME_ACTIVITY: Goodbye received.");
+                info("GAME_ACTIVITY: END received. - Trying to start endscreen activity.");
                 if(((ActionMessage) basemessage).getActionType() == END) {
                     runOnUiThread(() -> {
                         Intent intent = new Intent(this, EndscreenActivity.class);
+                        wizardClient.deregisterCallback();
+                        intent.putExtra("gameData", (new Gson()).toJson(gameData));
                         startActivity(intent);
                     });
                 }
