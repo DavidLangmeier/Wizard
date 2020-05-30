@@ -534,6 +534,7 @@ public class GameActivity extends AppCompatActivity {
             } else if (basemessage instanceof ActionMessage) { // A player closed the app, so stop game and show current points as endresult
                 info("GAME_ACTIVITY: END received. - Trying to start endscreen activity.");
                 if(((ActionMessage) basemessage).getActionType() == END) {
+                    gameData.getScores().setPlayerNamesList((ArrayList<String>) playersOnline); // to access in Endscreen
                     runOnUiThread(() -> {
                         Intent intent = new Intent(this, EndscreenActivity.class);
                         wizardClient.deregisterCallback();

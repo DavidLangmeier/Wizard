@@ -9,12 +9,12 @@
 
     <TextView
         android:id="@id/tv_myPlayerScores"
-        android:layout_width="347dp"
-        android:layout_height="52dp"
+        android:layout_width="412dp"
+        android:layout_height="51dp"
         android:layout_marginTop="40dp"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
-        android:textSize="36sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
