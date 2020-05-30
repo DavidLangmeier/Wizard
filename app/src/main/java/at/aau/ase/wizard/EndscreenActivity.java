@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -19,6 +20,9 @@ import java.util.stream.IntStream;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
+
+import static com.esotericsoftware.minlog.Log.debug;
+import static com.esotericsoftware.minlog.Log.info;
 
 public class EndscreenActivity extends AppCompatActivity {
 
@@ -65,7 +69,7 @@ public class EndscreenActivity extends AppCompatActivity {
                 R.drawable.rank0default,
                 R.drawable.rank0default
         };
-        arrayAdapter = new LobbyListAdapter(this, playersInRankingOrder, icons);
+        arrayAdapter = new EndscreenListAdapter(this, playersInRankingOrder, icons);
         lvRanking.setAdapter(arrayAdapter);
     }
 
@@ -82,45 +86,29 @@ public class EndscreenActivity extends AppCompatActivity {
     int[] rankingIndices() {
         int[][] a = gameData.getScores().getTotalPointsPerPlayer();
         int[] sortedIndices = IntStream.range(0, a.length)
-                .boxed().sorted((i, j) -> a[i][0] - a[j][0])
+                .boxed().sorted(Comparator.comparingInt(i -> a[i][0]))
                 .mapToInt(e -> e).toArray();
         invert(sortedIndices);
         return sortedIndices;
-        /*int[][] a = gameData.getScores().getTotalPointsPerPlayer();
-        System.out.println("======================================== " + a.length);
-        int[] copySort = new int[a.length];
-        for (int i = 0; i < a.length; i++) {
-            copySort = a[i];
-        }
-        int[] index = new int[a.length];
-        int counter = 0;
-        for (int playerIndex = 0; playerIndex < gameData.getScores().getPlayerNamesList().size(); playerIndex++) {
-            for (int i = 0; i < a.length; i++) {
-                for (int j = 0; j < a.length; j++) {
-                    if (copySort[i] == a[playerIndex][0]) {
-                        index[counter] = j;
-                        a[playerIndex][j] = -2101; //max negative points -1
-                        counter++;
-                        break;
-                    }
-                }
-            }
-        }
-        System.out.println(Arrays.toString(a));
-        System.out.println(Arrays.toString(index));
-        return index;*/
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     void sortPlayersByRanking(){
         int[] index = rankingIndices();
+        info(Arrays.toString(index));
         List<String> players = gameData.getScores().getPlayerNamesList();
+        String playerNames = "PLAYERNAMES: " + players.toString();
+        info(playerNames);
         List<String> returnSortedPlayers = gameData.getScores().getPlayerNamesList();
+        playerNames = "PLAYERNAMES: " + returnSortedPlayers.toString();
+        info(playerNames);
+        playersInRankingOrder = new ArrayList<>();
 
         for (int i = 0; i < players.size(); i++) {
-            returnSortedPlayers.set(i, players.get(index[i]));
+            playersInRankingOrder.add(i, players.get(index[i]));
+          //  info(pla.toString());
         }
-        playersInRankingOrder = returnSortedPlayers;
+        info(playersInRankingOrder.toString());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

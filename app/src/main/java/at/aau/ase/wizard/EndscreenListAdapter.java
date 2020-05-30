@@ -1,5 +1,6 @@
 package at.aau.ase.wizard;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,10 +29,10 @@ public class EndscreenListAdapter extends ArrayAdapter{
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater=context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.lobby_listview_row, null,false);
+        @SuppressLint("ViewHolder") View rowView = inflater.inflate(R.layout.endscreen_listview_row, null,false);
 
-        TextView tvName = (TextView) rowView.findViewById(R.id.etLobbyListRow);
-        ImageView ivIcon = (ImageView) rowView.findViewById(R.id.ivLobbyListRow);
+        TextView tvName = (TextView) rowView.findViewById(R.id.tvEndScreenListRow);
+        ImageView ivIcon = (ImageView) rowView.findViewById(R.id.ivEndscreenListRow);
 
         tvName.setText(players.get(position));
         ivIcon.setImageResource(imageID[position%imageID.length]);
