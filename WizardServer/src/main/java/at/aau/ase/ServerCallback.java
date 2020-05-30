@@ -5,6 +5,7 @@ import java.util.List;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.Callback;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CheatMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
@@ -12,7 +13,9 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.L
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LobbyMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 import static com.esotericsoftware.minlog.Log.*;
@@ -27,6 +30,7 @@ public class ServerCallback implements Callback<BaseMessage> {
     private List<Player> players;
     private int playersReady;
     private Game game = null;
+    private CheatDetector cheatDetector;
 
     public ServerCallback(WizardServer server, List<Player> players) {
         this.server = server;
@@ -48,6 +52,8 @@ public class ServerCallback implements Callback<BaseMessage> {
             handleCardMessage((CardMessage) message);
         } else if (message instanceof NotePadMessage) {
             handleNotepadMessage((NotePadMessage) message);
+        } else if (message instanceof CheatMessage) {
+            handleCheatMessage((CheatMessage) message);
         } else {
             info("Received message cannot be handled correctly!");
             server.broadcastMessage(new TextMessage("Server could not handle sent message correctly!"));
@@ -70,6 +76,7 @@ public class ServerCallback implements Callback<BaseMessage> {
         info("SERVER_CALLBACK: CARD: " + msg.getCard().toString());
         info("SERVER_CALLBACK: Card object id: " + msg.getCard().hashCode());
         game.dealOnePlayerCardToTable(msg.getCard());
+        cheatDetector.update(msg.getCard());
     }
 
     private void handleActionMessage(ActionMessage message) {
@@ -82,6 +89,7 @@ public class ServerCallback implements Callback<BaseMessage> {
                 game = new Game(server, players);
                 info("Starting game.");
                 game.startGame();
+                this.cheatDetector = new CheatDetector(game);
                 break;
 
             case DEAL:
@@ -145,4 +153,17 @@ public class ServerCallback implements Callback<BaseMessage> {
         }
     }
 
+    private void handleCheatMessage(CheatMessage message) {
+        String playerToCheck = message.getPlayerName();
+        boolean isCheating = cheatDetector.check(playerToCheck);//game.getCheatDetector().check(playerToCheck);
+        if (isCheating) {
+            game.updateScoresCheating(isCheating, message.getSender().getName(), playerToCheck);
+            server.sentTo(message.getSender().getConnectionID(), new CheatMessage("Correct: Player "+playerToCheck+" is cheating!"));
+            game.broadcastGameState();
+        } else {
+            game.updateScoresCheating(isCheating, message.getSender().getName(), playerToCheck);
+            server.sentTo(message.getSender().getConnectionID(), new CheatMessage("Wrong: Player "+playerToCheck+" is not cheating!"));
+            game.broadcastGameState();
+        }
+    }
 }

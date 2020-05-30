@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CheatMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
@@ -15,6 +16,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
 
 import static com.esotericsoftware.minlog.Log.*;
@@ -202,6 +204,7 @@ public class Game {
             trickRoundTurn++;
             activePlayerIndex = (activePlayerIndex + 1) % players.size();
             updateDealerAndActivePlayer();
+
             broadcastGameState();
             info("GAME: Current trick still incomplete. TrickRoundTurn=" + trickRoundTurn);
 
@@ -367,6 +370,85 @@ public class Game {
             error("GAME: Error while waiting.", e);
             Thread.currentThread().interrupt();
         }
+    }
+
+    public Color getActiveColor() {
+        List<Card> cardsOnTable = table.getCards();
+        return findActiveColor(cardsOnTable);
+    }
+
+    /**
+     * Return active color of the current round /cards on table
+     * @param cardsOnTable
+     * @return
+     * Returns color of first card if first card is not a wizard or jester.
+     * Returns null in case first card is wizard, since active color doesn't matter. Wizard already won the round.
+     * In case first card in a jester, look at second card. If this is again a jester look for 3rd card. And so on.
+     */
+    private Color findActiveColor(List<Card> cardsOnTable) {
+        Color activeColor = null;
+        if (!cardsOnTable.isEmpty()) {
+            if (cardsOnTable.get(0).getValue() != Value.JESTER && cardsOnTable.get(0).getValue() != Value.WIZARD) {
+                activeColor = cardsOnTable.get(0).getColor();
+            } else if (cardsOnTable.get(0).getValue() == Value.WIZARD) {
+                activeColor = null;
+            } else if (cardsOnTable.get(0).getValue() == Value.JESTER) {
+                cardsOnTable.remove(0);
+                findActiveColor(cardsOnTable);
+            }
+        }
+        return activeColor;
+    }
+
+    /**
+     * Update scoreboard with penalty and bonus for cheater and checker
+     * @param isCheating boolean, if suspected player is actually cheating or not
+     * @param playerSuspectedOfCheating, String of the playerName suspected to be cheating
+     * @param playerChecking, String of the playerName checking if the other one is cheating
+     */
+    public void updateScoresCheating(boolean isCheating, String playerSuspectedOfCheating, String playerChecking) {
+        int playerCheatingIdx = matchPlayerNameToPlayerIdx(playerSuspectedOfCheating);
+        int playerCheckingIdx = matchPlayerNameToPlayerIdx(playerChecking);
+        int[][] pointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound();
+        if (isCheating) { // Punish cheater and bonus for checker
+            int newscoreCheater = pointsPerPlayerPerRound[playerCheatingIdx][currentRound] - WizardConstants.CHEAT_PENALTY;
+            int newscoreChecker = pointsPerPlayerPerRound[playerCheckingIdx][currentRound] + WizardConstants.CHEAT_DETECTION_BONUS;
+            scores.setPointsPerPlayerPerRound(playerCheatingIdx, newscoreCheater, currentRound);
+            scores.setPointsPerPlayerPerRound(playerCheckingIdx, newscoreChecker, currentRound);
+        } else { // Punish checker
+            int newscoreChecker = pointsPerPlayerPerRound[playerCheckingIdx][currentRound] - WizardConstants.CHEAT_PENALTY;
+            scores.setPointsPerPlayerPerRound(playerCheckingIdx, newscoreChecker, currentRound);
+        }
+    }
+
+    public int matchPlayerNameToPlayerIdx(String playerToMatch) {
+        int playerIdx = -1;
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getName().equals(playerToMatch)) {
+                playerIdx = i;
+            }
+        }
+        return playerIdx;
+    }
+
+    public int getActivePlayerIndex() {
+        return activePlayerIndex;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public Notepad getScores() {
+        return scores;
+    }
+
+    public Hand[] getPlayerHands() {
+        return playerHands;
+    }
+
+    public Color getTrump() {
+        return trump;
     }
 }
 

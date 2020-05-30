@@ -24,6 +24,9 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 public class WizardConstants {
 
+    public static final Integer CHEAT_PENALTY = 10;
+    public static final Integer CHEAT_DETECTION_BONUS = 10;
+
     /**
      * Minimum numbers of payers/clients necessary to access the to gamescreen button in the lobby.
      */

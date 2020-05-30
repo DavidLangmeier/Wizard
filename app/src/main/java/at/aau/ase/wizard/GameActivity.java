@@ -485,7 +485,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
     @Override
     public final void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Do something here if sensor accuracy changes.
+        info("Sensor accurracy changed!");
     }
 
     @Override
@@ -499,7 +499,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                 public void onClick(DialogInterface dialog, int which) {
                     String selected = (String) playersOnline.get(which);
                     info("Selected "+selected);
-                    wizardClient.sendMessage(new CheatMessage(selected));
+                    wizardClient.sendMessage(new CheatMessage(selected, myPlayer));
                 }
             });
             AlertDialog dialog = builder.create();
@@ -592,6 +592,10 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             } else if (basemessage instanceof LifecycleMessage) {
                 LifecycleMessage msg = (LifecycleMessage) basemessage;
                 runOnUiThread(() -> tvServerMsg.setText(msg.getMsg()));
+
+            } else if(basemessage instanceof CheatMessage) {
+                CheatMessage msg = (CheatMessage) basemessage;
+                runOnUiThread(() -> tvServerMsg.setText(msg.getMessage()));
 
             } else if (basemessage instanceof ErrorMessage) {
                 ErrorMessage msg = (ErrorMessage) basemessage;
