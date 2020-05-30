@@ -7,10 +7,17 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
@@ -18,6 +25,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.CompoundButton;
@@ -34,6 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CheatMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
@@ -49,7 +58,7 @@ import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_ac
 import static com.esotericsoftware.minlog.Log.*;
 
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements SensorEventListener {
     private Button btnPlaySelectedCard;
     private TextView tvTrumpColor;
     private TextView tvActivePlayer1;
@@ -75,6 +84,9 @@ public class GameActivity extends AppCompatActivity {
     private EditText etVorhersage;
     private List playersOnline = new ArrayList<>();
     private MediaPlayer mp3;
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+    private float light_old = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +104,9 @@ public class GameActivity extends AppCompatActivity {
         startCallback();
         info("@GAME_ACTIVITY: My Playername=" + myPlayer.getName() + ", connectionID=" + myPlayer.getConnectionID());
 
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        
         btnPlaySelectedCard = findViewById(R.id.play_Card);
         btnPlaySelectedCard.setOnClickListener(v -> dealOnePlayerCardOnTable());
         btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
@@ -467,6 +482,44 @@ public class GameActivity extends AppCompatActivity {
     protected void onRestart() {
         wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + "came back"));
         super.onRestart();
+    }
+    @Override
+    public final void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Do something here if sensor accuracy changes.
+    }
+
+    @Override
+    public final void onSensorChanged(SensorEvent event) {
+        float light = event.values[0];
+
+        if (light <= SensorManager.LIGHT_NO_MOON/10 && light_old-light > 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.cheat_dialog_title);
+            builder.setAdapter(new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice, playersOnline), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    String selected = (String) playersOnline.get(which);
+                    info("Selected "+selected);
+                    wizardClient.sendMessage(new CheatMessage(selected));
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        light_old = light;
+    }
+
+    @Override
+    protected void onResume() {
+        // Register a listener for the sensor.
+        super.onResume();
+        sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    protected void onPause() {
+        // Be sure to unregister the sensor when the activity pauses.
+        super.onPause();
+        sensorManager.unregisterListener(this);
     }
 
     public void startCallback() {
