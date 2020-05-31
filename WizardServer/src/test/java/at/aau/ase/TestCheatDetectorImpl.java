@@ -51,7 +51,9 @@ public class TestCheatDetectorImpl {
         Mockito.when(game.getActiveColor()).thenReturn(Color.YELLOW); // Active color
 
         CheatDetector cheatDetector = new CheatDetectorImpl(game);
-        cheatDetector.update(new Card(Color.RED, Value.FIVE));
+        Card playedCard = new Card(Color.RED, Value.FIVE);
+        playedCard.setPlayedBy(1); // Player2 plays the card
+        cheatDetector.update(playedCard);
         boolean ischeating = cheatDetector.check("Player-2");
         Assert.assertTrue(ischeating);
     }
@@ -90,10 +92,14 @@ public class TestCheatDetectorImpl {
         Mockito.when(game.getActivePlayerIndex()).thenReturn(1,1, 2); // Player2 plays card and then Player3. getActivePlayerIndex() gets called in new CheatDetector() and in update()
         CheatDetector cheatDetector = new CheatDetectorImpl(game);
 
-        cheatDetector.update(new Card(Color.RED, Value.FIVE));
+        Card playedCardFromPlayer2 = new Card(Color.RED, Value.FIVE);
+        playedCardFromPlayer2.setPlayedBy(1); // Player2 plays card
+        cheatDetector.update(playedCardFromPlayer2);
         Assert.assertTrue(cheatDetector.check("Player-2"));
 
-        cheatDetector.update(new Card(Color.BLUE, Value.TEN));
+        Card playedCardFromPlayer3 = new Card(Color.BLUE, Value.TEN);
+        playedCardFromPlayer3.setPlayedBy(2); // Player3 plays card
+        cheatDetector.update(playedCardFromPlayer3);
         Assert.assertTrue(cheatDetector.check("Player-2")); // If Player3 is active and queries cheating-check of Player2
         Assert.assertTrue(cheatDetector.check("Player-3"));
         Assert.assertFalse(cheatDetector.check("Player-1")); // Default should be false
@@ -133,10 +139,14 @@ public class TestCheatDetectorImpl {
         Mockito.when(game.getActivePlayerIndex()).thenReturn(1,1, 2); // Player2 plays card and then Player3. getActivePlayerIndex() gets called in new CheatDetector() and in update()
         CheatDetector cheatDetector = new CheatDetectorImpl(game);
 
-        cheatDetector.update(new Card(Color.JESTER, Value.JESTER));
+        Card playedCardFromPlayer2 = new Card(Color.JESTER, Value.JESTER);
+        playedCardFromPlayer2.setPlayedBy(1); // Player2 plays the card
+        cheatDetector.update(playedCardFromPlayer2);
         Assert.assertFalse(cheatDetector.check("Player-2"));
 
-        cheatDetector.update(new Card(Color.WIZARD, Value.WIZARD));
+        Card playedCardFromPlayer3 = new Card(Color.WIZARD, Value.WIZARD);
+        playedCardFromPlayer3.setPlayedBy(2); // Player3 plays the card
+        cheatDetector.update(playedCardFromPlayer3);
         Assert.assertFalse(cheatDetector.check("Player-2")); // If Player3 is active and queries cheating-check of Player2
         Assert.assertFalse(cheatDetector.check("Player-3"));
         Assert.assertFalse(cheatDetector.check("Player-1")); // Default should be false
@@ -176,10 +186,14 @@ public class TestCheatDetectorImpl {
         Mockito.when(game.getActivePlayerIndex()).thenReturn(1,1, 2); // Player2 plays card and then Player3. getActivePlayerIndex() gets called in new CheatDetector() and in update()
         CheatDetector cheatDetector = new CheatDetectorImpl(game);
 
-        cheatDetector.update(new Card(Color.RED, Value.FIVE));
+        Card playedCardFromPlayer2 = new Card(Color.RED, Value.FIVE);
+        playedCardFromPlayer2.setPlayedBy(1); // Player2 plays the card
+        cheatDetector.update(playedCardFromPlayer2);
         Assert.assertFalse(cheatDetector.check("Player-2"));
 
-        cheatDetector.update(new Card(Color.GREEN, Value.TEN));
+        Card playedCardFromPlayer3 = new Card(Color.GREEN, Value.TEN);
+        playedCardFromPlayer3.setPlayedBy(2); // Player3 plays the card
+        cheatDetector.update(playedCardFromPlayer3);
         Assert.assertFalse(cheatDetector.check("Player-2")); // If Player3 is active and queries cheating-check of Player2
         Assert.assertFalse(cheatDetector.check("Player-3"));
         Assert.assertFalse(cheatDetector.check("Player-1")); // Default should be false
@@ -219,10 +233,14 @@ public class TestCheatDetectorImpl {
         Mockito.when(game.getActivePlayerIndex()).thenReturn(1,1, 2); // Player2 plays card and then Player3. getActivePlayerIndex() gets called in new CheatDetector() and in update()
         CheatDetector cheatDetector = new CheatDetectorImpl(game);
 
-        cheatDetector.update(new Card(Color.RED, Value.FIVE));
+        Card playedCardFromPlayer2 = new Card(Color.RED, Value.FIVE);
+        playedCardFromPlayer2.setPlayedBy(1); // Player2 plays the card
+        cheatDetector.update(playedCardFromPlayer2);
         Assert.assertTrue(cheatDetector.check("Player-2"));
 
-        cheatDetector.update(new Card(Color.BLUE, Value.TEN));
+        Card playedCardFromPlayer3 = new Card(Color.BLUE, Value.TEN);
+        playedCardFromPlayer3.setPlayedBy(2); // Player3 plays the card
+        cheatDetector.update(playedCardFromPlayer3);
         Assert.assertTrue(cheatDetector.check("Player-2")); // If Player3 is active and queries cheating-check of Player2
         Assert.assertTrue(cheatDetector.check("Player-3"));
 

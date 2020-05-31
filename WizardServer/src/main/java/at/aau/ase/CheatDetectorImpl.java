@@ -13,7 +13,6 @@ public class CheatDetectorImpl implements CheatDetector {
 
     private Game game;
     private Hand[] playerHands;
-    private Integer activePlayerIdx;
     //private Hand table;
     //private Color trump;
     private List<Player> players;
@@ -22,7 +21,6 @@ public class CheatDetectorImpl implements CheatDetector {
     public CheatDetectorImpl(Game game) {
         this.game = game;
         this.playerHands = game.getPlayerHands();
-        this.activePlayerIdx = game.getActivePlayerIndex();
         //this.table = game.getTable();
         //this.trump = game.getTrump();
         this.players = game.getPlayers();
@@ -30,7 +28,7 @@ public class CheatDetectorImpl implements CheatDetector {
     }
 
     public void update(Card playedCard) {
-        activePlayerIdx = game.getActivePlayerIndex();
+        int activePlayerIdx = playedCard.getPlayedBy(); //game.getActivePlayerIndex();
         Hand handToCheck = playerHands[activePlayerIdx];
         Color activeColor = game.getActiveColor();
 

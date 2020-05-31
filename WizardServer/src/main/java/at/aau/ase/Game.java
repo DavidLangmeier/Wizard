@@ -180,11 +180,11 @@ public class Game {
             info(table.getCards().get(i) + " is now on Table!");
         }
         server.sentTo(activePlayerID, new HandMessage(playerHands[activePlayerIndex], clearBetTricks));
+        cheatDetector.update(cardToPutOnTable);
 
         checkCurrentTrickRound();
         updateDealerAndActivePlayer();
         broadcastGameState();
-        cheatDetector.update(cardToPutOnTable);
     }
 
     public Hand getTable() {
@@ -239,9 +239,7 @@ public class Game {
 
             // wait some time before sending cleared table
             waitSafe(WizardConstants.TIME_TO_WAIT_MEDIUM);
-
             cheatDetector.reset(); // Cheating can be checked for every round (roundwise), so reset to nobody is cheating at end of round
-
             broadcastGameState();
 
             // check if round was the last round of the game
