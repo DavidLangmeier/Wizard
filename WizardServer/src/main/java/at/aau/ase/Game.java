@@ -380,8 +380,14 @@ public class Game {
 
     public Color getActiveColor() {
         List<Card> cardsOnTable = table.getCards();
-        info("active color = "+findActiveColor(cardsOnTable.toArray(new Card[0])));
-        return findActiveColor(cardsOnTable.toArray(new Card[0]));
+        if (cardsOnTable != null) {
+            Card[] cardsToCheck = cardsOnTable.toArray(new Card[0]);
+            Color activeColor = findActiveColor(cardsToCheck);
+            info("active color = " + activeColor);
+            return activeColor;
+        } else {
+            return null;
+        }
     }
 
     /**

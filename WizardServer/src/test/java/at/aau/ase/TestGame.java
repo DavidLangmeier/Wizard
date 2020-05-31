@@ -70,6 +70,23 @@ public class TestGame {
         table.setCards(tablecards);
 
         Game game = new Game(new WizardServer(), players);
+        game.setTable(table);
+
+        Assert.assertNull(game.getActiveColor());
+    }
+
+    @Test
+    public void getActiveColorNullPointerTableCardsTest() {
+        List<Player> players = new ArrayList<>();
+        players.add(new Player("Player-1", 1));
+        players.add(new Player("Player-2", 2));
+        players.add(new Player("Player-3", 3));
+
+        Hand table = new Hand();
+        table.setCards(null);
+
+        Game game = new Game(new WizardServer(), players);
+        game.setTable(table);
 
         Assert.assertNull(game.getActiveColor());
     }
@@ -82,9 +99,10 @@ public class TestGame {
         players.add(new Player("Player-3", 3));
 
         Hand table = new Hand();
-        table.setCards(null);
+        table.setCards(new ArrayList<>());
 
         Game game = new Game(new WizardServer(), players);
+        game.setTable(table);
 
         Assert.assertNull(game.getActiveColor());
     }
