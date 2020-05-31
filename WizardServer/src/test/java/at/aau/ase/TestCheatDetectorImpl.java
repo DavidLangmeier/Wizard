@@ -18,7 +18,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 public class TestCheatDetectorImpl {
 
     @Test
-    public void Player2CheatsTest() {
+    public void player2CheatsTest() {
         List<Player> players = new ArrayList<>();
         players.add(new Player("Player-1", 1));
         players.add(new Player("Player-2", 2));
@@ -57,7 +57,7 @@ public class TestCheatDetectorImpl {
     }
 
     @Test
-    public void Players2and3CheatingTest() {
+    public void players2and3CheatingTest() {
         List<Player> players = new ArrayList<>();
         players.add(new Player("Player-1", 1));
         players.add(new Player("Player-2", 2));
@@ -100,7 +100,7 @@ public class TestCheatDetectorImpl {
     }
 
     @Test
-    public void PlayingWizardIsNotCheatingTest() {
+    public void playingWizardIsNotCheatingTest() {
         List<Player> players = new ArrayList<>();
         players.add(new Player("Player-1", 1));
         players.add(new Player("Player-2", 2));
@@ -143,7 +143,7 @@ public class TestCheatDetectorImpl {
     }
 
     @Test
-    public void NobodyCheatsTest() {
+    public void nobodyCheatsTest() {
         List<Player> players = new ArrayList<>();
         players.add(new Player("Player-1", 1));
         players.add(new Player("Player-2", 2));
@@ -186,7 +186,7 @@ public class TestCheatDetectorImpl {
     }
 
     @Test
-    public void ResetTest() {
+    public void resetTest() {
         List<Player> players = new ArrayList<>();
         players.add(new Player("Player-1", 1));
         players.add(new Player("Player-2", 2));
@@ -227,6 +227,7 @@ public class TestCheatDetectorImpl {
         Assert.assertTrue(cheatDetector.check("Player-3"));
 
         cheatDetector.reset();
+        Assert.assertFalse(cheatDetector.check("Player-1"));
         Assert.assertFalse(cheatDetector.check("Player-2"));
         Assert.assertFalse(cheatDetector.check("Player-3"));
 
