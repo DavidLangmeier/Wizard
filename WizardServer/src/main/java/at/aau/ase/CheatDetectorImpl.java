@@ -15,8 +15,8 @@ public class CheatDetectorImpl implements CheatDetector {
     private Game game;
     private Hand[] playerHands;
     private Integer activePlayerIdx;
-    private Hand table;
-    private Color trump;
+    //private Hand table;
+    //private Color trump;
     private List<Player> players;
     private boolean[] isCheating; // for all players
 
@@ -24,13 +24,14 @@ public class CheatDetectorImpl implements CheatDetector {
         this.game = game;
         this.playerHands = game.getPlayerHands();
         this.activePlayerIdx = game.getActivePlayerIndex();
-        this.table = game.getTable();
-        this.trump = game.getTrump();
+        //this.table = game.getTable();
+        //this.trump = game.getTrump();
         this.players = game.getPlayers();
         this.isCheating = new boolean[this.players.size()];
     }
 
     public void update(Card playedCard) {
+        activePlayerIdx = game.getActivePlayerIndex();
         Hand handToCheck = playerHands[activePlayerIdx];
         Color activeColor = game.getActiveColor();
 
@@ -53,6 +54,7 @@ public class CheatDetectorImpl implements CheatDetector {
         for (int i = 0; i < players.size(); i++) { // One of them will match
             if (players.get(i).getName().equals(playerSuspectedToCheat)) {
                 playerToCheck = i;
+                break;
             }
         }
         return isCheating[playerToCheck];

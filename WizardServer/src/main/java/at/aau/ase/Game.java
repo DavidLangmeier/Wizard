@@ -325,12 +325,14 @@ public class Game {
         int pointsPerPlayerPerRound;
         for (int i = 0; i < players.size(); i++) {
             if (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1] == scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]) {
-                pointsPerPlayerPerRound = (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
+                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[players.get(i).getConnectionID()-1][currentRound];
+                pointsPerPlayerPerRound = previousPointsPerPlayerPerRound + (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
                 info("IF Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
                 info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
                 scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
             } else {
-                pointsPerPlayerPerRound = (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]));
+                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[players.get(i).getConnectionID()-1][currentRound];
+                pointsPerPlayerPerRound = previousPointsPerPlayerPerRound + (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]));
                 info("ELSE Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
                 info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
                 scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
@@ -437,6 +439,8 @@ public class Game {
         return playerIdx;
     }
 
+    // ########################### GETTERS BELOW
+
     public int getActivePlayerIndex() {
         return activePlayerIndex;
     }
@@ -459,6 +463,56 @@ public class Game {
 
     public CheatDetector getCheatDetector() {
         return cheatDetector;
+    }
+
+    // ########################### SETTERS BELOW
+
+    public void setGamerunning(boolean gamerunning) {
+        this.gamerunning = gamerunning;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
+    }
+
+    public void setTable(Hand table) {
+        this.table = table;
+    }
+
+    public void setScores(Notepad scores) {
+        this.scores = scores;
+    }
+
+    public void setCurrentRound(int currentRound) {
+        this.currentRound = currentRound;
+    }
+
+    public void setPlayerHands(Hand[] playerHands) {
+        this.playerHands = playerHands;
+    }
+
+    public void setTrump(Color trump) {
+        this.trump = trump;
+    }
+
+    public void setDealer(int dealer) {
+        this.dealer = dealer;
+    }
+
+    public void setActivePlayerIndex(int activePlayerIndex) {
+        this.activePlayerIndex = activePlayerIndex;
+    }
+
+    public void setTrickRoundTurn(int trickRoundTurn) {
+        this.trickRoundTurn = trickRoundTurn;
+    }
+
+    public void setBetTricksCounter(int betTricksCounter) {
+        this.betTricksCounter = betTricksCounter;
+    }
+
+    public void setCheatDetector(CheatDetector cheatDetector) {
+        this.cheatDetector = cheatDetector;
     }
 }
 
