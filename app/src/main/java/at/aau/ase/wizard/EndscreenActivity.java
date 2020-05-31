@@ -34,8 +34,9 @@ public class EndscreenActivity extends AppCompatActivity {
     private WizardClient wizardClient;
     GameData gameData;
     List<String> playersInRankingOrder;
-    private ArrayAdapter<String> arrayAdapter = null;
+    private EndscreenListAdapter arrayAdapter = null;
     int[][] totalPointsInRankingOrder;
+    int[] actualIconID;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -52,13 +53,10 @@ public class EndscreenActivity extends AppCompatActivity {
         wizardClient = WizardClient.getInstance();
         startCallback();
 
-        // btnPlayAgain.setOnClickListener();
-
         String s2 = getIntent().getStringExtra("gameData");
         gameData = new Gson().fromJson(s2, GameData.class);
         sortPlayersByRanking();
         sortPlayerTotalPointsByRanking();
-        //System.out.println("--------------------------------------------" + gameData.getScores().getBetTricksPerPlayerPerRound()[0][19]);
         String winnerText = playersInRankingOrder.get(0) + " wins with " + totalPointsInRankingOrder[0][0] + " points!";
         tvMyPlayerScore.setText(winnerText);
         Integer[] icons = new Integer[]{
@@ -69,7 +67,7 @@ public class EndscreenActivity extends AppCompatActivity {
                 R.drawable.rank0default,
                 R.drawable.rank0default
         };
-        arrayAdapter = new EndscreenListAdapter(this, playersInRankingOrder, icons);
+        arrayAdapter = new EndscreenListAdapter(this, playersInRankingOrder, icons, actualIconID);
         lvRanking.setAdapter(arrayAdapter);
     }
 
@@ -93,7 +91,7 @@ public class EndscreenActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    void sortPlayersByRanking(){
+    void sortPlayersByRanking() {
         int[] index = rankingIndices();
         info(Arrays.toString(index));
         List<String> players = gameData.getScores().getPlayerNamesList();
@@ -106,27 +104,40 @@ public class EndscreenActivity extends AppCompatActivity {
 
         for (int i = 0; i < players.size(); i++) {
             playersInRankingOrder.add(i, players.get(index[i]));
-          //  info(pla.toString());
         }
         info(playersInRankingOrder.toString());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    void sortPlayerTotalPointsByRanking(){
+    void sortPlayerTotalPointsByRanking() {
         int[] index = rankingIndices();
         int[][] pPP = gameData.getScores().getTotalPointsPerPlayer();
         int[][] returnPPP = gameData.getScores().getTotalPointsPerPlayer();
         for (int i = 0; i < playersInRankingOrder.size(); i++) {
-            returnPPP[i][0]=pPP[index[i]][0];
+            returnPPP[i][0] = pPP[index[i]][0];
         }
         totalPointsInRankingOrder = returnPPP;
+        setActualIconID();
     }
 
-    void invert(int[]array) {
-        for (int i = 0; i < array.length/2; i++) {
+    void setActualIconID() {
+        actualIconID = new int[totalPointsInRankingOrder.length];
+        int counter = 0;
+        for (int i = 1; i < totalPointsInRankingOrder.length; i++) {
+            if (totalPointsInRankingOrder[i - 1][0] == totalPointsInRankingOrder[i][0]) {
+                actualIconID[i] = counter;
+            } else {
+                actualIconID[i] = ++counter;
+            }
+        }
+
+    }
+
+    void invert(int[] array) {
+        for (int i = 0; i < array.length / 2; i++) {
             int temp = array[i];
-            array[i]= array[array.length - 1 - i];
-            array[array.length - 1 - i]= temp;
+            array[i] = array[array.length - 1 - i];
+            array[array.length - 1 - i] = temp;
         }
     }
 }

@@ -16,14 +16,16 @@ public class EndscreenListAdapter extends ArrayAdapter{
     private final Activity context;
     private final Integer[] imageID;
     private final List<String> players;
+    private final int [] actualID;
 
-    public EndscreenListAdapter(Activity context, List<String> players, Integer[] imageID){
+    public EndscreenListAdapter(Activity context, List<String> players, Integer[] imageID, int[] actualID){
 
         super(context,R.layout.lobby_listview_row , players);
 
         this.context = context;
         this.players = players;
         this.imageID = imageID;
+        this.actualID = actualID;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class EndscreenListAdapter extends ArrayAdapter{
         ImageView ivIcon = (ImageView) rowView.findViewById(R.id.ivEndscreenListRow);
 
         tvName.setText(players.get(position));
-        ivIcon.setImageResource(imageID[position%imageID.length]);
+        ivIcon.setImageResource(imageID[actualID[position%imageID.length]]);
 
         return rowView;
     }
