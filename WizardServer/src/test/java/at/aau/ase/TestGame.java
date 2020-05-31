@@ -36,7 +36,6 @@ public class TestGame {
         Assert.assertEquals(Color.BLUE, game.getActiveColor());
     }
 
-
     @Test
     public void getActiveColorJesterCaseTest() {
         List<Player> players = new ArrayList<>();
@@ -145,7 +144,7 @@ public class TestGame {
     }
 
     @Test
-    public void ResetTest() {
+    public void resetTest() {
         List<Player> players = new ArrayList<>();
         players.add(new Player("Player-1", 1));
         players.add(new Player("Player-2", 2));

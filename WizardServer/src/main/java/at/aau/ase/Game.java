@@ -380,8 +380,8 @@ public class Game {
 
     public Color getActiveColor() {
         List<Card> cardsOnTable = table.getCards();
-        info("active color = "+findActiveColor(cardsOnTable));
-        return findActiveColor(cardsOnTable);
+        info("active color = "+findActiveColor(cardsOnTable.toArray(new Card[0])));
+        return findActiveColor(cardsOnTable.toArray(new Card[0]));
     }
 
     /**
@@ -392,16 +392,15 @@ public class Game {
      * Returns null in case first card is wizard, since active color doesn't matter. Wizard already won the round.
      * In case first card in a jester, look at second card. If this is again a jester look for 3rd card. And so on.
      */
-    private Color findActiveColor(List<Card> cardsOnTable) {
+    private Color findActiveColor(Card[] cardsOnTable) {
         Color activeColor = null;
-        if (!cardsOnTable.isEmpty()) {
-            if (cardsOnTable.get(0).getValue() != Value.JESTER && cardsOnTable.get(0).getValue() != Value.WIZARD) {
-                activeColor = cardsOnTable.get(0).getColor();
-            } else if (cardsOnTable.get(0).getValue() == Value.WIZARD) {
+        if (cardsOnTable.length != 0) {
+            if (cardsOnTable[0].getValue() != Value.JESTER && cardsOnTable[0].getValue() != Value.WIZARD) {
+                activeColor = cardsOnTable[0].getColor();
+            } else if (cardsOnTable[0].getValue() == Value.WIZARD) {
                 activeColor = null;
-            } else if (cardsOnTable.get(0).getValue() == Value.JESTER) {
-                cardsOnTable.remove(0);
-                findActiveColor(cardsOnTable);
+            } else if (cardsOnTable[0].getValue() == Value.JESTER) {
+                activeColor = findActiveColor(Arrays.copyOfRange(cardsOnTable, 1, cardsOnTable.length));
             }
         }
         return activeColor;
