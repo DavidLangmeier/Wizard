@@ -30,7 +30,6 @@ public class ServerCallback implements Callback<BaseMessage> {
     private List<Player> players;
     private int playersReady;
     private Game game = null;
-    private CheatDetector cheatDetector;
 
     public ServerCallback(WizardServer server, List<Player> players) {
         this.server = server;
@@ -76,7 +75,6 @@ public class ServerCallback implements Callback<BaseMessage> {
         info("SERVER_CALLBACK: CARD: " + msg.getCard().toString());
         info("SERVER_CALLBACK: Card object id: " + msg.getCard().hashCode());
         game.dealOnePlayerCardToTable(msg.getCard());
-        cheatDetector.update(msg.getCard());
     }
 
     private void handleActionMessage(ActionMessage message) {
@@ -89,7 +87,6 @@ public class ServerCallback implements Callback<BaseMessage> {
                 game = new Game(server, players);
                 info("Starting game.");
                 game.startGame();
-                this.cheatDetector = new CheatDetector(game);
                 break;
 
             case DEAL:
@@ -155,7 +152,7 @@ public class ServerCallback implements Callback<BaseMessage> {
 
     private void handleCheatMessage(CheatMessage message) {
         String playerToCheck = message.getPlayerName();
-        boolean isCheating = cheatDetector.check(playerToCheck);//game.getCheatDetector().check(playerToCheck);
+        boolean isCheating = game.getCheatDetector().check(playerToCheck);
         if (isCheating) {
             game.updateScoresCheating(isCheating, message.getSender().getName(), playerToCheck);
             server.sentTo(message.getSender().getConnectionID(), new CheatMessage("Correct: Player "+playerToCheck+" is cheating!"));

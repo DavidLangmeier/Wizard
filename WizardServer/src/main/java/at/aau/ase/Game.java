@@ -41,6 +41,7 @@ public class Game {
     private int trickRoundTurn;
     private int betTricksCounter;
     private boolean clearBetTricks;
+    private CheatDetector cheatDetector;
 
 
     Game(WizardServer server, List<Player> players) {
@@ -74,6 +75,7 @@ public class Game {
         server.broadcastMessage(new TextMessage("Shuffling and dealing cards..."));
         waitSafe(WizardConstants.TIME_TO_WAIT_SHORT);
         dealCards();
+        this.cheatDetector = new CheatDetectorImpl(this);
     }
 
     void broadcastGameState() {
@@ -183,6 +185,7 @@ public class Game {
         checkCurrentTrickRound();
         updateDealerAndActivePlayer();
         broadcastGameState();
+        cheatDetector.update(cardToPutOnTable);
     }
 
     public Hand getTable() {
@@ -237,6 +240,8 @@ public class Game {
 
             // wait some time before sending cleared table
             waitSafe(WizardConstants.TIME_TO_WAIT_MEDIUM);
+
+            cheatDetector.reset(); // Cheating can be checked for every round (roundwise), so reset to nobody is cheating at end of round
 
             broadcastGameState();
 
@@ -374,6 +379,7 @@ public class Game {
 
     public Color getActiveColor() {
         List<Card> cardsOnTable = table.getCards();
+        info("active color = "+findActiveColor(cardsOnTable));
         return findActiveColor(cardsOnTable);
     }
 
@@ -449,6 +455,10 @@ public class Game {
 
     public Color getTrump() {
         return trump;
+    }
+
+    public CheatDetector getCheatDetector() {
+        return cheatDetector;
     }
 }
 
