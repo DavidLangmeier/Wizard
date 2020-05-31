@@ -2,26 +2,19 @@ package at.aau.ase.wizard;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
-
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
-
-import static com.esotericsoftware.minlog.Log.debug;
 import static com.esotericsoftware.minlog.Log.info;
 
 public class EndscreenActivity extends AppCompatActivity {
@@ -67,7 +60,7 @@ public class EndscreenActivity extends AppCompatActivity {
                 R.drawable.rank0default,
                 R.drawable.rank0default
         };
-        arrayAdapter = new EndscreenListAdapter(this, playersInRankingOrder, icons, actualIconID);
+        arrayAdapter = new EndscreenListAdapter(this, playersInRankingOrder, totalPointsInRankingOrder, icons, actualIconID);
         lvRanking.setAdapter(arrayAdapter);
     }
 
