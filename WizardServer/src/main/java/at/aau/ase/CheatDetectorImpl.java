@@ -2,7 +2,6 @@ package at.aau.ase;
 
 import com.esotericsoftware.minlog.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;

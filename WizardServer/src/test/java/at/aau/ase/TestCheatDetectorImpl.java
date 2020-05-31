@@ -100,6 +100,49 @@ public class TestCheatDetectorImpl {
     }
 
     @Test
+    public void PlayingWizardIsNotCheatingTest() {
+        List<Player> players = new ArrayList<>();
+        players.add(new Player("Player-1", 1));
+        players.add(new Player("Player-2", 2));
+        players.add(new Player("Player-3", 3));
+
+        Game game = Mockito.mock(Game.class);
+        Mockito.when(game.getPlayers()).thenReturn(players);
+
+        Hand hand1 = new Hand();
+        ArrayList<Card> cards1 = new ArrayList<>();
+        cards1.add(new Card(Color.WIZARD, Value.WIZARD));
+        cards1.add(new Card(Color.RED, Value.THREE));
+        hand1.setCards(cards1);
+
+        Hand hand2 = new Hand();
+        ArrayList<Card> cards2 = new ArrayList<>();
+        cards2.add(new Card(Color.BLUE, Value.SEVEN));
+        cards2.add(new Card(Color.GREEN, Value.FOUR));
+        hand2.setCards(cards2);
+
+        Hand hand3 = new Hand();
+        ArrayList<Card> cards3 = new ArrayList<>();
+        cards3.add(new Card(Color.GREEN, Value.NINE));
+        cards3.add(new Card(Color.JESTER, Value.JESTER));
+        hand3.setCards(cards3);
+
+        Mockito.when(game.getPlayerHands()).thenReturn(new Hand[]{hand1, hand2,hand3});
+        Mockito.when(game.getActiveColor()).thenReturn(Color.YELLOW); // Active color
+
+        Mockito.when(game.getActivePlayerIndex()).thenReturn(1,1, 2); // Player2 plays card and then Player3. getActivePlayerIndex() gets called in new CheatDetector() and in update()
+        CheatDetector cheatDetector = new CheatDetectorImpl(game);
+
+        cheatDetector.update(new Card(Color.JESTER, Value.JESTER));
+        Assert.assertFalse(cheatDetector.check("Player-2"));
+
+        cheatDetector.update(new Card(Color.WIZARD, Value.WIZARD));
+        Assert.assertFalse(cheatDetector.check("Player-2")); // If Player3 is active and queries cheating-check of Player2
+        Assert.assertFalse(cheatDetector.check("Player-3"));
+        Assert.assertFalse(cheatDetector.check("Player-1")); // Default should be false
+    }
+
+    @Test
     public void NobodyCheatsTest() {
         List<Player> players = new ArrayList<>();
         players.add(new Player("Player-1", 1));
@@ -136,7 +179,7 @@ public class TestCheatDetectorImpl {
         cheatDetector.update(new Card(Color.RED, Value.FIVE));
         Assert.assertFalse(cheatDetector.check("Player-2"));
 
-        cheatDetector.update(new Card(Color.BLUE, Value.TEN));
+        cheatDetector.update(new Card(Color.GREEN, Value.TEN));
         Assert.assertFalse(cheatDetector.check("Player-2")); // If Player3 is active and queries cheating-check of Player2
         Assert.assertFalse(cheatDetector.check("Player-3"));
         Assert.assertFalse(cheatDetector.check("Player-1")); // Default should be false

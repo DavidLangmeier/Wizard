@@ -86,7 +86,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private MediaPlayer mp3;
     private SensorManager sensorManager;
     private Sensor lightSensor;
-    private float light_old = 0;
+    private float lightOld = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -492,7 +492,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     public final void onSensorChanged(SensorEvent event) {
         float light = event.values[0];
 
-        if (light <= SensorManager.LIGHT_NO_MOON/10 && light_old-light > 0) {
+        if (light <= SensorManager.LIGHT_NO_MOON/10 && lightOld -light > 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.cheat_dialog_title);
             builder.setAdapter(new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice, playersOnline), new DialogInterface.OnClickListener() {
@@ -502,10 +502,10 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                     wizardClient.sendMessage(new CheatMessage(selected, myPlayer));
                 }
             });
-            AlertDialog dialog = builder.create();
-            dialog.show();
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         }
-        light_old = light;
+        lightOld = light;
     }
 
     @Override
