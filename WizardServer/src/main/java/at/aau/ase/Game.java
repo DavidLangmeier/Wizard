@@ -436,5 +436,9 @@ public class Game {
     public void setTrickRoundTurn(int trickRoundTurn) {
         this.trickRoundTurn = trickRoundTurn;
     }
+
+    public void setActivePlayerIndex(int activePlayerIndex) {
+        this.activePlayerIndex = activePlayerIndex;
+    }
 }
 

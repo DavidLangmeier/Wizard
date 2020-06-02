@@ -25,9 +25,10 @@ import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value.THREE;
 
 /**
- * Class for testing the simpler methods of the gameLogic
+ * Tests for following methods of the game logic:
+ * start(), dealCards(), checkTrump()
  */
-public class GameTest1 {
+public class TestGameLogicDealCards {
     private List<Player> players = new ArrayList<>();
     private WizardServer server;
     private Game game;
@@ -128,6 +129,40 @@ public class GameTest1 {
     }
 
     @Test
+    public void testActivePlayerIndexInRound1() {
+        game.dealCards();
+        Assert.assertEquals(2, game.getActivePlayerIndex());
+        Assert.assertEquals(3, game.getActivePlayerID());
+    }
+
+    @Test
+    public void testActivePlayerIndexInRound2() {
+        game.setCurrentRound(2);
+        game.dealCards();
+        Assert.assertEquals(0, game.getActivePlayerIndex());
+        Assert.assertEquals(1, game.getActivePlayerID());
+    }
+
+    @Test
+    public void testActivePlayerIndexInRound3() {
+        game.setCurrentRound(3);
+        game.dealCards();
+        Assert.assertEquals(1, game.getActivePlayerIndex());
+        Assert.assertEquals(2, game.getActivePlayerID());
+    }
+
+    @Test
+    public void testActivePlayerIndexInRound20() {
+        game.setCurrentRound(20);
+        game.dealCards();
+        Assert.assertEquals(0, game.getActivePlayerIndex());
+        Assert.assertEquals(1, game.getActivePlayerID());
+    }
+
+
+
+    /*
+    @Test
     public void testCheckTrickRound_TrickRoundIncrement() {
         game.setTrickRoundTurn(0);
         game.setCurrentRound(3);
@@ -135,4 +170,5 @@ public class GameTest1 {
         Assert.assertEquals(1, game.getTrickRoundTurn());
         Assert.assertEquals(3, game.getCurrentRound());
     }
+     */
 }
