@@ -10,8 +10,11 @@ import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
-
-public class TestCheckBet {
+/**
+ * Tests for following methods of the game logic:
+ * checkBet(), writeBetTricksToNotePad()
+ */
+public class TestGameLogicBetting {
     private List<Player> players = new ArrayList<>();
     private WizardServer server;
     private Game game;
@@ -74,6 +77,27 @@ public class TestCheckBet {
         game.setCurrentRound(20);
         int bet = 21;
         Assert.assertFalse(game.checkBet(bet));
+    }
+
+    @Test
+    public void testWriteBetToNotePadRound1() {
+        game.writeBetTricksToNotePad(game.getScores(), 0, 1 );
+        game.writeBetTricksToNotePad(game.getScores(), 1, 1 );
+        game.writeBetTricksToNotePad(game.getScores(), 2, 0 );
+        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[0][0], 1);
+        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[1][0], 1);
+        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[2][0], 0);
+    }
+
+    @Test
+    public void testWriteBetToNotePadRound5() {
+        game.setCurrentRound(5);
+        game.writeBetTricksToNotePad(game.getScores(), 0, 3 );
+        game.writeBetTricksToNotePad(game.getScores(), 1, 2 );
+        game.writeBetTricksToNotePad(game.getScores(), 2, 5 );
+        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[0][4], 3);
+        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[1][4], 2);
+        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[2][4], 5);
     }
 
 }

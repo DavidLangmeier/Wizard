@@ -15,10 +15,10 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 /**
  * Tests for following methods of the game logic:
- * checkTrickWinner(), dealOnePlayerCardToTable
+ * checkTrickWinner(), dealOnePlayerCardToTable()
  * TW short for TrickWinner
  */
-public class TestGameLogicCheckTW {
+public class TestGameLogicCheckScoring {
     private List<Player> players = new ArrayList<>();
     private Game game;
     Card cardWiz = new Card(Color.WIZARD, Value.WIZARD);
@@ -179,6 +179,52 @@ public class TestGameLogicCheckTW {
         Assert.assertEquals("Red", game.getTable().getCards().get(0).getColor().getColorName());
         Assert.assertEquals(10, game.getTable().getCards().get(0).getValue().getValueCode());
         Assert.assertEquals(0, game.getTable().getCards().get(0).getPlayedBy());
+    }
+
+    @Test
+    public void testTookTrickWriteToNotePad() {
+        game.writeBetTricksToNotePad(game.getScores(), 0, 0 );
+        game.writeBetTricksToNotePad(game.getScores(), 1, 1 );
+        game.writeBetTricksToNotePad(game.getScores(), 2, 1 );
+        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[2][0], 1);
+        game.setTrump(Color.BLUE);
+        cardBlueEight.setPlayedBy(0);
+        game.getTable().add(cardBlueEight);
+        cardJes.setPlayedBy(1);
+        game.getTable().add(cardJes);
+        cardWiz2.setPlayedBy(2);
+        game.getTable().add(cardWiz2);
+        game.setTrickRoundTurn(2);
+        game.checkCurrentTrickRound();
+        Assert.assertEquals(0, game.getScores().getTookTricksPerPlayerPerRound()[0][0]);
+        Assert.assertEquals(0, game.getScores().getTookTricksPerPlayerPerRound()[1][0]);
+        Assert.assertEquals(1, game.getScores().getTookTricksPerPlayerPerRound()[2][0]);
+    }
+
+    @Test
+    public void testPointsPerPlayer() {
+        game.writeBetTricksToNotePad(game.getScores(), 0, 0 );
+        game.writeBetTricksToNotePad(game.getScores(), 1, 1 );
+        game.writeBetTricksToNotePad(game.getScores(), 2, 1 );
+
+        game.setTrump(Color.RED);
+        cardGreenOne.setPlayedBy(0);
+        game.getTable().add(cardGreenOne);
+        cardGreenTen.setPlayedBy(1);
+        game.getTable().add(cardGreenTen);
+        cardGreenEight.setPlayedBy(2);
+        game.getTable().add(cardGreenEight);
+
+        game.setTrickRoundTurn(2);
+        game.checkCurrentTrickRound();
+
+        Assert.assertEquals(0, game.getScores().getTookTricksPerPlayerPerRound()[0][0]);
+        Assert.assertEquals(1, game.getScores().getTookTricksPerPlayerPerRound()[1][0]);
+        Assert.assertEquals(0, game.getScores().getTookTricksPerPlayerPerRound()[2][0]);
+
+        Assert.assertEquals(20, game.getScores().getPointsPerPlayerPerRound()[0][0]);
+        Assert.assertEquals(30, game.getScores().getPointsPerPlayerPerRound()[1][0]);
+        Assert.assertEquals(-10, game.getScores().getPointsPerPlayerPerRound()[2][0]);
     }
 
 
