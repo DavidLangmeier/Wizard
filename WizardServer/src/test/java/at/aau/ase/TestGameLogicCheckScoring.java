@@ -202,7 +202,7 @@ public class TestGameLogicCheckScoring {
     }
 
     @Test
-    public void testPointsPerPlayer() {
+    public void testPointsPerPlayerRound1() {
         game.writeBetTricksToNotePad(game.getScores(), 0, 0 );
         game.writeBetTricksToNotePad(game.getScores(), 1, 1 );
         game.writeBetTricksToNotePad(game.getScores(), 2, 1 );
@@ -227,5 +227,34 @@ public class TestGameLogicCheckScoring {
         Assert.assertEquals(-10, game.getScores().getPointsPerPlayerPerRound()[2][0]);
     }
 
+    @Test
+    public void testPointsPerPlayerRound3() {
+        game.setCurrentRound(3);
 
+        game.writeBetTricksToNotePad(game.getScores(), 0, 2);
+        game.writeBetTricksToNotePad(game.getScores(), 1, 1);
+        game.writeBetTricksToNotePad(game.getScores(), 2, 3);
+
+        game.getScores().setTookTricksPerPlayerPerRound(0, 3);
+        game.getScores().setTookTricksPerPlayerPerRound(0, 3);
+
+        game.setTrump(Color.GREEN);
+        cardJes.setPlayedBy(0);
+        game.getTable().add(cardJes);
+        cardBlueEight.setPlayedBy(1);
+        game.getTable().add(cardBlueEight);
+        cardBlueOne.setPlayedBy(2);
+        game.getTable().add(cardBlueOne);
+
+        game.setTrickRoundTurn(2);
+        game.checkCurrentTrickRound();
+
+        Assert.assertEquals(2, game.getScores().getTookTricksPerPlayerPerRound()[0][2]);
+        Assert.assertEquals(1, game.getScores().getTookTricksPerPlayerPerRound()[1][2]);
+        Assert.assertEquals(0, game.getScores().getTookTricksPerPlayerPerRound()[2][2]);
+
+        Assert.assertEquals(40, game.getScores().getPointsPerPlayerPerRound()[0][2]);
+        Assert.assertEquals(30, game.getScores().getPointsPerPlayerPerRound()[1][2]);
+        Assert.assertEquals(-30, game.getScores().getPointsPerPlayerPerRound()[2][2]);
+    }
 }

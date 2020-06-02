@@ -159,16 +159,4 @@ public class TestGameLogicDealCards {
         Assert.assertEquals(1, game.getActivePlayerID());
     }
 
-
-
-    /*
-    @Test
-    public void testCheckTrickRound_TrickRoundIncrement() {
-        game.setTrickRoundTurn(0);
-        game.setCurrentRound(3);
-        game.checkCurrentTrickRound();
-        Assert.assertEquals(1, game.getTrickRoundTurn());
-        Assert.assertEquals(3, game.getCurrentRound());
-    }
-     */
 }
