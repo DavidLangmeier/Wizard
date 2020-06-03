@@ -76,8 +76,13 @@ public class Game {
 
     void broadcastGameState() {
         info("GAME: Broadcasting gameState");
-        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID, betTricksCounter, clearBetTricks));
-        info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
+        try { //check necessary for not causing client disconnection in EndscreenActivity
+            server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID, betTricksCounter, clearBetTricks));
+            info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
+        }catch (Exception e){
+            debug("Client seem to be in EndScreen...");
+        }
+
     }
 
     void dealCards() {
@@ -247,7 +252,7 @@ public class Game {
                 server.broadcastMessage(new TextMessage("Last round played, Game is complete."));
 
                 // wait some time before sending Action END
-                waitSafe(WizardConstants.TIME_TO_WAIT_LONG);
+                //waitSafe(WizardConstants.TIME_TO_WAIT_LONG);
                 // End-Msg should trigger the client going to Endscreen Activity
                 server.broadcastMessage(new ActionMessage(END));
             }

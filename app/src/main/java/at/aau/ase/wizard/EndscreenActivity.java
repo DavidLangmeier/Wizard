@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
+
 import static com.esotericsoftware.minlog.Log.info;
 
 public class EndscreenActivity extends AppCompatActivity {
@@ -66,7 +67,7 @@ public class EndscreenActivity extends AppCompatActivity {
 
     public void startCallback() {
         wizardClient.registerCallback(basemessage -> {
-            if (basemessage instanceof ActionMessage && ((ActionMessage) basemessage).getActionType() == Action.END) {
+            if (basemessage instanceof ActionMessage && ((ActionMessage) basemessage).getActionType() == Action.AGAIN) {
                 // todo: reset the online players + set Game.runninggame boolean to false.
             }
         });

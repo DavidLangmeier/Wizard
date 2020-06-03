@@ -125,7 +125,7 @@ public class GameActivity extends AppCompatActivity {
         runOnUiThread(this::setPlayerViews);
 
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
-        mp3 =MediaPlayer.create(this,R.raw.karte0runterlegen);
+        mp3 = MediaPlayer.create(this, R.raw.karte0runterlegen);
 
         //Damit mehrere nebeneinander sichbar sind
         viewPager2.setClipToPadding(false);
@@ -292,7 +292,7 @@ public class GameActivity extends AppCompatActivity {
                 default:
                     npTotalPoints = (TextView) dialog.findViewById(R.id.tv_summe6);
             }
-            StringBuilder bld=new StringBuilder();
+            StringBuilder bld = new StringBuilder();
             for (int j = 0; j < testNodepade.getTotalPointsPerPlayer()[i].length; j++) {
                 bld.append(" ");
                 bld.append(npTotalPointsAnzeige + String.valueOf(testNodepade.getTotalPointsPerPlayer()[i][j]));
@@ -460,7 +460,9 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + "left the game"));
+        if (wizardClient != null) {
+            wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + "left the game"));
+        }
         super.onStop();
     }
 
@@ -532,15 +534,13 @@ public class GameActivity extends AppCompatActivity {
 
                 //START endscreen activity
             } else if (basemessage instanceof ActionMessage) { // A player closed the app, so stop game and show current points as endresult
-                info("GAME_ACTIVITY: END received. - Trying to start endscreen activity.");
-                if(((ActionMessage) basemessage).getActionType() == END) {
+                if (((ActionMessage) basemessage).getActionType() == END) {
+                    info("GAME_ACTIVITY: END received. - Trying to start endscreen activity.");
                     gameData.getScores().setPlayerNamesList((ArrayList<String>) playersOnline); // to access in Endscreen
-                    runOnUiThread(() -> {
-                        Intent intent = new Intent(this, EndscreenActivity.class);
-                        wizardClient.deregisterCallback();
-                        intent.putExtra("gameData", (new Gson()).toJson(gameData));
-                        startActivity(intent);
-                    });
+                    Intent intent = new Intent(this, EndscreenActivity.class);
+                    wizardClient.deregisterCallback();
+                    intent.putExtra("gameData", (new Gson()).toJson(gameData));
+                    startActivity(intent);
                 }
 
             } else if (basemessage instanceof LifecycleMessage) {
