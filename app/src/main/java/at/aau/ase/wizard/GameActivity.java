@@ -35,7 +35,6 @@ import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
@@ -495,6 +494,7 @@ public class GameActivity extends AppCompatActivity {
                     if (gameData.getBetTricksCounter() < gameData.getScores().getTotalPointsPerPlayer().length) {
                         info("!!!!!!!!! Trickround: " + gameData.getBetTricksCounter() + " score size: " + gameData.getScores().getTotalPointsPerPlayer().length);
                         runOnUiThread(() -> {
+                            etVorhersage.setHint("Bet tricks:");
                             etVorhersage.setEnabled(true);
                             etVorhersage.setVisibility(View.VISIBLE);
                             btnPlaySelectedCard.setEnabled(false);
@@ -641,15 +641,12 @@ public class GameActivity extends AppCompatActivity {
             case 6:
                 tvActivePlayer6.setText(playersOnline.get(5).toString());
                 tvActivePlayer6.setVisibility(View.VISIBLE);
-                break;
             case 5:
                 tvActivePlayer5.setText(playersOnline.get(4).toString());
                 tvActivePlayer5.setVisibility(View.VISIBLE);
-                break;
             case 4:
                 tvActivePlayer4.setText(playersOnline.get(3).toString());
                 tvActivePlayer4.setVisibility(View.VISIBLE);
-                break;
             case 3:
                 tvActivePlayer3.setText(playersOnline.get(2).toString());
                 tvActivePlayer2.setText(playersOnline.get(1).toString());
