@@ -340,6 +340,10 @@ public class Game {
         return gamerunning;
     }
 
+    void setGamerunning(boolean bool){
+        gamerunning = bool;
+    }
+
     //checks if bet is allowed
     boolean checkBet(int bet) {
         boolean checkBet = true;

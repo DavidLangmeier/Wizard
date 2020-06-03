@@ -2,6 +2,8 @@ package at.aau.ase.wizard;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
@@ -13,9 +15,11 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.EXIT;
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.START;
 import static com.esotericsoftware.minlog.Log.info;
 
 public class EndscreenActivity extends AppCompatActivity {
@@ -24,10 +28,12 @@ public class EndscreenActivity extends AppCompatActivity {
     private Button btnExitGame;
     private TextView tvMyPlayerScore;
     private ListView lvRanking;
+    private Player myPlayer;
 
     private WizardClient wizardClient;
     GameData gameData;
     List<String> playersInRankingOrder;
+    List playersOnline;
     private EndscreenListAdapter arrayAdapter = null;
     int[][] totalPointsInRankingOrder;
     int[] actualIconID;
@@ -41,12 +47,18 @@ public class EndscreenActivity extends AppCompatActivity {
 
         tvMyPlayerScore = findViewById(R.id.tv_myPlayerScores);
         btnPlayAgain = findViewById(R.id.btn_play_again);
+        btnPlayAgain.setOnClickListener(v -> playAgain());
         btnExitGame = findViewById(R.id.btn_exit_game);
+        btnExitGame.setOnClickListener(v -> exitGame());
         lvRanking = findViewById(R.id.lv_PlayerScores);
 
         wizardClient = WizardClient.getInstance();
         startCallback();
 
+        String s0 = getIntent().getStringExtra("myPlayer");
+        myPlayer = new Gson().fromJson(s0, Player.class);
+        String s1 = getIntent().getStringExtra("playersOnline");
+        playersOnline = new Gson().fromJson(s1, List.class);
         String s2 = getIntent().getStringExtra("gameData");
         gameData = new Gson().fromJson(s2, GameData.class);
         sortPlayersByRanking();
@@ -67,8 +79,21 @@ public class EndscreenActivity extends AppCompatActivity {
 
     public void startCallback() {
         wizardClient.registerCallback(basemessage -> {
-            if (basemessage instanceof ActionMessage && ((ActionMessage) basemessage).getActionType() == Action.AGAIN) {
-                // todo: reset the online players + set Game.runninggame boolean to false.
+            if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == START)) {
+                info(basemessage.toString());
+                gameData = new GameData();
+                Intent intent = new Intent(this, GameActivity.class);
+                wizardClient.deregisterCallback();
+                intent.putExtra("myPlayer", (new Gson()).toJson(myPlayer));
+                intent.putExtra("gameData", (new Gson()).toJson(gameData));
+                intent.putExtra("playersOnline", (new Gson()).toJson(playersOnline));
+                startActivity(intent);
+            }
+            else if ((basemessage instanceof ActionMessage) && (((ActionMessage) basemessage).getActionType() == EXIT)) {
+                info(basemessage.toString());
+                Intent intent = new Intent(this, LobbyActivity.class);
+                wizardClient.deregisterCallback();
+                startActivity(intent);
             }
         });
     }
@@ -90,9 +115,6 @@ public class EndscreenActivity extends AppCompatActivity {
         info(Arrays.toString(index));
         List<String> players = gameData.getScores().getPlayerNamesList();
         String playerNames = "PLAYERNAMES: " + players.toString();
-        info(playerNames);
-        List<String> returnSortedPlayers = gameData.getScores().getPlayerNamesList();
-        playerNames = "PLAYERNAMES: " + returnSortedPlayers.toString();
         info(playerNames);
         playersInRankingOrder = new ArrayList<>();
 
@@ -133,5 +155,13 @@ public class EndscreenActivity extends AppCompatActivity {
             array[i] = array[array.length - 1 - i];
             array[array.length - 1 - i] = temp;
         }
+    }
+
+    void playAgain(){
+        wizardClient.sendMessage(new ActionMessage(START));
+    }
+
+    void exitGame(){
+        wizardClient.sendMessage(new ActionMessage(EXIT));
     }
 }

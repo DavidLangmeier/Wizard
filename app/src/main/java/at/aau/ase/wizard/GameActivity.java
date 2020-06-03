@@ -540,6 +540,8 @@ public class GameActivity extends AppCompatActivity {
                     Intent intent = new Intent(this, EndscreenActivity.class);
                     wizardClient.deregisterCallback();
                     intent.putExtra("gameData", (new Gson()).toJson(gameData));
+                    intent.putExtra("playersOnline", (new Gson()).toJson(playersOnline));
+                    intent.putExtra("myPlayer", (new Gson()).toJson(myPlayer));
                     startActivity(intent);
                 }
 
