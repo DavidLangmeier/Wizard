@@ -66,6 +66,14 @@ public class Notepad {
         return tookTricksPerPlayerPerRound;
     }
 
+    public ArrayList<String> getPlayerNamesList() {
+        return playerNamesList;
+    }
+
+    public void setPlayerNamesList(ArrayList<String> playerNamesList) {
+        this.playerNamesList = playerNamesList;
+    }
+
     //brauche Notpade classe die mir werte gibt funktion
     public void testFillPointsPlayerround() {
         int count = 1;

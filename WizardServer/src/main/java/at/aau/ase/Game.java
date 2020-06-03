@@ -48,7 +48,7 @@ public class Game {
         this.table = new Hand();
         this.scores = new Notepad((short) players.size());
         this.totalRounds = 60 / players.size();
-        this.currentRound = 1;
+        this.currentRound = 1; //to test EndScreenActivity
         this.trickRoundTurn = 0;
         this.betTricksCounter = 0;
         this.playerHands = new Hand[players.size()];
@@ -76,8 +76,13 @@ public class Game {
 
     void broadcastGameState() {
         info("GAME: Broadcasting gameState");
-        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID, betTricksCounter, clearBetTricks));
-        info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
+        try { //check necessary for not causing client disconnection in EndscreenActivity
+            server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID, betTricksCounter, clearBetTricks));
+            info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
+        }catch (Exception e){
+            debug("Client seem to be in EndScreen...");
+        }
+
     }
 
     void dealCards() {
@@ -86,7 +91,7 @@ public class Game {
         deck.shuffle();
 
         // deal cards to playerHands serverside | round=5 hardcoded, has to be changed later
-        for (int i = 0; i < currentRound; i++) {
+        for (int i = 0; i < currentRound; i++) { //to test EndscreenActivity
             for (int j = 0; j < players.size(); j++) {
                 info("GAME: Dealing to hand #" + j + " with players.size of " + players.size());
                 info("GAME: current card = " + deck.getCards().get(0).toString());
@@ -247,7 +252,7 @@ public class Game {
                 server.broadcastMessage(new TextMessage("Last round played, Game is complete."));
 
                 // wait some time before sending Action END
-                waitSafe(WizardConstants.TIME_TO_WAIT_LONG);
+                //waitSafe(WizardConstants.TIME_TO_WAIT_LONG);
                 // End-Msg should trigger the client going to Endscreen Activity
                 server.broadcastMessage(new ActionMessage(END));
             }
@@ -333,6 +338,10 @@ public class Game {
 
     boolean isGamerunning() {
         return gamerunning;
+    }
+
+    void setGamerunning(boolean bool){
+        gamerunning = bool;
     }
 
     //checks if bet is allowed

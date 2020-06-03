@@ -3,6 +3,7 @@ package at.aau.ase;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.Callback;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
@@ -98,6 +99,14 @@ public class ServerCallback implements Callback<BaseMessage> {
                 }
                 break;
 
+            case EXIT:
+                info("Recieved Action EXIT.");
+                game.setGamerunning(false);
+                game = null;
+                server.broadcastMessage(new ActionMessage(Action.EXIT));
+                break;
+
+
             default:
                 info("Unknown Action. Cannot handle Message");
         }
@@ -129,6 +138,8 @@ public class ServerCallback implements Callback<BaseMessage> {
         info("New user " + msg.getNewUsername());
         Integer newPlayerID = server.getLastConnectionID();
         Player newplayer = new Player(msg.getNewUsername(), newPlayerID);
+        debug(msg.getNewUsername() + " has now ID: " + newPlayerID);
+        debug("=====================" + game);
         if (game != null) {
             if (game.isGamerunning()) { // if game is already running send back info and close connection
                 server.sentTo(newPlayerID, new ErrorMessage("Game is already in progress, join later"));
