@@ -109,13 +109,13 @@ public class Game {
             info(currentHand.showCardsInHand());
         }
 
-        trump = setTrump();
+        trump = checkTrump();
         activePlayerIndex = (currentRound + 1) % players.size();
         activePlayerID = players.get(activePlayerIndex).getConnectionID();
         broadcastGameState();
     }
 
-    Color setTrump() {
+    Color checkTrump() {
         Color trumpColor;
 
         // set trump color, rounds 1-19 have a trump, 20 has no trump
@@ -128,7 +128,7 @@ public class Game {
 
         // if trump is wizard or jester a random color is set
         if (trumpColor == Color.WIZARD || trumpColor == Color.JESTER) {
-            info("GAME: Current TRUMP = " + trumpColor.getColorName() + "is not valid! Random color generating...");
+            info("GAME: Current TRUMP = " + trumpColor.getColorName() + " is not valid! Random color generating...");
             int randomNr = new SecureRandom().nextInt(3);
 
             switch (randomNr) {
@@ -156,6 +156,7 @@ public class Game {
 
         if (currentRound < 20) {
             server.broadcastMessage(new TextMessage("Current Trump is " + trumpColor.getColorName()));
+            info("GAME: Current TRUMP = " + trumpColor.getColorName());
         } else {
             server.broadcastMessage(new TextMessage("LAST ROUND HAS NO TRUMP!"));
         }
@@ -376,6 +377,80 @@ public class Game {
             error("GAME: Error while waiting.", e);
             Thread.currentThread().interrupt();
         }
+    }
+
+    // getters & setters are needed for testing purposes
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public Notepad getScores() {
+        return scores;
+    }
+
+    public int getTotalRounds() {
+        return totalRounds;
+    }
+
+    public int getCurrentRound() {
+        return currentRound;
+    }
+
+    public Hand[] getPlayerHands() {
+        return playerHands;
+    }
+
+    public Color getTrump() {
+        return trump;
+    }
+
+    public int getDealer() {
+        return dealer;
+    }
+
+    public int getActivePlayerID() {
+        return activePlayerID;
+    }
+
+    public int getActivePlayerIndex() {
+        return activePlayerIndex;
+    }
+
+    public WizardServer getServer() {
+        return server;
+    }
+
+    public int getTrickRoundTurn() {
+        return trickRoundTurn;
+    }
+
+    public int getBetTricksCounter() {
+        return betTricksCounter;
+    }
+
+    public boolean isClearBetTricks() {
+        return clearBetTricks;
+    }
+
+    public void setCurrentRound(int currentRound) {
+        this.currentRound = currentRound;
+    }
+
+    public void setTrump(Color trump) {
+        this.trump = trump;
+    }
+
+    public void setTrickRoundTurn(int trickRoundTurn) {
+        this.trickRoundTurn = trickRoundTurn;
+    }
+
+    public void setActivePlayerIndex(int activePlayerIndex) {
+        this.activePlayerIndex = activePlayerIndex;
     }
 }
 
