@@ -82,7 +82,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private Dialog dialog;
     private TextView tvServerMsg;
     private EditText etVorhersage;
-    private List playersOnline = new ArrayList<>();
+    private List<String> playersOnline = new ArrayList<>();
     private MediaPlayer mp3;
     private SensorManager sensorManager;
     private Sensor lightSensor;
@@ -474,13 +474,13 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     protected void onStop() {
-        wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + "left the game"));
+        wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + " left the game"));
         super.onStop();
     }
 
     @Override
     protected void onRestart() {
-        wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + "came back"));
+        wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + " came back"));
         super.onRestart();
     }
     @Override
@@ -495,9 +495,14 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         if (light <= SensorManager.LIGHT_NO_MOON/10 && lightOld -light > 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.cheat_dialog_title);
-            builder.setAdapter(new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice, playersOnline), new DialogInterface.OnClickListener() {
+            List<String> possibleCheatersToCheckList = new ArrayList<>();
+            for (String s: playersOnline) {
+                if (!s.equals(myPlayer.getName()))
+                    possibleCheatersToCheckList.add(s);
+            }
+            builder.setAdapter(new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice, possibleCheatersToCheckList), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    String selected = (String) playersOnline.get(which);
+                    String selected = (String) possibleCheatersToCheckList.get(which);
                     info("Selected "+selected);
                     wizardClient.sendMessage(new CheatMessage(selected, myPlayer));
                 }
