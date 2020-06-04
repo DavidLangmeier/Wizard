@@ -149,6 +149,19 @@ public class TestGameLogicCheckScoring {
     }
 
     @Test
+    public void testTrumpInLastRound() {
+        game.setTrump(Color.YELLOW);
+        game.setCurrentRound(game.getTotalRounds());
+        cardGreenEight.setPlayedBy(0);
+        game.getTable().add(cardGreenEight);
+        cardGreenTen.setPlayedBy(1);
+        game.getTable().add(cardGreenTen);
+        cardYellowOne.setPlayedBy(2);
+        game.getTable().add(cardYellowOne);
+        Assert.assertEquals(1, game.checkTrickWinner());
+    }
+
+    @Test
     public void testAllDifferentColors() {
         game.setTrump(Color.YELLOW);
         cardGreenEight.setPlayedBy(0);

@@ -12,7 +12,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 /**
  * Tests for following methods of the game logic:
- * checkBet(), writeBetTricksToNotePad()
+ * checkBet(), checkBetTricksCounter(), writeBetTricksToNotePad()
  */
 public class TestGameLogicBetting {
     private List<Player> players = new ArrayList<>();
@@ -80,13 +80,21 @@ public class TestGameLogicBetting {
     }
 
     @Test
+    public void testCheckBetWithCheckBetTricksCounterFalse() {
+        game.setBetTricksCounter(3);
+        game.setCurrentRound(1);
+        int bet = 1;
+        Assert.assertFalse(game.checkBet(bet));
+    }
+
+    @Test
     public void testWriteBetToNotePadRound1() {
         game.writeBetTricksToNotePad(game.getScores(), 0, 1 );
         game.writeBetTricksToNotePad(game.getScores(), 1, 1 );
         game.writeBetTricksToNotePad(game.getScores(), 2, 0 );
-        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[0][0], 1);
-        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[1][0], 1);
-        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[2][0], 0);
+        Assert.assertEquals(1, game.getScores().getBetTricksPerPlayerPerRound()[0][0]);
+        Assert.assertEquals(1, game.getScores().getBetTricksPerPlayerPerRound()[1][0]);
+        Assert.assertEquals(0, game.getScores().getBetTricksPerPlayerPerRound()[2][0]);
     }
 
     @Test
@@ -95,9 +103,29 @@ public class TestGameLogicBetting {
         game.writeBetTricksToNotePad(game.getScores(), 0, 3 );
         game.writeBetTricksToNotePad(game.getScores(), 1, 2 );
         game.writeBetTricksToNotePad(game.getScores(), 2, 5 );
-        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[0][4], 3);
-        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[1][4], 2);
-        Assert.assertEquals(game.getScores().getBetTricksPerPlayerPerRound()[2][4], 5);
+        Assert.assertEquals(3, game.getScores().getBetTricksPerPlayerPerRound()[0][4]);
+        Assert.assertEquals(2, game.getScores().getBetTricksPerPlayerPerRound()[1][4]);
+        Assert.assertEquals(5, game.getScores().getBetTricksPerPlayerPerRound()[2][4]);
+    }
+
+    @Test
+    public void testWritetooMuchBets() {
+        game.setCurrentRound(1);
+        game.setBetTricksCounter(3);
+        game.writeBetTricksToNotePad(game.getScores(), 0, 3 );
+        Assert.assertEquals(3, game.getBetTricksCounter());
+    }
+
+    @Test
+    public void testCheckBetTricksCounterTrue() {
+        game.setBetTricksCounter(1);
+        Assert.assertTrue(game.checkBetTricksCounter());
+    }
+
+    @Test
+    public void testCheckBetTricksCounterFalse() {
+        game.setBetTricksCounter(3);
+        Assert.assertFalse(game.checkBetTricksCounter());
     }
 
 }
