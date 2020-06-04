@@ -42,4 +42,7 @@
     <string name="tablecard5">tableCard5</string>
     <string name="tablecard6">tableCard6</string>
     <string name="block_of_truth">BLOCK OF TRUTH</string>
+    <string name="play_again">PLAY AGAIN</string>
+    <string name="exit_game">EXIT GAME</string>
+    <string name="yourplayer">yourPlayer</string>
 </resources>

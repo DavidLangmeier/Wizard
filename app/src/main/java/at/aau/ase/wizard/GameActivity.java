@@ -35,7 +35,6 @@ import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
@@ -45,6 +44,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.END;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.READY;
 import static com.esotericsoftware.minlog.Log.*;
 
@@ -124,7 +124,7 @@ public class GameActivity extends AppCompatActivity {
         runOnUiThread(this::setPlayerViews);
 
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
-        mp3 =MediaPlayer.create(this,R.raw.karte0runterlegen);
+        mp3 = MediaPlayer.create(this, R.raw.karte0runterlegen);
 
         //Damit mehrere nebeneinander sichbar sind
         viewPager2.setClipToPadding(false);
@@ -291,7 +291,7 @@ public class GameActivity extends AppCompatActivity {
                 default:
                     npTotalPoints = (TextView) dialog.findViewById(R.id.tv_summe6);
             }
-            StringBuilder bld=new StringBuilder();
+            StringBuilder bld = new StringBuilder();
             for (int j = 0; j < testNodepade.getTotalPointsPerPlayer()[i].length; j++) {
                 bld.append(" ");
                 bld.append(npTotalPointsAnzeige + String.valueOf(testNodepade.getTotalPointsPerPlayer()[i][j]));
@@ -459,7 +459,9 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + "left the game"));
+        if (wizardClient != null) {
+            wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + "left the game"));
+        }
         super.onStop();
     }
 
@@ -492,6 +494,7 @@ public class GameActivity extends AppCompatActivity {
                     if (gameData.getBetTricksCounter() < gameData.getScores().getTotalPointsPerPlayer().length) {
                         info("!!!!!!!!! Trickround: " + gameData.getBetTricksCounter() + " score size: " + gameData.getScores().getTotalPointsPerPlayer().length);
                         runOnUiThread(() -> {
+                            etVorhersage.setHint("Bet tricks:");
                             etVorhersage.setEnabled(true);
                             etVorhersage.setVisibility(View.VISIBLE);
                             btnPlaySelectedCard.setEnabled(false);
@@ -529,12 +532,18 @@ public class GameActivity extends AppCompatActivity {
                     addCardsToSlideView(gameData.getMyHand().getCards());
                 });
 
-            } else if (basemessage instanceof GoodbyeMessage) { // A player closed the app, so stop game and show current points as endresult
-                info("GAME_ACTIVITY: Goodbye received.");
-                runOnUiThread(() -> {
+                //START endscreen activity
+            } else if (basemessage instanceof ActionMessage) { // A player closed the app, so stop game and show current points as endresult
+                if (((ActionMessage) basemessage).getActionType() == END) {
+                    info("GAME_ACTIVITY: END received. - Trying to start endscreen activity.");
+                    gameData.getScores().setPlayerNamesList((ArrayList<String>) playersOnline); // to access in Endscreen
                     Intent intent = new Intent(this, EndscreenActivity.class);
+                    wizardClient.deregisterCallback();
+                    intent.putExtra("gameData", (new Gson()).toJson(gameData));
+                    intent.putExtra("playersOnline", (new Gson()).toJson(playersOnline));
+                    intent.putExtra("myPlayer", (new Gson()).toJson(myPlayer));
                     startActivity(intent);
-                });
+                }
 
             } else if (basemessage instanceof LifecycleMessage) {
                 LifecycleMessage msg = (LifecycleMessage) basemessage;
@@ -632,15 +641,12 @@ public class GameActivity extends AppCompatActivity {
             case 6:
                 tvActivePlayer6.setText(playersOnline.get(5).toString());
                 tvActivePlayer6.setVisibility(View.VISIBLE);
-                break;
             case 5:
                 tvActivePlayer5.setText(playersOnline.get(4).toString());
                 tvActivePlayer5.setVisibility(View.VISIBLE);
-                break;
             case 4:
                 tvActivePlayer4.setText(playersOnline.get(3).toString());
                 tvActivePlayer4.setVisibility(View.VISIBLE);
-                break;
             case 3:
                 tvActivePlayer3.setText(playersOnline.get(2).toString());
                 tvActivePlayer2.setText(playersOnline.get(1).toString());

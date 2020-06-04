@@ -28,11 +28,11 @@ import static com.esotericsoftware.minlog.Log.*;
 
 public class LobbyActivity extends AppCompatActivity {
     private Button btnStartGame;
-    private WizardClient wizardClient = null;
+    private WizardClient wizardClient;
     private EditText etUsername = null;
     private TextView tvError = null;
-    private List<String> playersOnline = new ArrayList<>();
-    private ArrayAdapter<String> arrayAdapter = null;
+    private List<String> playersOnline;// = new ArrayList<>();
+    private ArrayAdapter<String> arrayAdapter;
     private Player myPlayer;
     private GameData gameData;
 
@@ -41,6 +41,10 @@ public class LobbyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
+
+        arrayAdapter = null;
+        wizardClient = null;
+        playersOnline = new ArrayList<>();
 
         btnStartGame = (findViewById(R.id.lobby_btn_ToGameScreen));
         btnStartGame.setOnClickListener(v -> startGame());
@@ -71,6 +75,7 @@ public class LobbyActivity extends AppCompatActivity {
     private boolean enteredUsername(int keycode, KeyEvent keyevent) {
         if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER) {
             wizardClient = WizardClient.getInstance();
+            debug("==========================" +wizardClient.toString());
 
             wizardClient.registerCallback(basemessage -> {
                 if (basemessage instanceof LobbyMessage) {
