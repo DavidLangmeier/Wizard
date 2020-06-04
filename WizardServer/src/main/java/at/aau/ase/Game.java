@@ -382,11 +382,7 @@ public class Game {
     }
 
     // getters & setters are needed for testing purposes
-
-    public List<Player> getPlayers() {
-        return players;
-    }
-
+    
     public Deck getDeck() {
         return deck;
     }
@@ -407,14 +403,6 @@ public class Game {
         return playerHands;
     }
 
-    public Color getTrump() {
-        return trump;
-    }
-
-    public int getDealer() {
-        return dealer;
-    }
-
     public int getActivePlayerID() {
         return activePlayerID;
     }
@@ -423,20 +411,12 @@ public class Game {
         return activePlayerIndex;
     }
 
-    public WizardServer getServer() {
-        return server;
-    }
-
     public int getTrickRoundTurn() {
         return trickRoundTurn;
     }
 
     public int getBetTricksCounter() {
         return betTricksCounter;
-    }
-
-    public boolean isClearBetTricks() {
-        return clearBetTricks;
     }
 
     public void setCurrentRound(int currentRound) {
@@ -453,6 +433,10 @@ public class Game {
 
     public void setActivePlayerIndex(int activePlayerIndex) {
         this.activePlayerIndex = activePlayerIndex;
+    }
+
+    public void setBetTricksCounter(int betTricksCounter) {
+        this.betTricksCounter = betTricksCounter;
     }
 }
 

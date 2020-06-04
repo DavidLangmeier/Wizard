@@ -15,7 +15,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 /**
  * Tests for following method of the game logic:
- * checkCurrentTrickRound()
+ * checkCurrentTrickRound, waitSafe();
  * CTR short for CurrentTrickRound
  */
 public class TestGameLogicCheckCTR {
@@ -100,7 +100,25 @@ public class TestGameLogicCheckCTR {
         Assert.assertEquals(newActivePlayerIndex, game.getActivePlayerIndex());
     }
 
+    @Test
+    public void testCheckCTRTrickCompleteRoundAndGameComplete() {
+        game.dealCards();
+        game.setTrickRoundTurn(2);
+        game.setCurrentRound(game.getTotalRounds());
+        game.getPlayerHands()[0].clear();
+        game.getPlayerHands()[1].clear();
+        game.getPlayerHands()[2].clear();
+        game.checkCurrentTrickRound();
+        Assert.assertEquals(0, game.getTrickRoundTurn());
+        Assert.assertEquals(20, game.getCurrentRound());
+    }
 
+    @Test
+    public void testWaitSafeInterrupted() {
+        Thread.currentThread().interrupt();
+        game.waitSafe(5000);
+        Assert.assertTrue(Thread.interrupted());
+    }
 
 
 }
