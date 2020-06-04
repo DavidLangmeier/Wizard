@@ -48,7 +48,7 @@ public class Game {
         this.table = new Hand();
         this.scores = new Notepad((short) players.size());
         this.totalRounds = 60 / players.size();
-        this.currentRound = 1; //to test EndScreenActivity
+        this.currentRound = 20; //to test EndScreenActivity
         this.trickRoundTurn = 0;
         this.betTricksCounter = 0;
         this.playerHands = new Hand[players.size()];
@@ -91,7 +91,7 @@ public class Game {
         deck.shuffle();
 
         // deal cards to playerHands serverside | round=5 hardcoded, has to be changed later
-        for (int i = 0; i < currentRound; i++) { //to test EndscreenActivity
+        for (int i = 0; i < 1; i++) { //to test EndscreenActivity
             for (int j = 0; j < players.size(); j++) {
                 info("GAME: Dealing to hand #" + j + " with players.size of " + players.size());
                 info("GAME: current card = " + deck.getCards().get(0).toString());

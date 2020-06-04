@@ -540,15 +540,14 @@ public class GameActivity extends AppCompatActivity {
                     gameData.getScores().setPlayerNamesList((ArrayList<String>) playersOnline); // to access in Endscreen
                     Notepad endscreenScores = gameData.getScores();
                     debug("------------+++++++++++++++--------------" + Arrays.deepToString(endscreenScores.getTotalPointsPerPlayer()));
-                    wizardClient.sendMessage(new EndscreenMessage(endscreenScores.getTotalPointsPerPlayer(), endscreenScores.getPlayerNamesList())); //prepare for Endscreen
+                    wizardClient.sendMessage(new EndscreenMessage(endscreenScores)); //prepare for Endscreen
                 }
             //START endscreen activity
             } else if(basemessage instanceof EndscreenMessage){
                 EndscreenMessage msg = (EndscreenMessage) basemessage;
                 Intent intent = new Intent(this, EndscreenActivity.class);
                 wizardClient.deregisterCallback();
-                intent.putExtra("sortedPlayerNames", (new Gson()).toJson(msg.getSortedplayerNames()));
-                intent.putExtra("sortedTotalPoints", (new Gson()).toJson(msg.getSortedTotalPoints()));
+                intent.putExtra("endscreenScores", new Gson().toJson(msg.getScores()));
                 intent.putExtra("sortedIconID", (new Gson()).toJson(msg.getImageID()));
                 intent.putExtra("playersOnline", (new Gson()).toJson(playersOnline));
                 intent.putExtra("myPlayer", (new Gson()).toJson(myPlayer));

@@ -12,9 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.EXIT;
@@ -31,11 +33,12 @@ public class EndscreenActivity extends AppCompatActivity {
 
     private WizardClient wizardClient;
     GameData gameData;
-    List playersInRankingOrder;
+    List playersInRankingOrder = new ArrayList();
     List playersOnline;
     private EndscreenListAdapter arrayAdapter = null;
     int[][] totalPointsInRankingOrder;
     int[] actualIconID;
+    Notepad endscreenScores;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -58,10 +61,11 @@ public class EndscreenActivity extends AppCompatActivity {
         this.myPlayer = new Gson().fromJson(myPlayer, Player.class);
         String playersOnline = getIntent().getStringExtra("playersOnline");
         this.playersOnline = new Gson().fromJson(playersOnline, List.class);
-        String sortedPlayerNames = getIntent().getStringExtra("sortedPlayerNames");
-        playersInRankingOrder = new Gson().fromJson(sortedPlayerNames, List.class);
-        String sortedTotalPoints = getIntent().getStringExtra("sortedTotalPoints");
-        totalPointsInRankingOrder = new Gson().fromJson(sortedTotalPoints, int[][].class);
+        String scores = getIntent().getStringExtra("endscreenScores");
+        this.endscreenScores = new Gson().fromJson(scores, Notepad.class);
+        playersInRankingOrder = endscreenScores.getPlayerNamesList();
+        totalPointsInRankingOrder = new int[endscreenScores.playerNamesList.size()][1];
+        totalPointsInRankingOrder = endscreenScores.getTotalPointsPerPlayer();
         String sortedIconID = getIntent().getStringExtra("sortedIconID");
         actualIconID = new Gson().fromJson(sortedIconID, int[].class);
 

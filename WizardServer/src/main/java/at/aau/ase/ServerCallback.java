@@ -166,13 +166,13 @@ public class ServerCallback implements Callback<BaseMessage> {
     private void handleEndscreenMessage(EndscreenMessage message) {
         EndscreenMessage msg = message;
         Notepad endscreenScores = new Notepad();
-        List playersInRankingOrder = calculations.sortPlayersByRanking(msg.getSortedTotalPoints(), msg.getSortedplayerNames());
-        int[][] totalPointsInRankingOrder = calculations.sortPlayerTotalPointsByRanking(msg.getSortedTotalPoints(), msg.getSortedplayerNames());
+        List playersInRankingOrder = calculations.sortPlayersByRanking(msg.getScores().getTotalPointsPerPlayer(), msg.getScores().getPlayerNamesList());
+        int[][] totalPointsInRankingOrder = calculations.sortPlayerTotalPointsByRanking(msg.getScores().getTotalPointsPerPlayer(), msg.getScores().getPlayerNamesList());
         debug("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + Arrays.deepToString(totalPointsInRankingOrder));
         int[] imageID = calculations.setActualIconID(totalPointsInRankingOrder);
         endscreenScores.setPlayerNamesList((ArrayList<String>) playersInRankingOrder);
         endscreenScores.setTotalPointsPerPlayer(totalPointsInRankingOrder);
-        server.broadcastMessage(new EndscreenMessage(totalPointsInRankingOrder, playersInRankingOrder, imageID));
+        server.broadcastMessage(new EndscreenMessage(endscreenScores, imageID));
     }
 
 }
