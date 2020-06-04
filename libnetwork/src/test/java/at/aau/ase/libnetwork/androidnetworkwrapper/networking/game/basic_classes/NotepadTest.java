@@ -2,7 +2,6 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classe
 
 import org.junit.Assert;
 import org.junit.Test;
-import java.util.Arrays;
 
 
 public class NotepadTest {
@@ -37,8 +36,9 @@ public class NotepadTest {
 
     @Test
     public void getTotalPointsPerPlayerPerRound() {
+        int[][] totalPoints = {{80}, {50}, {90}};
 
-        Notepad np3 = new Notepad((short)3);
+        Notepad np3 = new Notepad((short) 3);
         // sum of Points Player1 = 80
         short pointsPlayer1Round1 = 20;
         short pointsPlayer1Round2 = -10;
@@ -76,8 +76,16 @@ public class NotepadTest {
         np3.setPointsPerPlayerPerRound(2, pointsPlayer3Round3, 3);
         np3.setPointsPerPlayerPerRound(2, pointsPlayer3Round4, 4);
 
-        //Prints out total Points per Player
-        System.out.println(Arrays.deepToString(np3.getTotalPointsPerPlayer()));
+        Assert.assertArrayEquals(totalPoints, np3.getTotalPointsPerPlayer());
+    }
+
+    @Test
+    public void testForSetTotalPointsPerPlayer() {
+        int[][] totalPoints = {{80}, {50}, {90}};
+
+        Notepad np = new Notepad();
+        np.setTotalPointsPerPlayer(totalPoints);
+        Assert.assertArrayEquals(totalPoints, np.setTotalPointsPerPlayer(totalPoints));
 
     }
 }
