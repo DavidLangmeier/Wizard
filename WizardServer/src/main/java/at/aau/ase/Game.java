@@ -417,10 +417,6 @@ public class Game {
         return betTricksCounter;
     }
 
-    public boolean isClearBetTricks() {
-        return clearBetTricks;
-    }
-
     public void setCurrentRound(int currentRound) {
         this.currentRound = currentRound;
     }

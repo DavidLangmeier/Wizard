@@ -26,7 +26,7 @@ import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_
 
 /**
  * Tests for following methods of the game logic:
- * start(), dealCards(), checkTrump()
+ * start(), dealCards(), checkTrump(), some smaller helper methods
  */
 public class TestGameLogicDealCards {
     private List<Player> players = new ArrayList<>();
@@ -162,6 +162,18 @@ public class TestGameLogicDealCards {
     @Test
     public void testGetTotalRounds() {
         Assert.assertEquals(20, game.getTotalRounds());
+    }
+
+    @Test
+    public void testSetGameRunningTrue() {
+        game.setGamerunning(true);
+        Assert.assertTrue(game.isGamerunning());
+    }
+
+    @Test
+    public void testSetGameRunningFalse() {
+        game.setGamerunning(false);
+        Assert.assertFalse(game.isGamerunning());
     }
 
 }
