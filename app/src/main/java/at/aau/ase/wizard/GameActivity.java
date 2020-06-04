@@ -478,7 +478,7 @@ public class GameActivity extends AppCompatActivity {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
 
-                if (gameData.getRoundsLeft() > 1) {
+                if (gameData.getRoundsLeft() >= 1) {
                     tvTrumpColor.setText("Trump: " + gameData.getTrump().getColorName());
                     switch (gameData.getTrump().getColorName()) {
                         case "Blue":
