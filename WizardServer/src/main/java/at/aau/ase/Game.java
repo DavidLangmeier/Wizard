@@ -368,11 +368,7 @@ public class Game {
     }
 
     // getters & setters are needed for testing purposes
-
-    public List<Player> getPlayers() {
-        return players;
-    }
-
+    
     public Deck getDeck() {
         return deck;
     }
@@ -393,24 +389,12 @@ public class Game {
         return playerHands;
     }
 
-    public Color getTrump() {
-        return trump;
-    }
-
-    public int getDealer() {
-        return dealer;
-    }
-
     public int getActivePlayerID() {
         return activePlayerID;
     }
 
     public int getActivePlayerIndex() {
         return activePlayerIndex;
-    }
-
-    public WizardServer getServer() {
-        return server;
     }
 
     public int getTrickRoundTurn() {
