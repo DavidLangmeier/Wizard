@@ -69,6 +69,9 @@ public class Game {
         // Send START to all users -> @client: trigger intent which starts gameActivity
         info("GAME: Broadcasting START now.");
         server.broadcastMessage(new ActionMessage(START));
+        server.broadcastMessage(new TextMessage("Shuffling and dealing cards..."));
+        waitSafe(WizardConstants.TIME_TO_WAIT_SHORT);
+        dealCards();
     }
 
     void broadcastGameState() {
@@ -282,7 +285,7 @@ public class Game {
                 highestCard = card;
             }
         }
-        String trickWinner = "Card: " + highestCard.toString() + " played by " + players.get(highestCard.getPlayedBy()).getName()
+        String trickWinner = highestCard.toString() + " played by " + players.get(highestCard.getPlayedBy()).getName()
                 + " has won the last trick";
         info("GAME: " + trickWinner);
         server.broadcastMessage(new TextMessage(trickWinner));
