@@ -33,8 +33,8 @@ public class EndscreenActivity extends AppCompatActivity {
 
     private WizardClient wizardClient;
     GameData gameData;
-    List playersInRankingOrder = new ArrayList();
-    List playersOnline;
+    List <String> playersInRankingOrder = new ArrayList();
+    List <String> playersOnline;
     private EndscreenListAdapter arrayAdapter = null;
     int[][] totalPointsInRankingOrder;
     int[] actualIconID;
