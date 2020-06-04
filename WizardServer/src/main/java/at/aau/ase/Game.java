@@ -2,6 +2,7 @@ package at.aau.ase;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
@@ -103,6 +104,7 @@ public class Game {
         HandMessage currentHandMessage = new HandMessage();
         for (int i = 0; i < players.size(); i++) {
             Hand currentHand = playerHands[i];
+            Collections.sort(currentHand.getCards());
             currentHandMessage.setHand(currentHand);
             server.sentTo(players.get(i).getConnectionID(), currentHandMessage);
             info("GAME: Hand sent for Player " + i);
@@ -118,8 +120,8 @@ public class Game {
     Color checkTrump() {
         Color trumpColor;
 
-        // set trump color, rounds 1-19 have a trump, 20 has no trump
-        if (currentRound != 20) {
+        // set trump color, rounds 1-19 have a trump, last round has no trump
+        if (currentRound != totalRounds) {
             trumpColor = deck.getCards().get(0).getColor();
             info("GAME: Current TRUMP = " + trumpColor.getColorName());
         } else {
@@ -154,7 +156,7 @@ public class Game {
             }
         }
 
-        if (currentRound < 20) {
+        if (currentRound < totalRounds) {
             server.broadcastMessage(new TextMessage("Current Trump is " + trumpColor.getColorName()));
             info("GAME: Current TRUMP = " + trumpColor.getColorName());
         } else {
@@ -244,7 +246,7 @@ public class Game {
             broadcastGameState();
 
             // check if round was the last round of the game
-            if (currentRound < 20) {
+            if (currentRound < totalRounds) {
                 currentRound++;
                 dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
                 dealCards();
@@ -279,7 +281,7 @@ public class Game {
             }
 
             // if current highest card has not trump color but compared card has trump color
-            else if ((currentRound != 20) && (highestCard.getColor() != trump) &&
+            else if ((currentRound != totalRounds) && (highestCard.getColor() != trump) &&
                     (card.getColor() == trump)) {
                 highestCard = card;
             }
