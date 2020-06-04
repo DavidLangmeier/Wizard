@@ -47,4 +47,11 @@ public class CardTest {
         Assert.assertEquals("Wizard Wizard", wizard.toString());
         Assert.assertEquals("Jester Jester", jester.toString());
     }
+
+    @Test
+    public void testCompareCards() {
+        Assert.assertEquals(-1, blueThirteen.compareTo(redTen));
+        Assert.assertEquals(1, redTen.compareTo(blueThirteen));
+        Assert.assertEquals(0, redTen.compareTo(redTen));
+    }
 }
