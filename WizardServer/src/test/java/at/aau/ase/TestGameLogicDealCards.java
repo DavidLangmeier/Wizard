@@ -159,4 +159,9 @@ public class TestGameLogicDealCards {
         Assert.assertEquals(1, game.getActivePlayerID());
     }
 
+    @Test
+    public void testGetTotalRounds() {
+        Assert.assertEquals(20, game.getTotalRounds());
+    }
+
 }

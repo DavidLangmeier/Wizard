@@ -440,5 +440,9 @@ public class Game {
     public void setActivePlayerIndex(int activePlayerIndex) {
         this.activePlayerIndex = activePlayerIndex;
     }
+
+    public void setBetTricksCounter(int betTricksCounter) {
+        this.betTricksCounter = betTricksCounter;
+    }
 }
 
