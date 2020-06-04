@@ -48,13 +48,15 @@ public class CheatDetectorImpl implements CheatDetector {
 
     public boolean check(String playerSuspectedToCheat) {
         int playerToCheck = 0;
+        boolean cheating = false;
         for (int i = 0; i < players.size(); i++) { // One of them will match
             if (players.get(i).getName().equals(playerSuspectedToCheat)) {
-                playerToCheck = i;
+                cheating = isCheating[i];
+                isCheating[i] = false;
                 break;
             }
         }
-        return isCheating[playerToCheck];
+        return cheating;
     }
 
     public void reset() {
