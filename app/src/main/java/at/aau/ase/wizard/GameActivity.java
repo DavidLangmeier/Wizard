@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
@@ -476,7 +477,28 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                tvTrumpColor.setText("Trump: " + gameData.getTrump().getColorName());
+
+                if (gameData.getRoundsLeft() > 1) {
+                    tvTrumpColor.setText("Trump: " + gameData.getTrump().getColorName());
+                    switch (gameData.getTrump().getColorName()) {
+                        case "Blue":
+                            tvTrumpColor.setTextColor(Color.BLUE);
+                            break;
+                        case "Red":
+                            tvTrumpColor.setTextColor(Color.RED);
+                            break;
+                        case "Green":
+                            tvTrumpColor.setTextColor(Color.GREEN);
+                            break;
+                        case "Yellow":
+                            tvTrumpColor.setTextColor(Color.BLUE);
+                            break;
+                    }
+                } else {
+                    tvTrumpColor.setText("Trump: No Trump");
+                    tvTrumpColor.setTextColor(Color.BLACK);
+                }
+
                 info("Active Player: " + gameData.getActivePlayer() + ", Connection ID my Player: " + myPlayer.getConnectionID());
 
                 if (((StateMessage) basemessage).isClearBetTricks()) {
