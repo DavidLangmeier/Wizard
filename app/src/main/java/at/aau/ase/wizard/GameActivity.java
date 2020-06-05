@@ -1,17 +1,9 @@
 package at.aau.ase.wizard;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.CompositePageTransformer;
-import androidx.viewpager2.widget.MarginPageTransformer;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
@@ -20,25 +12,32 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.EndscreenMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
@@ -47,7 +46,8 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.END;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.READY;
-import static com.esotericsoftware.minlog.Log.*;
+import static com.esotericsoftware.minlog.Log.debug;
+import static com.esotericsoftware.minlog.Log.info;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -554,19 +554,25 @@ public class GameActivity extends AppCompatActivity {
                     addCardsToSlideView(gameData.getMyHand().getCards());
                 });
 
-                //START endscreen activity
+
             } else if (basemessage instanceof ActionMessage) { // A player closed the app, so stop game and show current points as endresult
                 if (((ActionMessage) basemessage).getActionType() == END) {
                     info("GAME_ACTIVITY: END received. - Trying to start endscreen activity.");
                     gameData.getScores().setPlayerNamesList((ArrayList<String>) playersOnline); // to access in Endscreen
-                    Intent intent = new Intent(this, EndscreenActivity.class);
-                    wizardClient.deregisterCallback();
-                    intent.putExtra("gameData", (new Gson()).toJson(gameData));
-                    intent.putExtra("playersOnline", (new Gson()).toJson(playersOnline));
-                    intent.putExtra("myPlayer", (new Gson()).toJson(myPlayer));
-                    startActivity(intent);
+                    Notepad endscreenScores = gameData.getScores();
+                    debug("------------+++++++++++++++--------------" + Arrays.deepToString(endscreenScores.getTotalPointsPerPlayer()));
+                    wizardClient.sendMessage(new EndscreenMessage(endscreenScores)); //prepare for Endscreen
                 }
-
+            //START endscreen activity
+            } else if(basemessage instanceof EndscreenMessage){
+                EndscreenMessage msg = (EndscreenMessage) basemessage;
+                Intent intent = new Intent(this, EndscreenActivity.class);
+                wizardClient.deregisterCallback();
+                intent.putExtra("endscreenScores", new Gson().toJson(msg.getScores()));
+                intent.putExtra("sortedIconID", (new Gson()).toJson(msg.getImageID()));
+                intent.putExtra("playersOnline", (new Gson()).toJson(playersOnline));
+                intent.putExtra("myPlayer", (new Gson()).toJson(myPlayer));
+                startActivity(intent);
             } else if (basemessage instanceof LifecycleMessage) {
                 LifecycleMessage msg = (LifecycleMessage) basemessage;
                 runOnUiThread(() -> tvServerMsg.setText(msg.getMsg()));

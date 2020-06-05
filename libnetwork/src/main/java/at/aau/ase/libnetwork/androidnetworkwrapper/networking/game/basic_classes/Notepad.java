@@ -37,6 +37,14 @@ public class Notepad {
         }
         return totalPoints;
     }
+    public int[][] setTotalPointsPerPlayer(int[][] totalPointsPerPlayer){
+        int[][]totalPoints = new int[totalPointsPerPlayer.length][1];
+        for (int i = 0; i < totalPointsPerPlayer.length; i++) {
+            totalPoints[i][0] = totalPointsPerPlayer[i][0];
+        }
+        this.pointsPerPlayerPerRound = totalPoints;
+        return totalPoints;
+    }
 
     public static void setRound(int round) {
         Notepad.round = round;

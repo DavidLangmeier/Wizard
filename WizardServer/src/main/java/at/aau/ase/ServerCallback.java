@@ -1,11 +1,14 @@
 package at.aau.ase;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.Callback;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.EndscreenMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
@@ -14,6 +17,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.L
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.PlayerMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 import static com.esotericsoftware.minlog.Log.*;
@@ -28,6 +32,7 @@ public class ServerCallback implements Callback<BaseMessage> {
     private List<Player> players;
     private int playersReady;
     private Game game = null;
+    EndscreenCalculations calculations = new EndscreenCalculations();
 
     public ServerCallback(WizardServer server, List<Player> players) {
         this.server = server;
@@ -49,7 +54,9 @@ public class ServerCallback implements Callback<BaseMessage> {
             handleCardMessage((CardMessage) message);
         } else if (message instanceof NotePadMessage) {
             handleNotepadMessage((NotePadMessage) message);
-        } else {
+        } else if (message instanceof EndscreenMessage) {
+            handleEndscreenMessage((EndscreenMessage) message);
+        }else{
             info("Received message cannot be handled correctly!");
             server.broadcastMessage(new TextMessage("Server could not handle sent message correctly!"));
         }
@@ -58,9 +65,9 @@ public class ServerCallback implements Callback<BaseMessage> {
     private void handleNotepadMessage(NotePadMessage message) {
         info("Recieved Notepad to enter prediction!");
         NotePadMessage msg = message;
-        if(!(game.checkBet(msg.getBetTrick()))){
+        if (!(game.checkBet(msg.getBetTrick()))) {
             server.sentTo(msg.getActivePlayer(), new ErrorMessage("Not valid!"));
-        }else{
+        } else {
             game.writeBetTricksToNotePad(msg.getScores(), (msg.getActivePlayer() - 1), msg.getBetTrick());
         }
     }
@@ -113,7 +120,7 @@ public class ServerCallback implements Callback<BaseMessage> {
     }
 
     private void handleLifecycleMessage(LifecycleMessage message) {
-        info("Received LifecycleMessage: "+message.getMsg());
+        info("Received LifecycleMessage: " + message.getMsg());
         server.broadcastMessage(message);
     }
 
@@ -129,7 +136,7 @@ public class ServerCallback implements Callback<BaseMessage> {
             }
             server.broadcastMessage(msg);
         } else { // Player tried to join a running game in progress
-            info("Late joining user connection closed: "+msg.getGoodbye());
+            info("Late joining user connection closed: " + msg.getGoodbye());
         }
     }
 
@@ -154,6 +161,18 @@ public class ServerCallback implements Callback<BaseMessage> {
             info("Sending playerMessage to new Player.");
             server.sentTo(newplayer.getConnectionID(), newPlayerMsg);
         }
+    }
+
+    private void handleEndscreenMessage(EndscreenMessage message) {
+        EndscreenMessage msg = message;
+        Notepad endscreenScores = new Notepad();
+        List playersInRankingOrder = calculations.sortPlayersByRanking(msg.getScores().getTotalPointsPerPlayer(), msg.getScores().getPlayerNamesList());
+        int[][] totalPointsInRankingOrder = calculations.sortPlayerTotalPointsByRanking(msg.getScores().getTotalPointsPerPlayer(), msg.getScores().getPlayerNamesList());
+        debug("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + Arrays.deepToString(totalPointsInRankingOrder));
+        int[] imageID = calculations.setActualIconID(totalPointsInRankingOrder);
+        endscreenScores.setPlayerNamesList((ArrayList<String>) playersInRankingOrder);
+        endscreenScores.setTotalPointsPerPlayer(totalPointsInRankingOrder);
+        server.broadcastMessage(new EndscreenMessage(endscreenScores, imageID));
     }
 
 }

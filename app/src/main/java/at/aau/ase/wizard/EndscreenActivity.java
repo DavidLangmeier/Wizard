@@ -1,21 +1,22 @@
 package at.aau.ase.wizard;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.Gson;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.IntStream;
+
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.EXIT;
@@ -32,11 +33,12 @@ public class EndscreenActivity extends AppCompatActivity {
 
     private WizardClient wizardClient;
     GameData gameData;
-    List<String> playersInRankingOrder;
-    List playersOnline;
+    List <String> playersInRankingOrder = new ArrayList();
+    List <String> playersOnline;
     private EndscreenListAdapter arrayAdapter = null;
     int[][] totalPointsInRankingOrder;
     int[] actualIconID;
+    Notepad endscreenScores;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -55,14 +57,18 @@ public class EndscreenActivity extends AppCompatActivity {
         wizardClient = WizardClient.getInstance();
         startCallback();
 
-        String s0 = getIntent().getStringExtra("myPlayer");
-        myPlayer = new Gson().fromJson(s0, Player.class);
-        String s1 = getIntent().getStringExtra("playersOnline");
-        playersOnline = new Gson().fromJson(s1, List.class);
-        String s2 = getIntent().getStringExtra("gameData");
-        gameData = new Gson().fromJson(s2, GameData.class);
-        sortPlayersByRanking();
-        sortPlayerTotalPointsByRanking();
+        String myPlayer = getIntent().getStringExtra("myPlayer");
+        this.myPlayer = new Gson().fromJson(myPlayer, Player.class);
+        String playersOnline = getIntent().getStringExtra("playersOnline");
+        this.playersOnline = new Gson().fromJson(playersOnline, List.class);
+        String scores = getIntent().getStringExtra("endscreenScores");
+        this.endscreenScores = new Gson().fromJson(scores, Notepad.class);
+        playersInRankingOrder = endscreenScores.getPlayerNamesList();
+        totalPointsInRankingOrder = new int[endscreenScores.playerNamesList.size()][1];
+        totalPointsInRankingOrder = endscreenScores.getTotalPointsPerPlayer();
+        String sortedIconID = getIntent().getStringExtra("sortedIconID");
+        actualIconID = new Gson().fromJson(sortedIconID, int[].class);
+
         String winnerText = playersInRankingOrder.get(0) + " wins with " + totalPointsInRankingOrder[0][0] + " points!";
         tvMyPlayerScore.setText(winnerText);
         Integer[] icons = new Integer[]{
@@ -73,8 +79,8 @@ public class EndscreenActivity extends AppCompatActivity {
                 R.drawable.rank0default,
                 R.drawable.rank0default
         };
-        arrayAdapter = new EndscreenListAdapter(this, playersInRankingOrder, totalPointsInRankingOrder, icons, actualIconID);
-        lvRanking.setAdapter(arrayAdapter);
+       arrayAdapter = new EndscreenListAdapter(this, playersInRankingOrder, totalPointsInRankingOrder, icons, actualIconID);
+       lvRanking.setAdapter(arrayAdapter);
     }
 
     public void startCallback() {
@@ -96,65 +102,6 @@ public class EndscreenActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    int[] rankingIndices() {
-        int[][] a = gameData.getScores().getTotalPointsPerPlayer();
-        int[] sortedIndices = IntStream.range(0, a.length)
-                .boxed().sorted(Comparator.comparingInt(i -> a[i][0]))
-                .mapToInt(e -> e).toArray();
-        invert(sortedIndices);
-        return sortedIndices;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    void sortPlayersByRanking() {
-        int[] index = rankingIndices();
-        info(Arrays.toString(index));
-        List<String> players = gameData.getScores().getPlayerNamesList();
-        String playerNames = "PLAYERNAMES: " + players.toString();
-        info(playerNames);
-        playersInRankingOrder = new ArrayList<>();
-
-        for (int i = 0; i < players.size(); i++) {
-            playersInRankingOrder.add(i, players.get(index[i]));
-        }
-        info(playersInRankingOrder.toString());
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    void sortPlayerTotalPointsByRanking() {
-        int[] index = rankingIndices();
-        int[][] pPP = gameData.getScores().getTotalPointsPerPlayer();
-        int[][] returnPPP = gameData.getScores().getTotalPointsPerPlayer();
-        for (int i = 0; i < playersInRankingOrder.size(); i++) {
-            returnPPP[i][0] = pPP[index[i]][0];
-        }
-        totalPointsInRankingOrder = returnPPP;
-        setActualIconID();
-    }
-
-    void setActualIconID() {
-        actualIconID = new int[totalPointsInRankingOrder.length];
-        int counter = 0;
-        for (int i = 1; i < totalPointsInRankingOrder.length; i++) {
-            if (totalPointsInRankingOrder[i - 1][0] == totalPointsInRankingOrder[i][0]) {
-                actualIconID[i] = counter;
-            } else {
-                actualIconID[i] = ++counter;
-            }
-        }
-
-    }
-
-    void invert(int[] array) {
-        for (int i = 0; i < array.length / 2; i++) {
-            int temp = array[i];
-            array[i] = array[array.length - 1 - i];
-            array[array.length - 1 - i] = temp;
-        }
     }
 
     void playAgain(){
