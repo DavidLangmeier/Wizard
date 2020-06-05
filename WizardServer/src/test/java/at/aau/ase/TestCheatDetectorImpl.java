@@ -47,7 +47,7 @@ public class TestCheatDetectorImpl {
         cards3.add(new Card(Color.YELLOW, Value.ONE));
         hand3.setCards(cards3);
 
-        Mockito.when(game.getPlayerHands()).thenReturn(new Hand[]{hand1, hand2,hand3});
+        Mockito.when(game.getPlayerHands()).thenReturn(new Hand[]{hand1, hand2, hand3});
         Mockito.when(game.getActiveColor()).thenReturn(Color.YELLOW); // Active color
 
         CheatDetector cheatDetector = new CheatDetectorImpl(game);
@@ -95,14 +95,16 @@ public class TestCheatDetectorImpl {
         Card playedCardFromPlayer2 = new Card(Color.RED, Value.FIVE);
         playedCardFromPlayer2.setPlayedBy(1); // Player2 plays card
         cheatDetector.update(playedCardFromPlayer2);
-        Assert.assertTrue(cheatDetector.check("Player-2"));
+        Assert.assertTrue(cheatDetector.check("Player-2")); // calling check() resets the cheat-status of queried player
+        Assert.assertFalse(cheatDetector.check("Player-1"));
+        Assert.assertFalse(cheatDetector.check("Player-3"));
 
         Card playedCardFromPlayer3 = new Card(Color.BLUE, Value.TEN);
         playedCardFromPlayer3.setPlayedBy(2); // Player3 plays card
         cheatDetector.update(playedCardFromPlayer3);
-        Assert.assertTrue(cheatDetector.check("Player-2")); // If Player3 is active and queries cheating-check of Player2
         Assert.assertTrue(cheatDetector.check("Player-3"));
         Assert.assertFalse(cheatDetector.check("Player-1")); // Default should be false
+        Assert.assertFalse(cheatDetector.check("Player-2")); // Cheat-status should be reset after check() above
     }
 
     @Test
@@ -236,18 +238,14 @@ public class TestCheatDetectorImpl {
         Card playedCardFromPlayer2 = new Card(Color.RED, Value.FIVE);
         playedCardFromPlayer2.setPlayedBy(1); // Player2 plays the card
         cheatDetector.update(playedCardFromPlayer2);
-        Assert.assertTrue(cheatDetector.check("Player-2"));
 
         Card playedCardFromPlayer3 = new Card(Color.BLUE, Value.TEN);
         playedCardFromPlayer3.setPlayedBy(2); // Player3 plays the card
         cheatDetector.update(playedCardFromPlayer3);
-        Assert.assertTrue(cheatDetector.check("Player-2")); // If Player3 is active and queries cheating-check of Player2
-        Assert.assertTrue(cheatDetector.check("Player-3"));
 
-        cheatDetector.reset();
+        cheatDetector.reset(); // Check reset() at end of round if cheat-status was not checked from any players during gameplay
         Assert.assertFalse(cheatDetector.check("Player-1"));
         Assert.assertFalse(cheatDetector.check("Player-2"));
         Assert.assertFalse(cheatDetector.check("Player-3"));
-
     }
 }
