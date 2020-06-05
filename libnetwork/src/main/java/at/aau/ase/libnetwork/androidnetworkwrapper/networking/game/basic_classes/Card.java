@@ -21,8 +21,13 @@ public class Card implements Comparable<Card>{
 
     @Override
     public int compareTo(Card card) {
-        return (this.card_id < card.getCard_id() ? -1 :
-                (this.card_id == card.getCard_id() ? 0 : 1));
+        if (this.card_id < card.getCard_id()) {
+            return -1;
+        } else if (this.card_id > card.getCard_id()) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     //To find out the ID für Drafwable: jps combination  Color &Zero & Name

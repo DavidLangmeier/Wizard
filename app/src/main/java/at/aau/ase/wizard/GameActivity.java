@@ -493,6 +493,8 @@ public class GameActivity extends AppCompatActivity {
                         case "Yellow":
                             tvTrumpColor.setTextColor(Color.BLUE);
                             break;
+                        default:
+                            tvTrumpColor.setTextColor(Color.BLACK);
                     }
                 } else {
                     tvTrumpColor.setText("Trump: No Trump");
