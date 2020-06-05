@@ -36,6 +36,9 @@ public class TestGameLogicCheckCTR {
 
         game = new Game(server, players);
 
+        CheatDetector cheatDetector = Mockito.mock(CheatDetector.class);
+        game.setCheatDetector(cheatDetector);
+
         // three cards have to lay on the table to check trick winner
         Card card1 = new Card(Color.WIZARD, Value.WIZARD);
         card1.setPlayedBy(0);

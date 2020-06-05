@@ -329,13 +329,13 @@ public class Game {
         int pointsPerPlayerPerRound;
         for (int i = 0; i < players.size(); i++) {
             if (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1] == scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]) {
-                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[players.get(i).getConnectionID()-1][currentRound];
+                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[players.get(i).getConnectionID()-1][currentRound-1];
                 pointsPerPlayerPerRound = previousPointsPerPlayerPerRound + (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
                 info("IF Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
                 scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
                 info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
             } else {
-                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[players.get(i).getConnectionID()-1][currentRound];
+                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[players.get(i).getConnectionID()-1][currentRound-1];
                 pointsPerPlayerPerRound = previousPointsPerPlayerPerRound + (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]));
                 info("ELSE Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
                 scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
@@ -343,14 +343,6 @@ public class Game {
             }
         }
         server.broadcastMessage(new NotePadMessage(this.scores));
-    }
-
-    boolean isGamerunning() {
-        return gamerunning;
-    }
-
-    void setGamerunning(boolean bool) {
-        gamerunning = bool;
     }
 
     //checks if bet is allowed
@@ -458,6 +450,22 @@ public class Game {
         return activePlayerIndex;
     }
 
+    public int getActivePlayerID() {
+        return activePlayerID;
+    }
+
+    public int getBetTricksCounter() {
+        return betTricksCounter;
+    }
+
+    public int getCurrentRound() {
+        return currentRound;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
     public List<Player> getPlayers() {
         return players;
     }
@@ -476,6 +484,18 @@ public class Game {
 
     public CheatDetector getCheatDetector() {
         return cheatDetector;
+    }
+
+    public int getTotalRounds() {
+        return totalRounds;
+    }
+
+    public int getTrickRoundTurn() {
+        return trickRoundTurn;
+    }
+
+    public boolean isGamerunning() {
+        return gamerunning;
     }
 
     // ########################### SETTERS BELOW

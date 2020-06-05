@@ -52,6 +52,9 @@ public class TestGameLogicCheckScoring {
         WizardServer server = Mockito.mock(WizardServer.class);
 
         game = new Game(server, players);
+
+        CheatDetector cheatDetector = Mockito.mock(CheatDetectorImpl.class);
+        game.setCheatDetector(cheatDetector);
     }
 
     @Test
