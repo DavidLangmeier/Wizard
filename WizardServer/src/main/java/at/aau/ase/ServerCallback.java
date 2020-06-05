@@ -165,4 +165,8 @@ public class ServerCallback implements Callback<BaseMessage> {
             game.broadcastGameState();
         }
     }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
 }

@@ -28,13 +28,11 @@ public class CheatDetectorImpl implements CheatDetector {
         Hand handToCheck = playerHands[activePlayerIdx];
         Color activeColor = game.getActiveColor();
 
-        if (playedCard.getColor() != activeColor) { // Possibly cheating, check players cardsInHand
-            if (playedCard.getColor() != Color.JESTER && playedCard.getColor() != Color.WIZARD) { // Jester + Wizard can always be played
-                for (Card cardInHand : handToCheck.getCards()) {
-                    if (cardInHand.getColor() == activeColor) { // Cheating!
-                        isCheating[activePlayerIdx] = true;
-                        break;
-                    }
+        if (playedCard.getColor() != activeColor && isNoJesterOrWizard(playedCard)) { // Jester + Wizard can always be played
+            for (Card cardInHand : handToCheck.getCards()) { // Possibly cheating, check players cardsInHand
+                if (cardInHand.getColor() == activeColor) { // Cheating!
+                    isCheating[activePlayerIdx] = true;
+                    break;
                 }
             }
         }
@@ -43,8 +41,11 @@ public class CheatDetectorImpl implements CheatDetector {
         }
     }
 
+    private boolean isNoJesterOrWizard(Card playedCard) {
+        return playedCard.getColor() != Color.JESTER && playedCard.getColor() != Color.WIZARD;
+    }
+
     public boolean check(String playerSuspectedToCheat) {
-        int playerToCheck = 0;
         boolean cheating = false;
         for (int i = 0; i < players.size(); i++) { // One of them will match
             if (players.get(i).getName().equals(playerSuspectedToCheat)) {
