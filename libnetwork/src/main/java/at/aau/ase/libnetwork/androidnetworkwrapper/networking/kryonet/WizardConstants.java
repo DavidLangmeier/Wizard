@@ -6,6 +6,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.A
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.EndscreenMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CheatMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
@@ -23,6 +24,9 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value;
 
 public class WizardConstants {
+
+    public static final Integer CHEAT_PENALTY = 10;
+    public static final Integer CHEAT_DETECTION_BONUS = 10;
 
     /**
      * Minimum numbers of payers/clients necessary to access the to gamescreen button in the lobby.
@@ -68,7 +72,8 @@ public class WizardConstants {
             ErrorMessage.class,
             GoodbyeMessage.class,
             LifecycleMessage.class,
-            EndscreenMessage.class
+            EndscreenMessage.class,
+            CheatMessage.class
     };
 
     private WizardConstants() {}

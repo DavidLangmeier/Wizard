@@ -9,6 +9,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.A
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.BaseMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.EndscreenMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CheatMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
@@ -32,7 +33,7 @@ public class ServerCallback implements Callback<BaseMessage> {
     private List<Player> players;
     private int playersReady;
     private Game game = null;
-    EndscreenCalculations calculations = new EndscreenCalculations();
+    private EndscreenCalculations calculations = new EndscreenCalculations();
 
     public ServerCallback(WizardServer server, List<Player> players) {
         this.server = server;
@@ -54,6 +55,8 @@ public class ServerCallback implements Callback<BaseMessage> {
             handleCardMessage((CardMessage) message);
         } else if (message instanceof NotePadMessage) {
             handleNotepadMessage((NotePadMessage) message);
+        } else if (message instanceof CheatMessage) {
+            handleCheatMessage((CheatMessage) message);
         } else if (message instanceof EndscreenMessage) {
             handleEndscreenMessage((EndscreenMessage) message);
         }else{
@@ -163,6 +166,24 @@ public class ServerCallback implements Callback<BaseMessage> {
         }
     }
 
+    private void handleCheatMessage(CheatMessage message) {
+        String playerSuspectedOfCheating = message.getPlayerName();
+        String playerChecking = message.getSender().getName();
+        debug("=============> CHEATING: player suspected of cheating: "+playerSuspectedOfCheating);
+        debug("=============> CHEATING: player checking: "+playerChecking);
+        boolean isCheating = game.getCheatDetector().check(playerSuspectedOfCheating);
+        debug("=============> CHEATING: isCheating("+playerSuspectedOfCheating+") = "+isCheating);
+        if (isCheating) {
+            game.updateScoresCheating(isCheating, playerSuspectedOfCheating, playerChecking);
+            server.sentTo(message.getSender().getConnectionID(), new CheatMessage("Correct: Player "+playerSuspectedOfCheating+" is cheating!"));
+            game.broadcastGameState();
+        } else {
+            game.updateScoresCheating(isCheating, playerSuspectedOfCheating, playerChecking);
+            server.sentTo(message.getSender().getConnectionID(), new CheatMessage("Wrong: Player "+playerSuspectedOfCheating+" is not cheating!"));
+            game.broadcastGameState();
+        }
+    }
+
     private void handleEndscreenMessage(EndscreenMessage message) {
         EndscreenMessage msg = message;
         Notepad endscreenScores = new Notepad();
@@ -173,6 +194,11 @@ public class ServerCallback implements Callback<BaseMessage> {
         endscreenScores.setPlayerNamesList((ArrayList<String>) playersInRankingOrder);
         endscreenScores.setTotalPointsPerPlayer(totalPointsInRankingOrder);
         server.broadcastMessage(new EndscreenMessage(endscreenScores, imageID));
+    }
+
+    // ###################### Setter
+    public void setGame(Game game) {
+        this.game = game;
     }
 
 }

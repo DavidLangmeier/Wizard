@@ -1,9 +1,23 @@
 package at.aau.ase.wizard;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
+
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Intent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
@@ -11,19 +25,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.CompositePageTransformer;
-import androidx.viewpager2.widget.MarginPageTransformer;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.gson.Gson;
 
@@ -34,10 +42,11 @@ import java.util.List;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.EndscreenMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CheatMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
@@ -46,11 +55,10 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.END;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.READY;
-import static com.esotericsoftware.minlog.Log.debug;
-import static com.esotericsoftware.minlog.Log.info;
+import static com.esotericsoftware.minlog.Log.*;
 
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements SensorEventListener {
     private Button btnPlaySelectedCard;
     private TextView tvTrumpColor;
     private TextView tvActivePlayer1;
@@ -74,8 +82,11 @@ public class GameActivity extends AppCompatActivity {
     private Dialog dialog;
     private TextView tvServerMsg;
     private EditText etVorhersage;
-    private List playersOnline = new ArrayList<>();
+    private List<String> playersOnline = new ArrayList<>();
     private MediaPlayer mp3;
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+    private float lightOld = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +103,9 @@ public class GameActivity extends AppCompatActivity {
         wizardClient = WizardClient.getInstance();
         startCallback();
         info("@GAME_ACTIVITY: My Playername=" + myPlayer.getName() + ", connectionID=" + myPlayer.getConnectionID());
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         btnPlaySelectedCard = findViewById(R.id.play_Card);
         btnPlaySelectedCard.setOnClickListener(v -> dealOnePlayerCardOnTable());
@@ -461,15 +475,58 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         if (wizardClient != null) {
-            wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + "left the game"));
+            wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + " left the game"));
         }
         super.onStop();
     }
 
     @Override
     protected void onRestart() {
-        wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + "came back"));
+        wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + " came back"));
         super.onRestart();
+    }
+    @Override
+    public final void onAccuracyChanged(Sensor sensor, int accuracy) {
+        info("Sensor accurracy changed!");
+    }
+
+    @Override
+    public final void onSensorChanged(SensorEvent event) {
+        float light = event.values[0];
+
+        if (light <= SensorManager.LIGHT_NO_MOON/10 && lightOld -light > 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.cheat_dialog_title);
+            List<String> possibleCheatersToCheckList = new ArrayList<>();
+            for (String s: playersOnline) {
+                if (!s.equals(myPlayer.getName()))
+                    possibleCheatersToCheckList.add(s);
+            }
+            builder.setAdapter(new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice, possibleCheatersToCheckList), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    String selected = (String) possibleCheatersToCheckList.get(which);
+                    info("Selected "+selected);
+                    wizardClient.sendMessage(new CheatMessage(selected, myPlayer));
+                }
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+        lightOld = light;
+    }
+
+    @Override
+    protected void onResume() {
+        // Register a listener for the sensor.
+        super.onResume();
+        sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    protected void onPause() {
+        // Be sure to unregister the sensor when the activity pauses.
+        super.onPause();
+        sensorManager.unregisterListener(this);
     }
 
     public void startCallback() {
@@ -477,7 +534,6 @@ public class GameActivity extends AppCompatActivity {
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-
                 if (gameData.getRoundsLeft() >= 1) {
                     tvTrumpColor.setText("Trump: " + gameData.getTrump().getColorName());
                     switch (gameData.getTrump().getColorName()) {
@@ -555,8 +611,6 @@ public class GameActivity extends AppCompatActivity {
                     tvServerMsg.setText(msg);
                     addCardsToSlideView(gameData.getMyHand().getCards());
                 });
-
-
             } else if (basemessage instanceof ActionMessage) { // A player closed the app, so stop game and show current points as endresult
                 if (((ActionMessage) basemessage).getActionType() == END) {
                     info("GAME_ACTIVITY: END received. - Trying to start endscreen activity.");
@@ -578,7 +632,9 @@ public class GameActivity extends AppCompatActivity {
             } else if (basemessage instanceof LifecycleMessage) {
                 LifecycleMessage msg = (LifecycleMessage) basemessage;
                 runOnUiThread(() -> tvServerMsg.setText(msg.getMsg()));
-
+            } else if(basemessage instanceof CheatMessage) {
+                CheatMessage msg = (CheatMessage) basemessage;
+                runOnUiThread(() -> tvServerMsg.setText(msg.getMessage()));
             } else if (basemessage instanceof ErrorMessage) {
                 ErrorMessage msg = (ErrorMessage) basemessage;
                 runOnUiThread(() -> {

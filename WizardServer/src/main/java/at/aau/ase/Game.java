@@ -16,6 +16,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
 
 import static com.esotericsoftware.minlog.Log.*;
@@ -40,6 +41,7 @@ public class Game {
     private int trickRoundTurn;
     private int betTricksCounter;
     private boolean clearBetTricks;
+    private CheatDetector cheatDetector;
 
 
     Game(WizardServer server, List<Player> players) {
@@ -73,6 +75,7 @@ public class Game {
         server.broadcastMessage(new TextMessage("Shuffling and dealing cards..."));
         waitSafe(WizardConstants.TIME_TO_WAIT_SHORT);
         dealCards();
+        this.cheatDetector = new CheatDetectorImpl(this);
     }
 
     void broadcastGameState() {
@@ -185,6 +188,7 @@ public class Game {
             info(table.getCards().get(i) + " is now on Table!");
         }
         server.sentTo(activePlayerID, new HandMessage(playerHands[activePlayerIndex], clearBetTricks));
+        cheatDetector.update(cardToPutOnTable);
 
         checkCurrentTrickRound();
         updateDealerAndActivePlayer();
@@ -242,7 +246,7 @@ public class Game {
 
             // wait some time before sending cleared table
             waitSafe(WizardConstants.TIME_TO_WAIT_MEDIUM);
-
+            cheatDetector.reset(); // Cheating can be checked for every round (roundwise), so reset to nobody is cheating at end of round
             broadcastGameState();
 
             // check if round was the last round of the game
@@ -325,26 +329,20 @@ public class Game {
         int pointsPerPlayerPerRound;
         for (int i = 0; i < players.size(); i++) {
             if (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1] == scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]) {
-                pointsPerPlayerPerRound = (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
+                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[players.get(i).getConnectionID()-1][currentRound-1];
+                pointsPerPlayerPerRound = previousPointsPerPlayerPerRound + (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
                 info("IF Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
                 scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
                 info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
             } else {
-                pointsPerPlayerPerRound = (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]));
+                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[players.get(i).getConnectionID()-1][currentRound-1];
+                pointsPerPlayerPerRound = previousPointsPerPlayerPerRound + (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]));
                 info("ELSE Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
                 scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
                 info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
             }
         }
         server.broadcastMessage(new NotePadMessage(this.scores));
-    }
-
-    boolean isGamerunning() {
-        return gamerunning;
-    }
-
-    void setGamerunning(boolean bool){
-        gamerunning = bool;
     }
 
     //checks if bet is allowed
@@ -381,62 +379,173 @@ public class Game {
         }
     }
 
-    // getters & setters are needed for testing purposes
-    
-    public Deck getDeck() {
-        return deck;
+    public Color getActiveColor() {
+        List<Card> cardsOnTable = table.getCards();
+        if (cardsOnTable != null) {
+            Card[] cardsToCheck = cardsOnTable.toArray(new Card[0]);
+            Color activeColor = findActiveColor(cardsToCheck);
+            info("=============> CHEATING: active color = " + activeColor);
+            return activeColor;
+        } else {
+            return null;
+        }
     }
 
-    public Notepad getScores() {
-        return scores;
+    /**
+     * Return active color of the current round /cards on table
+     * @param cardsOnTable
+     * @return
+     * Returns color of first card if first card is not a wizard or jester.
+     * Returns null in case first card is wizard, since active color doesn't matter. Wizard already won the round.
+     * In case first card in a jester, look at second card. If this is again a jester look for 3rd card. And so on.
+     */
+    private Color findActiveColor(Card[] cardsOnTable) {
+        Color activeColor = null;
+        if (cardsOnTable.length != 0) {
+            if (cardsOnTable[0].getValue() != Value.JESTER && cardsOnTable[0].getValue() != Value.WIZARD) {
+                activeColor = cardsOnTable[0].getColor();
+            } else if (cardsOnTable[0].getValue() == Value.WIZARD) {
+                activeColor = null;
+            } else if (cardsOnTable[0].getValue() == Value.JESTER) {
+                activeColor = findActiveColor(Arrays.copyOfRange(cardsOnTable, 1, cardsOnTable.length));
+            }
+        }
+        return activeColor;
     }
 
-    public int getTotalRounds() {
-        return totalRounds;
+    /**
+     * Update scoreboard with penalty and bonus for cheater and checker
+     * @param isCheating boolean, if suspected player is actually cheating or not
+     * @param playerSuspectedOfCheating, String of the playerName suspected to be cheating
+     * @param playerChecking, String of the playerName checking if the other one is cheating
+     */
+    public void updateScoresCheating(boolean isCheating, String playerSuspectedOfCheating, String playerChecking) {
+        int playerCheatingIdx = matchPlayerNameToPlayerIdx(playerSuspectedOfCheating);
+        int playerCheckingIdx = matchPlayerNameToPlayerIdx(playerChecking);
+        int[][] pointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound();
+        if (isCheating) { // Punish cheater and bonus for checker
+            int newscoreCheater = pointsPerPlayerPerRound[playerCheatingIdx][currentRound] - WizardConstants.CHEAT_PENALTY;
+            int newscoreChecker = pointsPerPlayerPerRound[playerCheckingIdx][currentRound] + WizardConstants.CHEAT_DETECTION_BONUS;
+            scores.setPointsPerPlayerPerRound(playerCheatingIdx, newscoreCheater, currentRound);
+            scores.setPointsPerPlayerPerRound(playerCheckingIdx, newscoreChecker, currentRound);
+        } else { // Punish checker
+            int newscoreChecker = pointsPerPlayerPerRound[playerCheckingIdx][currentRound] - WizardConstants.CHEAT_PENALTY;
+            scores.setPointsPerPlayerPerRound(playerCheckingIdx, newscoreChecker, currentRound);
+        }
     }
 
-    public int getCurrentRound() {
-        return currentRound;
+    public int matchPlayerNameToPlayerIdx(String playerToMatch) {
+        int playerIdx = -1;
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getName().equals(playerToMatch)) {
+                playerIdx = i;
+            }
+        }
+        return playerIdx;
     }
 
-    public Hand[] getPlayerHands() {
-        return playerHands;
+    // ########################### GETTERS BELOW
+
+    public int getActivePlayerIndex() {
+        return activePlayerIndex;
     }
 
     public int getActivePlayerID() {
         return activePlayerID;
     }
 
-    public int getActivePlayerIndex() {
-        return activePlayerIndex;
+    public int getBetTricksCounter() {
+        return betTricksCounter;
+    }
+
+    public int getCurrentRound() {
+        return currentRound;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public Notepad getScores() {
+        return scores;
+    }
+
+    public Hand[] getPlayerHands() {
+        return playerHands;
+    }
+
+    public Color getTrump() {
+        return trump;
+    }
+
+    public CheatDetector getCheatDetector() {
+        return cheatDetector;
+    }
+
+    public int getTotalRounds() {
+        return totalRounds;
     }
 
     public int getTrickRoundTurn() {
         return trickRoundTurn;
     }
 
-    public int getBetTricksCounter() {
-        return betTricksCounter;
+    public boolean isGamerunning() {
+        return gamerunning;
+    }
+
+    // ########################### SETTERS BELOW
+
+    public void setGamerunning(boolean gamerunning) {
+        this.gamerunning = gamerunning;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
+    }
+
+    public void setTable(Hand table) {
+        this.table = table;
+    }
+
+    public void setScores(Notepad scores) {
+        this.scores = scores;
     }
 
     public void setCurrentRound(int currentRound) {
         this.currentRound = currentRound;
     }
 
+    public void setPlayerHands(Hand[] playerHands) {
+        this.playerHands = playerHands;
+    }
+
     public void setTrump(Color trump) {
         this.trump = trump;
     }
 
-    public void setTrickRoundTurn(int trickRoundTurn) {
-        this.trickRoundTurn = trickRoundTurn;
+    public void setDealer(int dealer) {
+        this.dealer = dealer;
     }
 
     public void setActivePlayerIndex(int activePlayerIndex) {
         this.activePlayerIndex = activePlayerIndex;
     }
 
+    public void setTrickRoundTurn(int trickRoundTurn) {
+        this.trickRoundTurn = trickRoundTurn;
+    }
+
     public void setBetTricksCounter(int betTricksCounter) {
         this.betTricksCounter = betTricksCounter;
+    }
+
+    public void setCheatDetector(CheatDetector cheatDetector) {
+        this.cheatDetector = cheatDetector;
     }
 }
 
