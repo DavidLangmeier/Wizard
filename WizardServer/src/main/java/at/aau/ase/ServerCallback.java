@@ -149,15 +149,19 @@ public class ServerCallback implements Callback<BaseMessage> {
     }
 
     private void handleCheatMessage(CheatMessage message) {
-        String playerToCheck = message.getPlayerName();
-        boolean isCheating = game.getCheatDetector().check(playerToCheck);
+        String playerSuspectedOfCheating = message.getPlayerName();
+        String playerChecking = message.getSender().getName();
+        debug("=============> CHEATING: player suspected of cheating: "+playerSuspectedOfCheating);
+        debug("=============> CHEATING: player checking: "+playerChecking);
+        boolean isCheating = game.getCheatDetector().check(playerSuspectedOfCheating);
+        debug("=============> CHEATING: isCheating("+playerSuspectedOfCheating+") = "+isCheating);
         if (isCheating) {
-            game.updateScoresCheating(isCheating, message.getSender().getName(), playerToCheck);
-            server.sentTo(message.getSender().getConnectionID(), new CheatMessage("Correct: Player "+playerToCheck+" is cheating!"));
+            game.updateScoresCheating(isCheating, playerSuspectedOfCheating, playerChecking);
+            server.sentTo(message.getSender().getConnectionID(), new CheatMessage("Correct: Player "+playerSuspectedOfCheating+" is cheating!"));
             game.broadcastGameState();
         } else {
-            game.updateScoresCheating(isCheating, message.getSender().getName(), playerToCheck);
-            server.sentTo(message.getSender().getConnectionID(), new CheatMessage("Wrong: Player "+playerToCheck+" is not cheating!"));
+            game.updateScoresCheating(isCheating, playerSuspectedOfCheating, playerChecking);
+            server.sentTo(message.getSender().getConnectionID(), new CheatMessage("Wrong: Player "+playerSuspectedOfCheating+" is not cheating!"));
             game.broadcastGameState();
         }
     }

@@ -381,7 +381,7 @@ public class Game {
         if (cardsOnTable != null) {
             Card[] cardsToCheck = cardsOnTable.toArray(new Card[0]);
             Color activeColor = findActiveColor(cardsToCheck);
-            info("active color = " + activeColor);
+            info("=============> CHEATING: active color = " + activeColor);
             return activeColor;
         } else {
             return null;
