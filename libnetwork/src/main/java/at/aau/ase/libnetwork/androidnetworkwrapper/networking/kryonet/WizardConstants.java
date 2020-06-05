@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.EndscreenMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CheatMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
@@ -71,6 +72,7 @@ public class WizardConstants {
             ErrorMessage.class,
             GoodbyeMessage.class,
             LifecycleMessage.class,
+            EndscreenMessage.class,
             CheatMessage.class
     };
 

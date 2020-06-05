@@ -2,6 +2,7 @@ package at.aau.ase;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
@@ -50,7 +51,7 @@ public class Game {
         this.table = new Hand();
         this.scores = new Notepad((short) players.size());
         this.totalRounds = 60 / players.size();
-        this.currentRound = 1;
+        this.currentRound = 1; //to test EndScreenActivity
         this.trickRoundTurn = 0;
         this.betTricksCounter = 0;
         this.playerHands = new Hand[players.size()];
@@ -79,8 +80,13 @@ public class Game {
 
     void broadcastGameState() {
         info("GAME: Broadcasting gameState");
-        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID, betTricksCounter, clearBetTricks));
-        info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
+        try { //check necessary for not causing client disconnection in EndscreenActivity
+            server.broadcastMessage(new StateMessage(table, scores, trump, (totalRounds-currentRound), dealer, activePlayerID, betTricksCounter, clearBetTricks));
+            info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
+        }catch (Exception e){
+            debug("Client seem to be in EndScreen...");
+        }
+
     }
 
     void dealCards() {
@@ -89,7 +95,7 @@ public class Game {
         deck.shuffle();
 
         // deal cards to playerHands serverside | round=5 hardcoded, has to be changed later
-        for (int i = 0; i < currentRound; i++) {
+        for (int i = 0; i < currentRound; i++) { //to test EndscreenActivity
             for (int j = 0; j < players.size(); j++) {
                 info("GAME: Dealing to hand #" + j + " with players.size of " + players.size());
                 info("GAME: current card = " + deck.getCards().get(0).toString());
@@ -101,23 +107,24 @@ public class Game {
         HandMessage currentHandMessage = new HandMessage();
         for (int i = 0; i < players.size(); i++) {
             Hand currentHand = playerHands[i];
+            Collections.sort(currentHand.getCards());
             currentHandMessage.setHand(currentHand);
             server.sentTo(players.get(i).getConnectionID(), currentHandMessage);
             info("GAME: Hand sent for Player " + i);
             info(currentHand.showCardsInHand());
         }
 
-        trump = setTrump();
+        trump = checkTrump();
         activePlayerIndex = (currentRound + 1) % players.size();
         activePlayerID = players.get(activePlayerIndex).getConnectionID();
         broadcastGameState();
     }
 
-    Color setTrump() {
+    Color checkTrump() {
         Color trumpColor;
 
-        // set trump color, rounds 1-19 have a trump, 20 has no trump
-        if (currentRound != 20) {
+        // set trump color, rounds 1-19 have a trump, last round has no trump
+        if (currentRound != totalRounds) {
             trumpColor = deck.getCards().get(0).getColor();
             info("GAME: Current TRUMP = " + trumpColor.getColorName());
         } else {
@@ -126,7 +133,7 @@ public class Game {
 
         // if trump is wizard or jester a random color is set
         if (trumpColor == Color.WIZARD || trumpColor == Color.JESTER) {
-            info("GAME: Current TRUMP = " + trumpColor.getColorName() + "is not valid! Random color generating...");
+            info("GAME: Current TRUMP = " + trumpColor.getColorName() + " is not valid! Random color generating...");
             int randomNr = new SecureRandom().nextInt(3);
 
             switch (randomNr) {
@@ -152,8 +159,9 @@ public class Game {
             }
         }
 
-        if (currentRound < 20) {
+        if (currentRound < totalRounds) {
             server.broadcastMessage(new TextMessage("Current Trump is " + trumpColor.getColorName()));
+            info("GAME: Current TRUMP = " + trumpColor.getColorName());
         } else {
             server.broadcastMessage(new TextMessage("LAST ROUND HAS NO TRUMP!"));
         }
@@ -206,7 +214,6 @@ public class Game {
             trickRoundTurn++;
             activePlayerIndex = (activePlayerIndex + 1) % players.size();
             updateDealerAndActivePlayer();
-
             broadcastGameState();
             info("GAME: Current trick still incomplete. TrickRoundTurn=" + trickRoundTurn);
 
@@ -243,7 +250,7 @@ public class Game {
             broadcastGameState();
 
             // check if round was the last round of the game
-            if (currentRound < 20) {
+            if (currentRound < totalRounds) {
                 currentRound++;
                 dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
                 dealCards();
@@ -252,7 +259,7 @@ public class Game {
                 server.broadcastMessage(new TextMessage("Last round played, Game is complete."));
 
                 // wait some time before sending Action END
-                waitSafe(WizardConstants.TIME_TO_WAIT_LONG);
+                //waitSafe(WizardConstants.TIME_TO_WAIT_LONG);
                 // End-Msg should trigger the client going to Endscreen Activity
                 server.broadcastMessage(new ActionMessage(END));
             }
@@ -278,7 +285,7 @@ public class Game {
             }
 
             // if current highest card has not trump color but compared card has trump color
-            else if ((currentRound != 20) && (highestCard.getColor() != trump) &&
+            else if ((currentRound != totalRounds) && (highestCard.getColor() != trump) &&
                     (card.getColor() == trump)) {
                 highestCard = card;
             }
@@ -325,14 +332,14 @@ public class Game {
                 int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[players.get(i).getConnectionID()-1][currentRound];
                 pointsPerPlayerPerRound = previousPointsPerPlayerPerRound + (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
                 info("IF Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
-                info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
                 scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
+                info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
             } else {
                 int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[players.get(i).getConnectionID()-1][currentRound];
                 pointsPerPlayerPerRound = previousPointsPerPlayerPerRound + (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]));
                 info("ELSE Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
-                info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
                 scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
+                info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
             }
         }
         server.broadcastMessage(new NotePadMessage(this.scores));
@@ -340,6 +347,10 @@ public class Game {
 
     boolean isGamerunning() {
         return gamerunning;
+    }
+
+    void setGamerunning(boolean bool) {
+        gamerunning = bool;
     }
 
     //checks if bet is allowed

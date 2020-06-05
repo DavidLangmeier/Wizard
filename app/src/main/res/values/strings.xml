@@ -3,7 +3,8 @@
     <string name="home_textView_title">WIZARD</string>
     <string name="home_btn_play">PLAY</string>
     <string name="home_btn_settings">SETTINGS</string>
-    <string name="home_btn_howToPlay">HOW TO PLAY</string>
+    <string name="home_btn_howToPlay">RULES</string>
+    <string name="home_imgView_logo">Wizard Logo</string>
     <string name="lobby_textView_title">LOBBY</string>
     <string name="lobby_textView_serverResponse">Server Response: </string>
     <string name="lobby_btn_testServer">TEST SERVER</string>
@@ -42,5 +43,8 @@
     <string name="tablecard5">tableCard5</string>
     <string name="tablecard6">tableCard6</string>
     <string name="block_of_truth">BLOCK OF TRUTH</string>
+    <string name="play_again">PLAY AGAIN</string>
+    <string name="exit_game">EXIT GAME</string>
+    <string name="yourplayer">yourPlayer</string>
     <string name="cheat_dialog_title">Pick a player</string>
 </resources>

@@ -35,16 +35,15 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.EndscreenMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CheatMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
@@ -54,6 +53,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
+import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.END;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.READY;
 import static com.esotericsoftware.minlog.Log.*;
 
@@ -106,7 +106,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        
+
         btnPlaySelectedCard = findViewById(R.id.play_Card);
         btnPlaySelectedCard.setOnClickListener(v -> dealOnePlayerCardOnTable());
         btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
@@ -139,7 +139,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         runOnUiThread(this::setPlayerViews);
 
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
-        mp3 =MediaPlayer.create(this,R.raw.karte0runterlegen);
+        mp3 = MediaPlayer.create(this, R.raw.karte0runterlegen);
 
         //Damit mehrere nebeneinander sichbar sind
         viewPager2.setClipToPadding(false);
@@ -306,7 +306,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                 default:
                     npTotalPoints = (TextView) dialog.findViewById(R.id.tv_summe6);
             }
-            StringBuilder bld=new StringBuilder();
+            StringBuilder bld = new StringBuilder();
             for (int j = 0; j < testNodepade.getTotalPointsPerPlayer()[i].length; j++) {
                 bld.append(" ");
                 bld.append(npTotalPointsAnzeige + String.valueOf(testNodepade.getTotalPointsPerPlayer()[i][j]));
@@ -474,7 +474,9 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     protected void onStop() {
-        wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + " left the game"));
+        if (wizardClient != null) {
+            wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + " left the game"));
+        }
         super.onStop();
     }
 
@@ -532,7 +534,29 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                tvTrumpColor.setText("Trump: " + gameData.getTrump().getColorName());
+                if (gameData.getRoundsLeft() >= 1) {
+                    tvTrumpColor.setText("Trump: " + gameData.getTrump().getColorName());
+                    switch (gameData.getTrump().getColorName()) {
+                        case "Blue":
+                            tvTrumpColor.setTextColor(Color.BLUE);
+                            break;
+                        case "Red":
+                            tvTrumpColor.setTextColor(Color.RED);
+                            break;
+                        case "Green":
+                            tvTrumpColor.setTextColor(Color.GREEN);
+                            break;
+                        case "Yellow":
+                            tvTrumpColor.setTextColor(Color.YELLOW);
+                            break;
+                        default:
+                            tvTrumpColor.setTextColor(Color.BLACK);
+                    }
+                } else {
+                    tvTrumpColor.setText("Trump: No Trump");
+                    tvTrumpColor.setTextColor(Color.BLACK);
+                }
+
                 info("Active Player: " + gameData.getActivePlayer() + ", Connection ID my Player: " + myPlayer.getConnectionID());
 
                 if (((StateMessage) basemessage).isClearBetTricks()) {
@@ -550,6 +574,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                     if (gameData.getBetTricksCounter() < gameData.getScores().getTotalPointsPerPlayer().length) {
                         info("!!!!!!!!! Trickround: " + gameData.getBetTricksCounter() + " score size: " + gameData.getScores().getTotalPointsPerPlayer().length);
                         runOnUiThread(() -> {
+                            etVorhersage.setHint("Bet tricks:");
                             etVorhersage.setEnabled(true);
                             etVorhersage.setVisibility(View.VISIBLE);
                             btnPlaySelectedCard.setEnabled(false);
@@ -586,22 +611,30 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                     tvServerMsg.setText(msg);
                     addCardsToSlideView(gameData.getMyHand().getCards());
                 });
-
-            } else if (basemessage instanceof GoodbyeMessage) { // A player closed the app, so stop game and show current points as endresult
-                info("GAME_ACTIVITY: Goodbye received.");
-                runOnUiThread(() -> {
-                    Intent intent = new Intent(this, EndscreenActivity.class);
-                    startActivity(intent);
-                });
-
+            } else if (basemessage instanceof ActionMessage) { // A player closed the app, so stop game and show current points as endresult
+                if (((ActionMessage) basemessage).getActionType() == END) {
+                    info("GAME_ACTIVITY: END received. - Trying to start endscreen activity.");
+                    gameData.getScores().setPlayerNamesList((ArrayList<String>) playersOnline); // to access in Endscreen
+                    Notepad endscreenScores = gameData.getScores();
+                    debug("------------+++++++++++++++--------------" + Arrays.deepToString(endscreenScores.getTotalPointsPerPlayer()));
+                    wizardClient.sendMessage(new EndscreenMessage(endscreenScores)); //prepare for Endscreen
+                }
+            //START endscreen activity
+            } else if(basemessage instanceof EndscreenMessage){
+                EndscreenMessage msg = (EndscreenMessage) basemessage;
+                Intent intent = new Intent(this, EndscreenActivity.class);
+                wizardClient.deregisterCallback();
+                intent.putExtra("endscreenScores", new Gson().toJson(msg.getScores()));
+                intent.putExtra("sortedIconID", (new Gson()).toJson(msg.getImageID()));
+                intent.putExtra("playersOnline", (new Gson()).toJson(playersOnline));
+                intent.putExtra("myPlayer", (new Gson()).toJson(myPlayer));
+                startActivity(intent);
             } else if (basemessage instanceof LifecycleMessage) {
                 LifecycleMessage msg = (LifecycleMessage) basemessage;
                 runOnUiThread(() -> tvServerMsg.setText(msg.getMsg()));
-
             } else if(basemessage instanceof CheatMessage) {
                 CheatMessage msg = (CheatMessage) basemessage;
                 runOnUiThread(() -> tvServerMsg.setText(msg.getMessage()));
-
             } else if (basemessage instanceof ErrorMessage) {
                 ErrorMessage msg = (ErrorMessage) basemessage;
                 runOnUiThread(() -> {
@@ -694,15 +727,12 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             case 6:
                 tvActivePlayer6.setText(playersOnline.get(5).toString());
                 tvActivePlayer6.setVisibility(View.VISIBLE);
-                break;
             case 5:
                 tvActivePlayer5.setText(playersOnline.get(4).toString());
                 tvActivePlayer5.setVisibility(View.VISIBLE);
-                break;
             case 4:
                 tvActivePlayer4.setText(playersOnline.get(3).toString());
                 tvActivePlayer4.setVisibility(View.VISIBLE);
-                break;
             case 3:
                 tvActivePlayer3.setText(playersOnline.get(2).toString());
                 tvActivePlayer2.setText(playersOnline.get(1).toString());
