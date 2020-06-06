@@ -16,7 +16,7 @@
         android:layout_marginBottom="198dp"
         android:paddingStart="160dp"
         android:paddingEnd="158dp"
-        android:scaleType="fitXY"
+        android:scaleType="fitStart"
         app:layout_constraintBottom_toTopOf="@+id/play_Card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.499"
@@ -49,7 +49,7 @@
         android:layout_marginBottom="12dp"
         android:scaleType="fitXY"
         android:text="@string/play_card"
-        android:background="@drawable/buttonsstyls"
+        android:background="@drawable/buttonstyls_custom"
         app:layout_constraintBottom_toTopOf="@id/game_btn_showNodepad"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.371"
@@ -161,7 +161,7 @@
         android:layout_marginStart="135dp"
         android:layout_marginEnd="138dp"
         android:layout_marginBottom="1dp"
-        android:background="@drawable/buttonsstyls"
+        android:background="@drawable/buttonstyls_custom"
         android:onClick="showNodepad"
         android:text="@string/block_of_truth" />
 

@@ -193,16 +193,17 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         //----------------------switch-------------------------
 
         swChangeViewPointsStiche = (Switch) dialog.findViewById(R.id.sw_switch1);
-
+        int actualRound=findOutRound(gameDataScores);
         swChangeViewPointsStiche.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked) {
                     //wenn Switch isCheck fill with Points
-                    actualPoints(gameDataScores);
+                    actualPoints(gameDataScores, actualRound);
                 } else {
-                    actualTricks(gameDataScores);
+                    actualTricks(gameDataScores,actualRound);
                 }
             }
         });
@@ -212,9 +213,9 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         //Player Namen Nodepad Befüllung
         showNamesOfPlayers((ArrayList<String>) playersOnline);
         //Aktuelle Punkte Nodepad Befüllung
-        actualPoints(gameDataScores);
+        actualPoints(gameDataScores, actualRound);
         //Vorhersage Stiche Nodepad Befüllung
-        predictedTricks(gameDataScores);
+        predictedTricks(gameDataScores, actualRound);
         //Summe totalPunkte Befüllung
         totalPointsPlayer(gameDataScores);
 
@@ -317,7 +318,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     //Vorhersage je Stich fix in Nodepad
-    public void predictedTricks(Notepad testNodepade) {
+    public void predictedTricks(Notepad testNodepade, int actualRound) {
         TextView npVorhersageplayer;
 
         for (int i = 0; i < testNodepade.getBetTricksPerPlayerPerRound().length; i++) {
@@ -347,15 +348,20 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             StringBuilder testVorhersage = new StringBuilder();
             for (int j = 0; j < testNodepade.getBetTricksPerPlayerPerRound()[i].length; j++) {
                 testVorhersage.append("  ");
-                testVorhersage.append(String.valueOf(testNodepade.getBetTricksPerPlayerPerRound()[i][j]));
-                testVorhersage.append(System.lineSeparator());
+                if(actualRound>j) {
+                    testVorhersage.append(String.valueOf(testNodepade.getBetTricksPerPlayerPerRound()[i][j]));
+                    testVorhersage.append(System.lineSeparator());
+                }else{
+                    testVorhersage.append(String.valueOf(" "));
+                    testVorhersage.append(System.lineSeparator());
+                }
             }
             npVorhersageplayer.setText(testVorhersage.toString());
         }
     }
 
     //Tatsächliche Stiche (switch) für Nodepad
-    private void actualTricks(Notepad testNodepade) {
+    private void actualTricks(Notepad testNodepade,int actualRound) {
         String tricksPerRound = "Stiche per Runde";
         TextView npVorherSagePlayerFalse;
         TextView npTextChangePointsStiche;
@@ -390,8 +396,14 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             StringBuilder testPlayerpoints1 = new StringBuilder();
             for (int j = 0; j < testNodepade.getTookTricksPerPlayerPerRound()[i].length; j++) {
                 testPlayerpoints1.append("  ");
-                testPlayerpoints1.append(String.valueOf(testNodepade.getTookTricksPerPlayerPerRound()[i][j]));
-                testPlayerpoints1.append(System.lineSeparator());
+                if(actualRound>j) {
+                    testPlayerpoints1.append(String.valueOf(testNodepade.getTookTricksPerPlayerPerRound()[i][j]));
+                    testPlayerpoints1.append(System.lineSeparator());
+                }else{
+                    testPlayerpoints1.append(String.valueOf(" "));
+                    testPlayerpoints1.append(System.lineSeparator());
+                }
+
             }
             npVorherSagePlayerFalse.setText(testPlayerpoints1.toString());
             npVorherSagePlayerFalse.setTextColor(Color.YELLOW);
@@ -428,7 +440,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     //Erreichten Punkte für Nodepad (switch)
-    private void actualPoints(Notepad testNodepade) {
+    private void actualPoints(Notepad testNodepade, int actualRound) {
         String pointsPerRound = "Punkte per Runde";
         TextView npVorherSagePlayerTrue;
         TextView npTextChangePointsStiche;
@@ -464,8 +476,14 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             StringBuilder testPlayerpoints1 = new StringBuilder();
             for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
                 testPlayerpoints1.append("  ");
-                testPlayerpoints1.append(String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]));
-                testPlayerpoints1.append(System.lineSeparator());
+                if(actualRound>j) {
+                    testPlayerpoints1.append(String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]));
+                    testPlayerpoints1.append(System.lineSeparator());
+                }else{
+                    testPlayerpoints1.append(String.valueOf(" "));
+                    testPlayerpoints1.append(System.lineSeparator());
+                }
+
             }
             npVorherSagePlayerTrue.setText(testPlayerpoints1);
             npVorherSagePlayerTrue.setTextColor(Color.WHITE);

@@ -51,9 +51,9 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
         //Hintergrundfarbe bei Auswählen Bild  GELB
         if(selectedICard==position){
-            holder.imageView.setBackgroundColor(Color.parseColor("#fcdb19"));
+            holder.imageView.setBackgroundColor(Color.parseColor("#fffff0"));
         }else{
-            holder.imageView.setBackgroundColor(Color.parseColor("#3c822f"));
+            holder.imageView.setBackgroundColor(Color.parseColor("#197331")); //#197331 3c822f
         }
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +61,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                 int previousSelectetItem=selectedICard;
                 selectedICard=position;
                 notifyItemChanged(previousSelectetItem);
-                holder.imageView.setBackgroundColor(Color.parseColor("#fcdb19"));
+                holder.imageView.setBackgroundColor(Color.parseColor("#fffff0"));  //fcdb19
                 selectedCard = sliderItems.get(position).getSelectedCard();
                 positionIfnothingIsSelected =position;
             }

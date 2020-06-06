@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <solid
-        android:color="@color/colorWhite"/>
-
     <stroke android:width="2dp"
-        android:color="@color/colorWhite"/>
-       <!-- android:dashGap="1dp"
-        android:dashWidth="1dp"/> -->
+        android:color="@color/colorWhite"
+        android:dashGap="1dp"
+        android:dashWidth="1dp"/>
 
     <corners android:radius="20dp"/>
 
@@ -18,7 +14,7 @@
 
     <gradient
         android:angle="90"
-        android:startColor="#383838"
-        android:endColor="#6A6969"/>
+        android:startColor="#5CAF7D"
+        android:endColor="#828282"/>
 
 </shape>
