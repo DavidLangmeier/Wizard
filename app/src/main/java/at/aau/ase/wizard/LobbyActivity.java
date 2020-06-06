@@ -2,6 +2,7 @@ package at.aau.ase.wizard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,7 +32,7 @@ public class LobbyActivity extends AppCompatActivity {
     private WizardClient wizardClient;
     private EditText etUsername = null;
     private TextView tvError = null;
-    private List<String> playersOnline;// = new ArrayList<>();
+    private List<String> playersOnline;
     private ArrayAdapter<String> arrayAdapter;
     private Player myPlayer;
     private GameData gameData;
@@ -73,7 +74,8 @@ public class LobbyActivity extends AppCompatActivity {
     }
 
     private boolean enteredUsername(int keycode, KeyEvent keyevent) {
-        if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER) {
+        info("==========> "+etUsername.getText().toString());
+        if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER && !TextUtils.isEmpty(etUsername.getText().toString().trim())) {
             wizardClient = WizardClient.getInstance();
             debug("==========================" +wizardClient.toString());
 
