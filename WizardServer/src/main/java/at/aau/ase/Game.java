@@ -422,14 +422,13 @@ public class Game {
     public void updateScoresCheating(boolean isCheating, String playerSuspectedOfCheating, String playerChecking) {
         int playerCheatingIdx = matchPlayerNameToPlayerIdx(playerSuspectedOfCheating);
         int playerCheckingIdx = matchPlayerNameToPlayerIdx(playerChecking);
-        int[][] pointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound();
         if (isCheating) { // Punish cheater and bonus for checker
-            int newscoreCheater = pointsPerPlayerPerRound[playerCheatingIdx][currentRound] - WizardConstants.CHEAT_PENALTY;
-            int newscoreChecker = pointsPerPlayerPerRound[playerCheckingIdx][currentRound] + WizardConstants.CHEAT_DETECTION_BONUS;
+            int newscoreCheater = scores.getPointsPerPlayerPerRound()[playerCheatingIdx][currentRound-1] - WizardConstants.CHEAT_PENALTY;
+            int newscoreChecker = scores.getPointsPerPlayerPerRound()[playerCheckingIdx][currentRound-1] + WizardConstants.CHEAT_DETECTION_BONUS;
             scores.setPointsPerPlayerPerRound(playerCheatingIdx, newscoreCheater, currentRound);
             scores.setPointsPerPlayerPerRound(playerCheckingIdx, newscoreChecker, currentRound);
         } else { // Punish checker
-            int newscoreChecker = pointsPerPlayerPerRound[playerCheckingIdx][currentRound] - WizardConstants.CHEAT_PENALTY;
+            int newscoreChecker = scores.getPointsPerPlayerPerRound()[playerCheckingIdx][currentRound-1] - WizardConstants.CHEAT_PENALTY;
             scores.setPointsPerPlayerPerRound(playerCheckingIdx, newscoreChecker, currentRound);
         }
     }
