@@ -112,6 +112,8 @@ public class ServerCallback implements Callback<BaseMessage> {
             case EXIT:
                 info("Recieved Action EXIT.");
                 game.setGamerunning(false);
+                playersReady = 0;
+                players = new ArrayList<>();
                 game = null;
                 server.broadcastMessage(new ActionMessage(Action.EXIT));
                 break;

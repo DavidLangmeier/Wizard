@@ -29,7 +29,7 @@ import static com.esotericsoftware.minlog.Log.*;
 
 public class LobbyActivity extends AppCompatActivity {
     private Button btnStartGame;
-    private WizardClient wizardClient;
+    private WizardClient wizardClient = null;
     private EditText etUsername = null;
     private TextView tvError = null;
     private List<String> playersOnline;
@@ -44,7 +44,6 @@ public class LobbyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lobby);
 
         arrayAdapter = null;
-        wizardClient = null;
         playersOnline = new ArrayList<>();
 
         btnStartGame = (findViewById(R.id.lobby_btn_ToGameScreen));
@@ -103,7 +102,7 @@ public class LobbyActivity extends AppCompatActivity {
                         tvError.setText(em.getError());
                         etUsername.setEnabled(true);
                     });
-                    wizardClient.disconnect("Ciao", null); // null because myPlayer is null anyway (not yet being registered at server)
+                    wizardClient.disconnect();
                 }
                 else {
                     error("No callback for this messagetype in the lobby: "+basemessage.toString());

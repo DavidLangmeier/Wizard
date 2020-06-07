@@ -59,4 +59,9 @@ public class WizardClient extends NetworkClientKryo {
                 super.sendMessage(message)
         ).start();
     }
+
+    public void disconnect() {
+        super.disconnect();
+        this.wizardClient = null;
+    }
 }
