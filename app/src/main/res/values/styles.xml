@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <!--für Alle Buttons übernehmen! -disable funktioniert nicht mehr -->
-       <!-- <item name="buttonStyle">@style/CustomButtons</item>-->
+       <item name="buttonStyle">@style/CustomButtons</item>
     </style>
 
     <style name="CustomButtons" parent="Widget.AppCompat.Button">
