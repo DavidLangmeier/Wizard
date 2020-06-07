@@ -504,7 +504,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             }
             builder.setAdapter(new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice, possibleCheatersToCheckList), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    String selected = (String) possibleCheatersToCheckList.get(which);
+                    String selected = possibleCheatersToCheckList.get(which);
                     info("Selected "+selected);
                     wizardClient.sendMessage(new CheatMessage(selected, myPlayer));
                 }
