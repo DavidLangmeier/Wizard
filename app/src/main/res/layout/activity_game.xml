@@ -162,7 +162,6 @@
         android:layout_marginEnd="138dp"
         android:layout_marginBottom="1dp"
         android:background="@drawable/buttonstyls_custom"
-        android:onClick="showNodepad"
         android:text="@string/block_of_truth" />
 
     <TextView

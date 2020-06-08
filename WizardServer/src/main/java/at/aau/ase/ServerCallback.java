@@ -69,9 +69,9 @@ public class ServerCallback implements Callback<BaseMessage> {
         info("Recieved Notepad to enter prediction!");
         NotePadMessage msg = message;
         if (!(game.checkBet(msg.getBetTrick()))) {
-            server.sentTo(msg.getActivePlayer(), new ErrorMessage("Not valid!"));
+            server.sentTo(game.getActivePlayerID(), new ErrorMessage("Not valid!"));
         } else {
-            game.writeBetTricksToNotePad(msg.getScores(), (msg.getActivePlayer() - 1), msg.getBetTrick());
+            game.writeBetTricksToNotePad(msg.getScores(), game.getActivePlayerIndex(), msg.getBetTrick());
         }
     }
 
@@ -112,6 +112,8 @@ public class ServerCallback implements Callback<BaseMessage> {
             case EXIT:
                 info("Recieved Action EXIT.");
                 game.setGamerunning(false);
+                playersReady = 0;
+                players = new ArrayList<>();
                 game = null;
                 server.broadcastMessage(new ActionMessage(Action.EXIT));
                 break;

@@ -329,16 +329,16 @@ public class Game {
         int pointsPerPlayerPerRound;
         for (int i = 0; i < players.size(); i++) {
             if (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1] == scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]) {
-                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[players.get(i).getConnectionID()-1][currentRound-1];
+                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[i][currentRound-1];
                 pointsPerPlayerPerRound = previousPointsPerPlayerPerRound + (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
                 info("IF Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
-                scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
+                scores.setPointsPerPlayerPerRound(i, pointsPerPlayerPerRound, currentRound);
                 info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
             } else {
-                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[players.get(i).getConnectionID()-1][currentRound-1];
+                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[i][currentRound-1];
                 pointsPerPlayerPerRound = previousPointsPerPlayerPerRound + (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]));
                 info("ELSE Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
-                scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
+                scores.setPointsPerPlayerPerRound(i, pointsPerPlayerPerRound, currentRound);
                 info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
             }
         }

@@ -99,6 +99,7 @@ public class EndscreenActivity extends AppCompatActivity {
                 info(basemessage.toString());
                 Intent intent = new Intent(this, LobbyActivity.class);
                 wizardClient.deregisterCallback();
+                wizardClient.disconnect();
                 startActivity(intent);
             }
         });
