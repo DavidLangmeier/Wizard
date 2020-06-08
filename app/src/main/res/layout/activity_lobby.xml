@@ -4,16 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_lobby"
     tools:context=".LobbyActivity">
-
-    <TextView
-        android:id="@+id/lobby_text_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/lobby_textView_title"
-        android:textSize="30sp"
-        android:layout_centerHorizontal="true"/>
 
     <Button
         android:id="@+id/lobby_btn_ToGameScreen"
@@ -28,9 +20,9 @@
         android:id="@+id/lobby_edittext_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/lobby_text_title"
+        android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:ems="10"
         android:hint="@string/lobby_et_username"
@@ -41,10 +33,10 @@
         android:id="@+id/lobby_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:textSize="16dp"
+        android:layout_below="@id/lobby_btn_ToGameScreen"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/lobby_btn_ToGameScreen"/>
+        android:layout_marginTop="0dp"
+        android:textSize="16sp" />
 
     <ListView
         android:id="@+id/lobby_list_players"
@@ -53,5 +45,13 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:layout_below="@+id/lobby_error" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="332dp"
+        android:layout_height="86dp"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/lobby_textView_title"
+        app:srcCompat="@drawable/lobby_signup" />
 
 </RelativeLayout>
