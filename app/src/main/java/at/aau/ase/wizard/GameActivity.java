@@ -642,6 +642,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                 ErrorMessage msg = (ErrorMessage) basemessage;
                 runOnUiThread(() -> {
                     etPrediction.setEnabled(true);
+                    etPrediction.setText("");
                     errorAnimation(msg);
                 });
             }
