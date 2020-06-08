@@ -413,32 +413,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public int findOutRound(Notepad testNodepade) {
-        int count = 0;
-        int runde = 0;
-        int runden3Player = 20;
-        int runden4Player = 15;
-        int runden5Player = 12;
-        int runden6Player = 10;
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
-                if (testNodepade.getPointsPerPlayerPerRound()[i][j] == 0) {
-                    count++;
-                }
-            }
-        }
-        if (testNodepade.getPointsPerPlayerPerRound()[0].length == runden3Player) {
-            runde = runden3Player - count;
-        } else if (testNodepade.getPointsPerPlayerPerRound()[0].length == runden4Player) {
-            runde = runden4Player - count;
-        } else if (testNodepade.getPointsPerPlayerPerRound()[0].length == runden5Player) {
-            runde = runden5Player - count;
-        } else {
-            runde = runden6Player - count;
-        }
-        String runden = runde + " ";
-        //60/3=20  60/4=15  60/5=12 60 /6=10
-        info("....................Anzahl count ......................" + runden);
-        return runde;
+        return testNodepade.getPointsPerPlayerPerRound()[0].length - gameData.getRoundsLeft();
     }
 
     //Erreichten Punkte für Nodepad (switch)
