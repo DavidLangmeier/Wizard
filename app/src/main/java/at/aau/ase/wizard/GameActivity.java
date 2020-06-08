@@ -200,7 +200,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         //----------------------switch-------------------------
 
         swChangeViewPointsStiche = (Switch) dialog.findViewById(R.id.sw_switch1);
-        int actualRound=findOutRound(gameDataScores);
+        int actualRound = findOutRound(gameDataScores);
         swChangeViewPointsStiche.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
@@ -210,7 +210,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                     //wenn Switch isCheck fill with Points
                     actualPoints(gameDataScores, actualRound);
                 } else {
-                    actualTricks(gameDataScores,actualRound);
+                    actualTricks(gameDataScores, actualRound);
                 }
             }
         });
@@ -355,10 +355,10 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             StringBuilder testVorhersage = new StringBuilder();
             for (int j = 0; j < testNodepade.getBetTricksPerPlayerPerRound()[i].length; j++) {
                 testVorhersage.append("  ");
-                if(actualRound>j) {
+                if (actualRound > j) {
                     testVorhersage.append(String.valueOf(testNodepade.getBetTricksPerPlayerPerRound()[i][j]));
                     testVorhersage.append(System.lineSeparator());
-                }else{
+                } else {
                     testVorhersage.append(String.valueOf(" "));
                     testVorhersage.append(System.lineSeparator());
                 }
@@ -368,8 +368,10 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     //Tatsächliche Stiche (switch) für Nodepad
+
     private void actualTricks(Notepad testNodepade,int actualRound) {
         String tricksPerRound = "Tricks per round";
+
         TextView npVorherSagePlayerFalse;
         TextView npTextChangePointsStiche;
 
@@ -403,10 +405,14 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             StringBuilder testPlayerpoints1 = new StringBuilder();
             for (int j = 0; j < testNodepade.getTookTricksPerPlayerPerRound()[i].length; j++) {
                 testPlayerpoints1.append("  ");
+
                 if(actualRound-1>j) {
+
+                
+
                     testPlayerpoints1.append(String.valueOf(testNodepade.getTookTricksPerPlayerPerRound()[i][j]));
                     testPlayerpoints1.append(System.lineSeparator());
-                }else{
+                } else {
                     testPlayerpoints1.append(String.valueOf(" "));
                     testPlayerpoints1.append(System.lineSeparator());
                 }
@@ -458,10 +464,14 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             StringBuilder testPlayerpoints1 = new StringBuilder();
             for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
                 testPlayerpoints1.append("  ");
+
                 if(actualRound-1>j) {
+
+               
+
                     testPlayerpoints1.append(String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]));
                     testPlayerpoints1.append(System.lineSeparator());
-                }else{
+                } else {
                     testPlayerpoints1.append(String.valueOf(" "));
                     testPlayerpoints1.append(System.lineSeparator());
                 }
@@ -485,6 +495,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         wizardClient.sendMessage(new LifecycleMessage("" + myPlayer.getName() + " came back"));
         super.onRestart();
     }
+
     @Override
     public final void onAccuracyChanged(Sensor sensor, int accuracy) {
         info("Sensor accurracy changed!");
@@ -494,18 +505,18 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     public final void onSensorChanged(SensorEvent event) {
         float light = event.values[0];
 
-        if (light <= SensorManager.LIGHT_NO_MOON/10 && lightOld -light > 0) {
+        if (light <= SensorManager.LIGHT_NO_MOON / 10 && lightOld - light > 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.cheat_dialog_title);
             List<String> possibleCheatersToCheckList = new ArrayList<>();
-            for (String s: playersOnline) {
+            for (String s : playersOnline) {
                 if (!s.equals(myPlayer.getName()))
                     possibleCheatersToCheckList.add(s);
             }
             builder.setAdapter(new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice, possibleCheatersToCheckList), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     String selected = possibleCheatersToCheckList.get(which);
-                    info("Selected "+selected);
+                    info("Selected " + selected);
                     wizardClient.sendMessage(new CheatMessage(selected, myPlayer));
                 }
             });
@@ -534,7 +545,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
-                if(!btnShowNotepad.isEnabled())
+                if (!btnShowNotepad.isEnabled())
                     runOnUiThread(() -> btnShowNotepad.setEnabled(true));
                 if (gameData.getRoundsLeft() >= 1) {
                     tvTrumpColor.setText("Trump: " + gameData.getTrump().getColorName());
@@ -621,8 +632,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                     debug("------------+++++++++++++++--------------" + Arrays.deepToString(endscreenScores.getTotalPointsPerPlayer()));
                     wizardClient.sendMessage(new EndscreenMessage(endscreenScores)); //prepare for Endscreen
                 }
-            //START endscreen activity
-            } else if(basemessage instanceof EndscreenMessage){
+                //START endscreen activity
+            } else if (basemessage instanceof EndscreenMessage) {
                 EndscreenMessage msg = (EndscreenMessage) basemessage;
                 Intent intent = new Intent(this, EndscreenActivity.class);
                 wizardClient.deregisterCallback();
@@ -634,13 +645,14 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             } else if (basemessage instanceof LifecycleMessage) {
                 LifecycleMessage msg = (LifecycleMessage) basemessage;
                 runOnUiThread(() -> tvServerMsg.setText(msg.getMsg()));
-            } else if(basemessage instanceof CheatMessage) {
+            } else if (basemessage instanceof CheatMessage) {
                 CheatMessage msg = (CheatMessage) basemessage;
                 runOnUiThread(() -> tvServerMsg.setText(msg.getMessage()));
             } else if (basemessage instanceof ErrorMessage) {
                 ErrorMessage msg = (ErrorMessage) basemessage;
                 runOnUiThread(() -> {
                     etPrediction.setEnabled(true);
+                    etPrediction.setText("");
                     errorAnimation(msg);
                 });
             }
@@ -754,17 +766,17 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void setTvActivePlayer() {
-        if (gameData.getActivePlayer() == 1) {
+        if (gameData.getActivePlayerIndex() == 0) {
             showActivePlayers(tvActivePlayer1);
-        } else if (gameData.getActivePlayer() == 2) {
+        } else if (gameData.getActivePlayerIndex() == 1) {
             showActivePlayers(tvActivePlayer2);
-        } else if (gameData.getActivePlayer() == 3) {
+        } else if (gameData.getActivePlayerIndex() == 2) {
             showActivePlayers(tvActivePlayer3);
-        } else if (gameData.getActivePlayer() == 4) {
+        } else if (gameData.getActivePlayerIndex() == 3) {
             showActivePlayers(tvActivePlayer4);
-        } else if (gameData.getActivePlayer() == 5) {
+        } else if (gameData.getActivePlayerIndex() == 4) {
             showActivePlayers(tvActivePlayer5);
-        } else if (gameData.getActivePlayer() == 6) {
+        } else if (gameData.getActivePlayerIndex() == 5) {
             showActivePlayers(tvActivePlayer6);
         } else {
             info("GAME_ACTIVITY: No active Player to show.");
@@ -776,7 +788,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public boolean enteredPrediction(int keycode, KeyEvent keyevent) {
-        if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER&& checkIfEmpty(etPrediction)) {
+        if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER && checkIfEmpty(etPrediction)) {
             short betTricks = Short.parseShort(etPrediction.getText().toString());
             etPrediction.setEnabled(false);
             wizardClient.sendMessage(new NotePadMessage(gameData.getScores(), gameData.getActivePlayer(), betTricks));
@@ -787,17 +799,17 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    boolean checkIfEmpty(EditText et){
-        if(TextUtils.isEmpty(et.getText().toString().trim())){
+    boolean checkIfEmpty(EditText et) {
+        if (TextUtils.isEmpty(et.getText().toString().trim())) {
             ErrorMessage msg = new ErrorMessage("Enter bet!");
             errorAnimation(msg);
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    void errorAnimation(ErrorMessage msg){
+    void errorAnimation(ErrorMessage msg) {
         Animation shake = AnimationUtils.loadAnimation(GameActivity.this, R.anim.shake);
         etPrediction.startAnimation(shake);
         etPrediction.setHint(msg.getError());
