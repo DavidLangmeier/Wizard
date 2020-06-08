@@ -1,30 +1,25 @@
 package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects;
 
-import java.util.List;
-
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Color;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Deck;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
 
 public class StateMessage extends BaseMessage {
     Hand table;         // for the cards within 1 trickround
     Notepad scores;
     Color trump;
     int roundsLeft;
-    int currentRound;
     int dealer;
     int activePlayer;
     int betTricksCounter;
     boolean clearBetTricks;
+    int activePlayerIndex;
 
     public StateMessage() {
     }
 
     public StateMessage(Hand table, Notepad scores, Color trump, int roundsLeft,
-                        int dealer, int activePlayer, int betTricksCounter, boolean clearBetTricks) {
+                        int dealer, int activePlayer, int betTricksCounter, boolean clearBetTricks, int activePlayerIndex) {
         this.table = table;
         this.scores = scores;
         this.roundsLeft = roundsLeft;
@@ -33,6 +28,7 @@ public class StateMessage extends BaseMessage {
         this.activePlayer = activePlayer;
         this.betTricksCounter = betTricksCounter;
         this.clearBetTricks = clearBetTricks;
+        this.activePlayerIndex = activePlayerIndex;
     }
 
     public Hand getTable() {
@@ -67,7 +63,7 @@ public class StateMessage extends BaseMessage {
         return clearBetTricks;
     }
 
-    public int getCurrentRound() {
-        return currentRound;
+    public int getActivePlayerIndex() {
+        return activePlayerIndex;
     }
 }

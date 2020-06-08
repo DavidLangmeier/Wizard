@@ -7,7 +7,8 @@ public class CheatMessage extends BaseMessage {
     private Player sender;
     private String message;
 
-    public CheatMessage() {}
+    public CheatMessage() {
+    }
 
     public CheatMessage(String message) {
         this.message = message;

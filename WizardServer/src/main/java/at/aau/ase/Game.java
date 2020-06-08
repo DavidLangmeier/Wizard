@@ -81,7 +81,7 @@ public class Game {
     void broadcastGameState() {
         info("GAME: Broadcasting gameState");
         try { //check necessary for not causing client disconnection in EndscreenActivity
-            server.broadcastMessage(new StateMessage(table, scores, trump, (totalRounds-currentRound), dealer, activePlayerID, betTricksCounter, clearBetTricks));
+            server.broadcastMessage(new StateMessage(table, scores, trump, (totalRounds-currentRound), dealer, activePlayerID, betTricksCounter, clearBetTricks, activePlayerIndex));
             info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
         }catch (Exception e){
             debug("Client seem to be in EndScreen...");
