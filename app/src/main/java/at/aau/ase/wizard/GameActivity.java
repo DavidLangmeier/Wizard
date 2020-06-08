@@ -62,6 +62,7 @@ import static com.esotericsoftware.minlog.Log.info;
 
 public class GameActivity extends AppCompatActivity implements SensorEventListener {
     private Button btnPlaySelectedCard;
+    private Button btnShowNotepad;
     private TextView tvTrumpColor;
     private TextView tvActivePlayer1;
     private TextView tvActivePlayer2;
@@ -109,9 +110,13 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
+        btnShowNotepad = findViewById(R.id.game_btn_showNodepad);
+        btnShowNotepad.setOnClickListener(this::showNodepad);
+        btnShowNotepad.setEnabled(false);
+
         btnPlaySelectedCard = findViewById(R.id.play_Card);
         btnPlaySelectedCard.setOnClickListener(v -> dealOnePlayerCardOnTable());
-        btnPlaySelectedCard.setEnabled(false); // Button has to be removed later
+        btnPlaySelectedCard.setEnabled(false);
         dialog = new Dialog(this);
         tvServerMsg = findViewById(R.id.game_textView_serverMsg);
         tvTrumpColor = findViewById(R.id.tv_TrumpColor);
@@ -529,6 +534,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             if (basemessage instanceof StateMessage) {
                 info("GAME_ACTIVITY: StateMessage received.");
                 gameData.updateState((StateMessage) basemessage);
+                if(!btnShowNotepad.isEnabled())
+                    runOnUiThread(() -> btnShowNotepad.setEnabled(true));
                 if (gameData.getRoundsLeft() >= 1) {
                     tvTrumpColor.setText("Trump: " + gameData.getTrump().getColorName());
                     switch (gameData.getTrump().getColorName()) {
