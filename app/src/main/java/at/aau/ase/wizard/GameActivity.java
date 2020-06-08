@@ -1,19 +1,12 @@
 package at.aau.ase.wizard;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.CompositePageTransformer;
-import androidx.viewpager2.widget.MarginPageTransformer;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -21,17 +14,25 @@ import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.gson.Gson;
 
@@ -41,12 +42,12 @@ import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.EndscreenMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CheatMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.EndscreenMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
-import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.LifecycleMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.NotePadMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.StateMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.TextMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
@@ -55,7 +56,8 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.END;
 import static at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action.READY;
-import static com.esotericsoftware.minlog.Log.*;
+import static com.esotericsoftware.minlog.Log.debug;
+import static com.esotericsoftware.minlog.Log.info;
 
 
 public class GameActivity extends AppCompatActivity implements SensorEventListener {
@@ -81,7 +83,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private SliderAdapter sliderAdapter; //to access player Card from Scrollhand later
     private Dialog dialog;
     private TextView tvServerMsg;
-    private EditText etVorhersage;
+    private EditText etPrediction;
     private List<String> playersOnline = new ArrayList<>();
     private MediaPlayer mp3;
     private SensorManager sensorManager;
@@ -114,9 +116,9 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         tvServerMsg = findViewById(R.id.game_textView_serverMsg);
         tvTrumpColor = findViewById(R.id.tv_TrumpColor);
 
-        etVorhersage = findViewById(R.id.etn_Vorhersage);
-        etVorhersage.setInputType(InputType.TYPE_CLASS_NUMBER);
-        etVorhersage.setVisibility(View.INVISIBLE);
+        etPrediction = findViewById(R.id.etn_Vorhersage);
+        etPrediction.setInputType(InputType.TYPE_CLASS_NUMBER);
+        etPrediction.setVisibility(View.INVISIBLE);
 
         ivTable1 = findViewById(R.id.tableCard1);
         ivTable2 = findViewById(R.id.tableCard2);
@@ -159,7 +161,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         viewPager2.setPageTransformer(compositePageTransformer);
         //ende der sichtbarkeit von mehreren hintereinander ----------------------------------------
 
-        etVorhersage.setOnKeyListener((v, keyCode, keyEvent) -> enteredPrediction(keyCode, keyEvent));
+        etPrediction.setOnKeyListener((v, keyCode, keyEvent) -> enteredPrediction(keyCode, keyEvent));
     }
 
     public void showNodepad(View v) {
@@ -579,8 +581,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
                 if (((StateMessage) basemessage).isClearBetTricks()) {
                     runOnUiThread(() -> {
-                        etVorhersage.setText("");
-                        etVorhersage.setVisibility(View.INVISIBLE);
+                        etPrediction.setText("");
+                        etPrediction.setVisibility(View.INVISIBLE);
                     });
                 }
 
@@ -592,9 +594,9 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                     if (gameData.getBetTricksCounter() < gameData.getScores().getTotalPointsPerPlayer().length) {
                         info("!!!!!!!!! Trickround: " + gameData.getBetTricksCounter() + " score size: " + gameData.getScores().getTotalPointsPerPlayer().length);
                         runOnUiThread(() -> {
-                            etVorhersage.setHint("Bet tricks:");
-                            etVorhersage.setEnabled(true);
-                            etVorhersage.setVisibility(View.VISIBLE);
+                            etPrediction.setHint("Bet tricks:");
+                            etPrediction.setEnabled(true);
+                            etPrediction.setVisibility(View.VISIBLE);
                             btnPlaySelectedCard.setEnabled(false);
                             runOnUiThread(this::setTvActivePlayer);
                         });
@@ -656,11 +658,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             } else if (basemessage instanceof ErrorMessage) {
                 ErrorMessage msg = (ErrorMessage) basemessage;
                 runOnUiThread(() -> {
-                    etVorhersage.setEnabled(true);
-                    Animation shake = AnimationUtils.loadAnimation(GameActivity.this, R.anim.shake);
-                    etVorhersage.startAnimation(shake);
-                    etVorhersage.setHint(msg.getError());
-                    etVorhersage.selectAll();
+                    etPrediction.setEnabled(true);
+                    errorAnimation(msg);
                 });
             }
 
@@ -795,15 +794,31 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public boolean enteredPrediction(int keycode, KeyEvent keyevent) {
-        if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER) {
-            short betTricks = Short.parseShort(etVorhersage.getText().toString());
-            etVorhersage.setEnabled(false);
+        if (keyevent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER&& checkIfEmpty(etPrediction)) {
+            short betTricks = Short.parseShort(etPrediction.getText().toString());
+            etPrediction.setEnabled(false);
             wizardClient.sendMessage(new NotePadMessage(gameData.getScores(), gameData.getActivePlayer(), betTricks));
             return true;
         } else {
             info("No NotePadMessage sent!");
             return false;
         }
+    }
+
+    boolean checkIfEmpty(EditText et){
+        if(TextUtils.isEmpty(et.getText().toString().trim())){
+            ErrorMessage msg = new ErrorMessage("Enter bet!");
+            errorAnimation(msg);
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    void errorAnimation(ErrorMessage msg){
+        Animation shake = AnimationUtils.loadAnimation(GameActivity.this, R.anim.shake);
+        etPrediction.startAnimation(shake);
+        etPrediction.setHint(msg.getError());
     }
 
 }
