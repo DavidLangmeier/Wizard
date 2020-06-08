@@ -17,7 +17,7 @@ public class PlayPdfActivity extends AppCompatActivity {
 
         pdfView = (PDFView) findViewById(R.id.pdfView);
 
-        pdfView.fromAsset("Spielanleitung_Wizard6.pdf").load();
+        pdfView.fromAsset("Spielanleitung_Wizard8.pdf").load();
     }
 
 }
