@@ -405,7 +405,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             for (int j = 0; j < testNodepade.getTookTricksPerPlayerPerRound()[i].length; j++) {
                 testPlayerpoints1.append("  ");
 
-                if(actualRound-1>j) {
+                if(actualRound>j) {
 
                 
 
@@ -464,7 +464,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
                 testPlayerpoints1.append("  ");
 
-                if(actualRound-1>j) {
+                if(actualRound>j) {
 
                
 
@@ -733,15 +733,12 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             case 6:
                 tvActivePlayer6.setText(playersOnline.get(5));
                 tvActivePlayer6.setVisibility(View.VISIBLE);
-                break;
             case 5:
                 tvActivePlayer5.setText(playersOnline.get(4));
                 tvActivePlayer5.setVisibility(View.VISIBLE);
-                break;
             case 4:
                 tvActivePlayer4.setText(playersOnline.get(3));
                 tvActivePlayer4.setVisibility(View.VISIBLE);
-                break;
             case 3:
                 tvActivePlayer3.setText(playersOnline.get(2));
                 tvActivePlayer2.setText(playersOnline.get(1));
