@@ -5,7 +5,7 @@
     <string name="home_btn_settings">SETTINGS</string>
     <string name="home_btn_howToPlay">RULES</string>
     <string name="home_imgView_logo">Wizard Logo</string>
-    <string name="lobby_textView_title">LOBBY</string>
+    <string name="lobby_textView_title">Sign up</string>
     <string name="lobby_textView_serverResponse">Server Response: </string>
     <string name="lobby_btn_testServer">TEST SERVER</string>
     <string name="lobby_btn_connect">CONNECT TO SERVER</string>
