@@ -13,7 +13,6 @@ class GameData {
     private Notepad scores;
     private Color trump;
     private int roundsLeft;
-    private int dealer;
     private int activePlayer;
     private int betTricksCounter;
     private int activePlayerIndex;
@@ -26,7 +25,6 @@ class GameData {
         this.scores = stateMessage.getScores();
         this.trump = stateMessage.getTrump();
         this.roundsLeft = stateMessage.getRoundsLeft();
-        this.dealer = stateMessage.getDealer();
         this.activePlayer = stateMessage.getActivePlayer();
         this.betTricksCounter = stateMessage.getBetTricksCounter();
         this.activePlayerIndex = stateMessage.getActivePlayerIndex();

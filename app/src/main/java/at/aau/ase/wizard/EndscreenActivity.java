@@ -25,17 +25,12 @@ import static com.esotericsoftware.minlog.Log.info;
 
 public class EndscreenActivity extends AppCompatActivity {
 
-    private Button btnPlayAgain;
-    private Button btnExitGame;
-    private TextView tvMyPlayerScore;
-    private ListView lvRanking;
     private Player myPlayer;
 
     private WizardClient wizardClient;
     GameData gameData;
-    List <String> playersInRankingOrder = new ArrayList();
+    List <String> playersInRankingOrder = new ArrayList<>();
     List <String> playersOnline;
-    private EndscreenListAdapter arrayAdapter = null;
     int[][] totalPointsInRankingOrder;
     int[] actualIconID;
     Notepad endscreenScores;
@@ -47,24 +42,24 @@ public class EndscreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_endscreen);
 
-        tvMyPlayerScore = findViewById(R.id.tv_myPlayerScores);
-        btnPlayAgain = findViewById(R.id.btn_play_again);
+        TextView tvMyPlayerScore = findViewById(R.id.tv_myPlayerScores);
+        Button btnPlayAgain = findViewById(R.id.btn_play_again);
         btnPlayAgain.setOnClickListener(v -> playAgain());
-        btnExitGame = findViewById(R.id.btn_exit_game);
+        Button btnExitGame = findViewById(R.id.btn_exit_game);
         btnExitGame.setOnClickListener(v -> exitGame());
-        lvRanking = findViewById(R.id.lv_PlayerScores);
+        ListView lvRanking = findViewById(R.id.lv_PlayerScores);
 
         wizardClient = WizardClient.getInstance();
         startCallback();
 
-        String myPlayer = getIntent().getStringExtra("myPlayer");
-        this.myPlayer = new Gson().fromJson(myPlayer, Player.class);
-        String playersOnline = getIntent().getStringExtra("playersOnline");
-        this.playersOnline = new Gson().fromJson(playersOnline, List.class);
+        String myPlayerFromGameActivity = getIntent().getStringExtra("myPlayer");
+        this.myPlayer = new Gson().fromJson(myPlayerFromGameActivity, Player.class);
+        String playersOnlineFromGameActivity = getIntent().getStringExtra("playersOnline");
+        this.playersOnline = new Gson().fromJson(playersOnlineFromGameActivity, List.class);
         String scores = getIntent().getStringExtra("endscreenScores");
         this.endscreenScores = new Gson().fromJson(scores, Notepad.class);
         playersInRankingOrder = endscreenScores.getPlayerNamesList();
-        totalPointsInRankingOrder = new int[endscreenScores.playerNamesList.size()][1];
+        totalPointsInRankingOrder = new int[endscreenScores.getPlayerNamesList().size()][1];
         totalPointsInRankingOrder = endscreenScores.getTotalPointsPerPlayer();
         String sortedIconID = getIntent().getStringExtra("sortedIconID");
         actualIconID = new Gson().fromJson(sortedIconID, int[].class);
@@ -79,8 +74,8 @@ public class EndscreenActivity extends AppCompatActivity {
                 R.drawable.rank0default,
                 R.drawable.rank0default
         };
-       arrayAdapter = new EndscreenListAdapter(this, playersInRankingOrder, totalPointsInRankingOrder, icons, actualIconID);
-       lvRanking.setAdapter(arrayAdapter);
+        EndscreenListAdapter arrayAdapter = new EndscreenListAdapter(this, playersInRankingOrder, totalPointsInRankingOrder, icons, actualIconID);
+        lvRanking.setAdapter(arrayAdapter);
     }
 
     public void startCallback() {

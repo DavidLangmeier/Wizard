@@ -2,12 +2,13 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classe
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Notepad {
 
     private static int round = 0;
     private int[][] pointsPerPlayerPerRound;
-    public ArrayList<String> playerNamesList;
+    private List<String> playerNamesList;
 
     private int[][] betTricksPerPlayerPerRound;
     private int[][] tookTricksPerPlayerPerRound;
@@ -74,11 +75,11 @@ public class Notepad {
         return tookTricksPerPlayerPerRound;
     }
 
-    public ArrayList<String> getPlayerNamesList() {
+    public List<String> getPlayerNamesList() {
         return playerNamesList;
     }
 
-    public void setPlayerNamesList(ArrayList<String> playerNamesList) {
+    public void setPlayerNamesList(List<String> playerNamesList) {
         this.playerNamesList = playerNamesList;
     }
 
@@ -110,5 +111,6 @@ public class Notepad {
         }
 
     }
+
 
 }

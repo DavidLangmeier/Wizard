@@ -14,9 +14,7 @@ import static com.esotericsoftware.minlog.Log.*;
  */
 public class WizardClient extends NetworkClientKryo {
 
-
-    //private String hostname = "192.168.0.113";
-    private String hostname = "se2-demo.aau.at";
+    private String hostname = "se2-demo.aau.at"; // set here the IP of the server where WizardServer is running
 
     private static WizardClient wizardClient = null;
 
@@ -61,8 +59,13 @@ public class WizardClient extends NetworkClientKryo {
         ).start();
     }
 
+    @Override
     public void disconnect() {
         super.disconnect();
-        this.wizardClient = null;
+        resetWizardClient();
+    }
+
+    private static void resetWizardClient() {
+        WizardClient.wizardClient = null;
     }
 }

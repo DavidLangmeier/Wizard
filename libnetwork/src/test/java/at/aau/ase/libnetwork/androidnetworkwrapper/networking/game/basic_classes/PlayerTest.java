@@ -16,19 +16,19 @@ public class PlayerTest {
     @Test
     public void testForSettingAndGetID0() {
         p1 = new Player("Luki");
-        Assert.assertEquals(0, p1.getPlayer_id());
+        Assert.assertEquals(0, p1.getPlayerId());
     }
 
     @Test
     public void testForSettingAndGetID1() {
         p2 = new Player("Andi");
-        Assert.assertEquals(1, p2.getPlayer_id());
+        Assert.assertEquals(1, p2.getPlayerId());
     }
 
     @Test
     public void testForSettingAndGetID2() {
         p3 = new Player("Kevin");
-        Assert.assertEquals(2, p3.getPlayer_id());
+        Assert.assertEquals(2, p3.getPlayerId());
     }
 
     @Test
