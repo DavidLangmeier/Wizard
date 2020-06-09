@@ -368,8 +368,10 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     //Tatsächliche Stiche (switch) für Nodepad
-    private void actualTricks(Notepad testNodepade, int actualRound) {
-        String tricksPerRound = "Stiche per Runde";
+
+    private void actualTricks(Notepad testNodepade,int actualRound) {
+        String tricksPerRound = "Tricks per round";
+
         TextView npVorherSagePlayerFalse;
         TextView npTextChangePointsStiche;
 
@@ -403,7 +405,11 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             StringBuilder testPlayerpoints1 = new StringBuilder();
             for (int j = 0; j < testNodepade.getTookTricksPerPlayerPerRound()[i].length; j++) {
                 testPlayerpoints1.append("  ");
-                if (actualRound > j) {
+
+                if(actualRound-1>j) {
+
+                
+
                     testPlayerpoints1.append(String.valueOf(testNodepade.getTookTricksPerPlayerPerRound()[i][j]));
                     testPlayerpoints1.append(System.lineSeparator());
                 } else {
@@ -423,7 +429,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     //Erreichten Punkte für Nodepad (switch)
     private void actualPoints(Notepad testNodepade, int actualRound) {
-        String pointsPerRound = "Punkte per Runde";
+        String pointsPerRound = "Points per round";
         TextView npVorherSagePlayerTrue;
         TextView npTextChangePointsStiche;
 
@@ -458,7 +464,11 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             StringBuilder testPlayerpoints1 = new StringBuilder();
             for (int j = 0; j < testNodepade.getPointsPerPlayerPerRound()[i].length; j++) {
                 testPlayerpoints1.append("  ");
-                if (actualRound > j) {
+
+                if(actualRound-1>j) {
+
+               
+
                     testPlayerpoints1.append(String.valueOf(testNodepade.getPointsPerPlayerPerRound()[i][j]));
                     testPlayerpoints1.append(System.lineSeparator());
                 } else {

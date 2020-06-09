@@ -41,7 +41,7 @@
             android:height="30dp"
             android:width="25dp"
             android:textColor="@color/colorWhite"
-            android:text="Summe"
+            android:text="Sum"
             android:singleLine="true"
             android:textSize="8dp"
             android:layout_width="wrap_content"
@@ -336,7 +336,7 @@
             android:id="@+id/tv_stichepunkte"
             android:layout_width="221dp"
             android:layout_height="wrap_content"
-            android:text="Punkte per Runde"
+            android:text="Points per round"
             android:textColor="@color/colorWhite" />
 
     </TableRow>
