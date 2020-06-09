@@ -1,8 +1,7 @@
-# Wizard Cardgame for Android implemented in Java
+# Wizard Cardgame for Android implemented in Java :coffee:
 [![Build Status](https://travis-ci.com/DavidLangmeier/Wizard.svg?branch=master)](https://travis-ci.com/DavidLangmeier/Wizard)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Wizard&metric=alert_status)](https://sonarcloud.io/dashboard?id=Wizard)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Wizard&metric=coverage)](https://sonarcloud.io/dashboard?id=Wizard)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Wizard&metric=ncloc)](https://sonarcloud.io/dashboard?id=Wizard)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Wizard&metric=code_smells)](https://sonarcloud.io/dashboard?id=Wizard)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Wizard&metric=bugs)](https://sonarcloud.io/dashboard?id=Wizard)
 
@@ -10,7 +9,8 @@
 ## Description
 Wizard is a popular multiplayer cardgame for 3-6 players. It is played with a deck of 60 cards, which consist of 4 different colors.
 There are also 2 special colored cards: Wizards and Jesters, which have special meaning. Both can always be played but the first Wizard played in a trick
-always wins the trick whereas the Jesters can't win a trick at all and serve only to save special cards for the next trick.
+always wins the trick whereas the Jesters in general can't win a trick at all, except in the case only Jesters are played, then the first Jester
+played wins, and basically serve only to save great cards for the next trick.
 
 ## Rules
 In the first round every player gets one card. In the subsequent rounds the number of cards is increased
@@ -41,8 +41,8 @@ Since cheating works per round, cheaters can only be called out if they cheated 
 Past rounds are not considered anymore, meaning that they got away with it.
 
 To call out the cheater use the light sensor of your android device and a Pop-up window will appear.
-Select the player which could be a cheater and if you detect right, the cheater will get minus points. Should
-the tip be wrong you will get minus points.
+Select the player which could be a cheater and if you detect right and the player actually cheated he'll get -10 penalty
+points and you'll get +10  bonus points. Should the tip be wrong you will get -10 penalty points.
 
 ## Technical Details
 The game was developed using Android Studio and Android target SDK version 28, but should also work
