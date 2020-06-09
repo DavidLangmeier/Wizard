@@ -258,6 +258,7 @@ public class Game {
                 info("GAME: Last round played, Game is complete.");
                 server.broadcastMessage(new TextMessage("Last round played, Game is complete."));
 
+                waitSafe(WizardConstants.TIME_TO_WAIT_LONG);
                 // End-Msg should trigger the client going to Endscreen Activity
                 server.broadcastMessage(new ActionMessage(END));
             }
