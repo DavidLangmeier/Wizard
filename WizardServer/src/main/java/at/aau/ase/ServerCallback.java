@@ -135,7 +135,7 @@ public class ServerCallback implements Callback<BaseMessage> {
         if (playerLeaving != null) { // Player closed app
             info("User " + playerLeaving.getName() + " left: " + msg.getGoodbye());
             for (Player p : players) {
-                if (p.getPlayer_id() == playerLeaving.getConnectionID()) {
+                if (p.getPlayerId() == playerLeaving.getConnectionID()) {
                     this.players.remove(p);
                 }
             }
@@ -189,11 +189,11 @@ public class ServerCallback implements Callback<BaseMessage> {
     private void handleEndscreenMessage(EndscreenMessage message) {
         EndscreenMessage msg = message;
         Notepad endscreenScores = new Notepad();
-        List playersInRankingOrder = calculations.sortPlayersByRanking(msg.getScores().getTotalPointsPerPlayer(), msg.getScores().getPlayerNamesList());
+        List<String> playersInRankingOrder = calculations.sortPlayersByRanking(msg.getScores().getTotalPointsPerPlayer(), msg.getScores().getPlayerNamesList());
         int[][] totalPointsInRankingOrder = calculations.sortPlayerTotalPointsByRanking(msg.getScores().getTotalPointsPerPlayer(), msg.getScores().getPlayerNamesList());
         debug("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + Arrays.deepToString(totalPointsInRankingOrder));
         int[] imageID = calculations.setActualIconID(totalPointsInRankingOrder);
-        endscreenScores.setPlayerNamesList((ArrayList<String>) playersInRankingOrder);
+        endscreenScores.setPlayerNamesList(playersInRankingOrder);
         endscreenScores.setTotalPointsPerPlayer(totalPointsInRankingOrder);
         server.broadcastMessage(new EndscreenMessage(endscreenScores, imageID));
     }

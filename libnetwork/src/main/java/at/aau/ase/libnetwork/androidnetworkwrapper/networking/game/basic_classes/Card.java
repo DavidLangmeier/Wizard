@@ -8,7 +8,7 @@ public class Card implements Comparable<Card>{
     private Color color;
     private Value value;
     static AtomicInteger nextID = new AtomicInteger();
-    private int card_id;
+    private int cardId;
     private int playedBy;
 
     public Card() {}
@@ -16,14 +16,14 @@ public class Card implements Comparable<Card>{
     public Card(Color color, Value value) {
         this.color = color;
         this.value = value;
-        this.card_id = nextID.incrementAndGet() -1;
+        this.cardId = nextID.incrementAndGet() -1;
     }
 
     @Override
     public int compareTo(Card card) {
-        if (this.card_id < card.getCard_id()) {
+        if (this.cardId < card.getCardId()) {
             return -1;
-        } else if (this.card_id > card.getCard_id()) {
+        } else if (this.cardId > card.getCardId()) {
             return 1;
         } else {
             return 0;
@@ -53,8 +53,8 @@ public class Card implements Comparable<Card>{
         this.playedBy = playedBy;
     }
 
-    public int getCard_id() {
-        return card_id;
+    public int getCardId() {
+        return cardId;
     }
 
     public String toString() {

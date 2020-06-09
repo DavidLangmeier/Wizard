@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Player implements Serializable {
     static AtomicInteger nextID = new AtomicInteger();
-    private int player_id;
+    private int playerId;
     String name;
     private Integer connectionID;
 
@@ -14,7 +14,7 @@ public class Player implements Serializable {
 
     public Player(String name){
         //sets unique Player-ID starting with 0 -> equals to position in 2D Array pointsPerPlayerPerRound in Notepad
-        this.player_id = nextID.incrementAndGet() -1;
+        this.playerId = nextID.incrementAndGet() -1;
         this.name = name;
     }
 
@@ -32,8 +32,8 @@ public class Player implements Serializable {
         return name;
     }
 
-    public int getPlayer_id() {
-        return this.player_id;
+    public int getPlayerId() {
+        return this.playerId;
     }
     public Integer getConnectionID() {
         return connectionID;

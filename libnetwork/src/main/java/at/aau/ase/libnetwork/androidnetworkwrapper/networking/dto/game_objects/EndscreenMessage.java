@@ -1,12 +1,8 @@
 package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects;
 
-import java.util.List;
-
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 
 public class EndscreenMessage extends BaseMessage {
-    private int [][] sortedTotalPoints;
-    private List sortedplayerNames;
     private int [] imageID;
     Notepad scores;
 

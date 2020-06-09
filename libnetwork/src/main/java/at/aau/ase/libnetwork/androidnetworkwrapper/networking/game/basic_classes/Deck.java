@@ -1,7 +1,7 @@
 package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Deck extends Hand {
 
@@ -30,7 +30,7 @@ public class Deck extends Hand {
     }
 
     public void shuffle() {
-        ArrayList<Card> cards = this.getCards();
+        List<Card> cards = this.getCards();
         Collections.shuffle(cards);
         this.setCards(cards);
     }

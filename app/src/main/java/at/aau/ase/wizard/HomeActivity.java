@@ -6,17 +6,14 @@ import android.os.Bundle;
 import android.widget.Button;
 
 public class HomeActivity extends AppCompatActivity {
-    private Button btnPlay;
-    private Button btnHowToPlay;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        btnPlay = (Button) findViewById(R.id.home_btn_play);
+        Button btnPlay = findViewById(R.id.home_btn_play);
         btnPlay.setOnClickListener(v -> openLobbyActivity());
-        btnHowToPlay = (Button) findViewById(R.id.home_btn_howToPlay);
+        Button btnHowToPlay = (Button) findViewById(R.id.home_btn_howToPlay);
         btnHowToPlay.setOnClickListener(v -> openHowToPlayActivity());
     }
 

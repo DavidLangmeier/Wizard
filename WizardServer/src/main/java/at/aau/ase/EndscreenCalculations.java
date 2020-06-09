@@ -20,7 +20,7 @@ public class EndscreenCalculations {
         return sortedIndices;
     }
 
-    List sortPlayersByRanking(int[][] totalPointsPerPlayer, List<String> playerNames) {
+    List<String> sortPlayersByRanking(int[][] totalPointsPerPlayer, List<String> playerNames) {
         int[] index = rankingIndices(totalPointsPerPlayer);
         info(Arrays.toString(index));
         List<String> playersInRankingOrder = new ArrayList<>();

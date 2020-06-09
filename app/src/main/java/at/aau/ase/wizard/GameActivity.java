@@ -142,8 +142,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         tvActivePlayer4.setVisibility(View.INVISIBLE);
         tvActivePlayer5.setVisibility(View.INVISIBLE);
         tvActivePlayer6.setVisibility(View.INVISIBLE);
-        //fills player names in correct Textview);
-        runOnUiThread(this::setPlayerViews);
+        runOnUiThread(this::setPlayerViews); // fills player names in correct Textview
 
         viewPager2 = findViewById(R.id.viewPagerImageSlieder);
         mp3 = MediaPlayer.create(this, R.raw.karte0runterlegen);
@@ -191,7 +190,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         info("....................getPointsPerPlayerPerRound......................" + Arrays.deepToString(gameData.getScores().getPointsPerPlayerPerRound()));
         info("....................getBetTricksPerPlayerPerRound......................" + Arrays.deepToString(gameData.getScores().getBetTricksPerPlayerPerRound()));
         info(".....................getTookTricksPerPlayerPerRound....................." + Arrays.deepToString(gameData.getScores().getTookTricksPerPlayerPerRound()));
-        info("......................playerNamesList...................." + (gameData.getScores().playerNamesList));
+        info("......................playerNamesList...................." + (gameData.getScores().getPlayerNamesList()));
 
         info(".....................getRoundsLeft...................................." + (gameData.getRoundsLeft()));
         info(".....................ActivePlayer.................................." + (gameData.getActivePlayer()));
@@ -218,7 +217,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         //Befüllung der Runden Zahl
         fillRoundsNumber(gameDataScores);
         //Player Namen Nodepad Befüllung
-        showNamesOfPlayers((ArrayList<String>) playersOnline);
+        showNamesOfPlayers(playersOnline);
         //Aktuelle Punkte Nodepad Befüllung
         actualPoints(gameDataScores, actualRound);
         //Vorhersage Stiche Nodepad Befüllung
@@ -255,7 +254,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         npRounds.setText(round.toString());
     }
 
-    public void showNamesOfPlayers(ArrayList<String> playersOnline) {
+    public void showNamesOfPlayers(List<String> playersOnline) {
         TextView npPlayerNames;
 
         for (int i = 0; i < playersOnline.size(); i++) {
@@ -580,9 +579,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                 }
 
                 if (gameData.getActivePlayer() == (myPlayer.getConnectionID())) {
-                    runOnUiThread(() -> {
-                        btnPlaySelectedCard.setEnabled(true);
-                    });
+                    runOnUiThread(() -> btnPlaySelectedCard.setEnabled(true));
 
                     if (gameData.getBetTricksCounter() < gameData.getScores().getTotalPointsPerPlayer().length) {
                         info("!!!!!!!!! Trickround: " + gameData.getBetTricksCounter() + " score size: " + gameData.getScores().getTotalPointsPerPlayer().length);
@@ -603,7 +600,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                             btnPlaySelectedCard.setEnabled(false));
                 }
 
-                ArrayList<Card> cardsOnTable = gameData.getTable().getCards();
+                List<Card> cardsOnTable = gameData.getTable().getCards();
                 runOnUiThread(() -> showTableCards(cardsOnTable));
                 runOnUiThread(this::setTvActivePlayer);
 
@@ -627,7 +624,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             } else if (basemessage instanceof ActionMessage) { // A player closed the app, so stop game and show current points as endresult
                 if (((ActionMessage) basemessage).getActionType() == END) {
                     info("GAME_ACTIVITY: END received. - Trying to start endscreen activity.");
-                    gameData.getScores().setPlayerNamesList((ArrayList<String>) playersOnline); // to access in Endscreen
+                    gameData.getScores().setPlayerNamesList(playersOnline); // to access in Endscreen
                     Notepad endscreenScores = gameData.getScores();
                     debug("------------+++++++++++++++--------------" + Arrays.deepToString(endscreenScores.getTotalPointsPerPlayer()));
                     wizardClient.sendMessage(new EndscreenMessage(endscreenScores)); //prepare for Endscreen
@@ -662,9 +659,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         info("GAME_ACTIVITY: READY sent.");
     }
 
-    public void showTrump() {
-    }
-
     //------------Methode SPIELKARTEN vom Server Anzeigen in spielhand//--------------------------
     public void addCardsToSlideView(List<Card> ppPlayerCards) {
         final String defTypedrawable = "drawable";
@@ -682,7 +676,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                 sliderItems.add(new SliderItem(id, ppPlayerCards.get(i)));
             }
         }
-        viewPager2.setAdapter(sliderAdapter = new SliderAdapter(sliderItems));
+        sliderAdapter = new SliderAdapter(sliderItems);
+        viewPager2.setAdapter(sliderAdapter);
     }
 
     private void showTableCards(List<Card> cards) {
@@ -736,18 +731,21 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private void setPlayerViews() {
         switch (playersOnline.size()) {
             case 6:
-                tvActivePlayer6.setText(playersOnline.get(5).toString());
+                tvActivePlayer6.setText(playersOnline.get(5));
                 tvActivePlayer6.setVisibility(View.VISIBLE);
+                break;
             case 5:
-                tvActivePlayer5.setText(playersOnline.get(4).toString());
+                tvActivePlayer5.setText(playersOnline.get(4));
                 tvActivePlayer5.setVisibility(View.VISIBLE);
+                break;
             case 4:
-                tvActivePlayer4.setText(playersOnline.get(3).toString());
+                tvActivePlayer4.setText(playersOnline.get(3));
                 tvActivePlayer4.setVisibility(View.VISIBLE);
+                break;
             case 3:
-                tvActivePlayer3.setText(playersOnline.get(2).toString());
-                tvActivePlayer2.setText(playersOnline.get(1).toString());
-                tvActivePlayer1.setText(playersOnline.get(0).toString());
+                tvActivePlayer3.setText(playersOnline.get(2));
+                tvActivePlayer2.setText(playersOnline.get(1));
+                tvActivePlayer1.setText(playersOnline.get(0));
                 break;
 
             default:
