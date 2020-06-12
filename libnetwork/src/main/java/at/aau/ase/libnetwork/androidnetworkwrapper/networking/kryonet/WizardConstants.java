@@ -42,9 +42,8 @@ public class WizardConstants {
     /**
      * waiting times in ms
      */
-    public static final long TIME_TO_WAIT_SHORT = 3000;
-    public static final long TIME_TO_WAIT_MEDIUM = 5000;
-    public static final long TIME_TO_WAIT_LONG = 7000;
+    public static final long TIME_TO_WAIT_SHORT = 2500;
+    public static final long TIME_TO_WAIT_MEDIUM = 3000;
 
     /**
      * Classes to be send over the network. Since they need to be registered, just add them here to this array.
