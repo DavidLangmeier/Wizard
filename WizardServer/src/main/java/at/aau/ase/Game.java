@@ -245,7 +245,7 @@ public class Game {
             table.clear();
 
             // wait some time before sending cleared table
-            waitSafe(WizardConstants.TIME_TO_WAIT_MEDIUM);
+            waitSafe(WizardConstants.TIME_TO_WAIT_SHORT);
             cheatDetector.reset(); // Cheating can be checked for every round (roundwise), so reset to nobody is cheating at end of round
             broadcastGameState();
 
@@ -258,7 +258,7 @@ public class Game {
                 info("GAME: Last round played, Game is complete.");
                 server.broadcastMessage(new TextMessage("Last round played, Game is complete."));
 
-                waitSafe(WizardConstants.TIME_TO_WAIT_LONG);
+                waitSafe(WizardConstants.TIME_TO_WAIT_MEDIUM);
                 // End-Msg should trigger the client going to Endscreen Activity
                 server.broadcastMessage(new ActionMessage(END));
             }
