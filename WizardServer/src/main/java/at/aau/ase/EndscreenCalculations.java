@@ -10,7 +10,7 @@ public class EndscreenCalculations {
 
 
 
-    int[] rankingIndices2(int[][] totalPointsPerPlayer) {
+    int[] rankingIndices(int[][] totalPointsPerPlayer) {
         int[][] localTotalPoints = new int[totalPointsPerPlayer.length][1];
         int[] sortedPoints = new int[totalPointsPerPlayer.length];
         for (int i = 0; i < totalPointsPerPlayer.length; i++) {
@@ -40,7 +40,7 @@ public class EndscreenCalculations {
     }
 
     List<String> sortPlayersByRanking(int[][] totalPointsPerPlayer, List<String> playerNames) {
-        int[] index = rankingIndices2(totalPointsPerPlayer);
+        int[] index = rankingIndices(totalPointsPerPlayer);
         info(Arrays.toString(index));
         List<String> playersInRankingOrder = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class EndscreenCalculations {
     }
 
     int[][] sortPlayerTotalPointsByRanking(int[][] totalPointsPerPlayer, List<String> playerNames) {
-        int[] index = rankingIndices2(totalPointsPerPlayer);
+        int[] index = rankingIndices(totalPointsPerPlayer);
         int[][] returnPPP = new int[totalPointsPerPlayer.length][1];
         for (int i = 0; i < playerNames.size(); i++) {
             returnPPP[i][0] = totalPointsPerPlayer[index[i]][0];

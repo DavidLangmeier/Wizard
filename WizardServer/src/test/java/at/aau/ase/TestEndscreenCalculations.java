@@ -34,13 +34,13 @@ public class TestEndscreenCalculations {
     @Test
     public void testRankingIndices() {
         int[] sortedByRankingIndices = {4, 3, 1, 0, 2};
-        Assert.assertArrayEquals(sortedByRankingIndices, calculations.rankingIndices2(totalPoints));
+        Assert.assertArrayEquals(sortedByRankingIndices, calculations.rankingIndices(totalPoints));
     }
 
     @Test
     public void testDoubleRankingIndices() {
         int[] sortedByRankingIndices = {5, 3, 0, 1, 2, 4};
-        Assert.assertArrayEquals(sortedByRankingIndices,calculations.rankingIndices2(totalPointsDoubled));
+        Assert.assertArrayEquals(sortedByRankingIndices,calculations.rankingIndices(totalPointsDoubled));
     }
 
     @Test
