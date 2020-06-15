@@ -2,22 +2,41 @@ package at.aau.ase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static com.esotericsoftware.minlog.Log.info;
 
 public class EndscreenCalculations {
 
 
-    int[] rankingIndices(int [][] totalPointsPerPlayer) {
-        int[][] a = totalPointsPerPlayer;
-        int[] sortedIndices = IntStream.range(0, a.length)
-                .boxed().sorted(Comparator.comparingInt(i -> a[i][0]))
-                .mapToInt(e -> e).toArray();
-        invert(sortedIndices);
+
+    int[] rankingIndices(int[][] totalPointsPerPlayer) {
+        int[][] localTotalPoints = new int[totalPointsPerPlayer.length][1];
+        int[] sortedPoints = new int[totalPointsPerPlayer.length];
+        for (int i = 0; i < totalPointsPerPlayer.length; i++) {
+            sortedPoints[i] = totalPointsPerPlayer[i][0];
+            localTotalPoints[i][0] = totalPointsPerPlayer[i][0];
+        }
+        Arrays.sort(sortedPoints);
+        invert(sortedPoints);
+        int[] sortedIndices = new int[totalPointsPerPlayer.length];
+        for (int i = 0; i < totalPointsPerPlayer.length; i++) {
+            sortedIndices[i] = findPositionOfElement(localTotalPoints, sortedPoints[i]);
+            localTotalPoints[sortedIndices[i]][0] = -3;
+        }
+
         return sortedIndices;
+    }
+
+    int findPositionOfElement(int[][] totalPointsPerPlayer, int x){
+        int position = -1;
+        for (int i = 0; i < totalPointsPerPlayer.length; i++) {
+            if(totalPointsPerPlayer[i][0] == x){
+                position = i;
+                break;
+            }
+        }
+        return position;
     }
 
     List<String> sortPlayersByRanking(int[][] totalPointsPerPlayer, List<String> playerNames) {
@@ -55,7 +74,7 @@ public class EndscreenCalculations {
 
     }
 
-    int [] invert(int[] array) {
+    int[] invert(int[] array) {
         for (int i = 0; i < array.length / 2; i++) {
             int temp = array[i];
             array[i] = array[array.length - 1 - i];
