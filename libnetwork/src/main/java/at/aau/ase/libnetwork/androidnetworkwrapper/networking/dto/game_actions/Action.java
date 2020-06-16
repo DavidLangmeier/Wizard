@@ -8,7 +8,8 @@ public enum Action {
     START(0, "Start game"),
     END(1, "End game"),
     READY(2, "I am ready"),
-    DEAL(3, "Deal cards");
+    DEAL(3, "Deal cards"),
+    EXIT(4, "Exit game");
 
 
     private final int actionCode;

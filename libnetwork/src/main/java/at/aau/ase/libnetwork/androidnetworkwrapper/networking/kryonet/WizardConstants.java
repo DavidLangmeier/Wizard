@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.Action;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CardMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.EndscreenMessage;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.CheatMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.ErrorMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.GoodbyeMessage;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects.HandMessage;
@@ -23,6 +25,9 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 
 public class WizardConstants {
 
+    public static final Integer CHEAT_PENALTY = 10;
+    public static final Integer CHEAT_DETECTION_BONUS = 10;
+
     /**
      * Minimum numbers of payers/clients necessary to access the to gamescreen button in the lobby.
      */
@@ -33,6 +38,12 @@ public class WizardConstants {
      */
     public static final Integer MULTIPLIER_TOOK_TRICKS = 10;
     public static final Integer ADDEND_BET_TRICKS_CORRECTLY = 20;
+
+    /**
+     * waiting times in ms
+     */
+    public static final long TIME_TO_WAIT_SHORT = 2500;
+    public static final long TIME_TO_WAIT_MEDIUM = 3000;
 
     /**
      * Classes to be send over the network. Since they need to be registered, just add them here to this array.
@@ -59,7 +70,9 @@ public class WizardConstants {
             NotePadMessage.class,
             ErrorMessage.class,
             GoodbyeMessage.class,
-            LifecycleMessage.class
+            LifecycleMessage.class,
+            EndscreenMessage.class,
+            CheatMessage.class
     };
 
     private WizardConstants() {}

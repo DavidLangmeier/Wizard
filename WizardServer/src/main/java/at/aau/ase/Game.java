@@ -2,6 +2,7 @@ package at.aau.ase;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_actions.ActionMessage;
@@ -15,6 +16,7 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Player;
+import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Value;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.kryonet.WizardConstants;
 
 import static com.esotericsoftware.minlog.Log.*;
@@ -39,6 +41,7 @@ public class Game {
     private int trickRoundTurn;
     private int betTricksCounter;
     private boolean clearBetTricks;
+    private CheatDetector cheatDetector;
 
 
     Game(WizardServer server, List<Player> players) {
@@ -48,7 +51,7 @@ public class Game {
         this.table = new Hand();
         this.scores = new Notepad((short) players.size());
         this.totalRounds = 60 / players.size();
-        this.currentRound = 1;
+        this.currentRound = 1; //to test EndScreenActivity
         this.trickRoundTurn = 0;
         this.betTricksCounter = 0;
         this.playerHands = new Hand[players.size()];
@@ -69,12 +72,21 @@ public class Game {
         // Send START to all users -> @client: trigger intent which starts gameActivity
         info("GAME: Broadcasting START now.");
         server.broadcastMessage(new ActionMessage(START));
+        server.broadcastMessage(new TextMessage("Shuffling and dealing cards..."));
+        waitSafe(WizardConstants.TIME_TO_WAIT_SHORT);
+        dealCards();
+        this.cheatDetector = new CheatDetectorImpl(this);
     }
 
     void broadcastGameState() {
         info("GAME: Broadcasting gameState");
-        server.broadcastMessage(new StateMessage(table, scores, trump, totalRounds, dealer, activePlayerID, betTricksCounter, clearBetTricks));
-        info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
+        try { //check necessary for not causing client disconnection in EndscreenActivity
+            server.broadcastMessage(new StateMessage(table, scores, trump, (totalRounds-currentRound), dealer, activePlayerID, betTricksCounter, clearBetTricks, activePlayerIndex));
+            info("GAME: DEALER = " + dealer + " ActivePlayer = " + activePlayerID);
+        }catch (Exception e){
+            debug("Client seem to be in EndScreen...");
+        }
+
     }
 
     void dealCards() {
@@ -83,7 +95,7 @@ public class Game {
         deck.shuffle();
 
         // deal cards to playerHands serverside | round=5 hardcoded, has to be changed later
-        for (int i = 0; i < currentRound; i++) {
+        for (int i = 0; i < currentRound; i++) { //to test EndscreenActivity
             for (int j = 0; j < players.size(); j++) {
                 info("GAME: Dealing to hand #" + j + " with players.size of " + players.size());
                 info("GAME: current card = " + deck.getCards().get(0).toString());
@@ -95,23 +107,24 @@ public class Game {
         HandMessage currentHandMessage = new HandMessage();
         for (int i = 0; i < players.size(); i++) {
             Hand currentHand = playerHands[i];
+            Collections.sort(currentHand.getCards());
             currentHandMessage.setHand(currentHand);
             server.sentTo(players.get(i).getConnectionID(), currentHandMessage);
             info("GAME: Hand sent for Player " + i);
             info(currentHand.showCardsInHand());
         }
 
-        trump = setTrump();
+        trump = checkTrump();
         activePlayerIndex = (currentRound + 1) % players.size();
         activePlayerID = players.get(activePlayerIndex).getConnectionID();
         broadcastGameState();
     }
 
-    Color setTrump() {
+    Color checkTrump() {
         Color trumpColor;
 
-        // set trump color, rounds 1-19 have a trump, 20 has no trump
-        if (currentRound != 20) {
+        // set trump color, rounds 1-19 have a trump, last round has no trump
+        if (currentRound != totalRounds) {
             trumpColor = deck.getCards().get(0).getColor();
             info("GAME: Current TRUMP = " + trumpColor.getColorName());
         } else {
@@ -120,7 +133,7 @@ public class Game {
 
         // if trump is wizard or jester a random color is set
         if (trumpColor == Color.WIZARD || trumpColor == Color.JESTER) {
-            info("GAME: Current TRUMP = " + trumpColor.getColorName() + "is not valid! Random color generating...");
+            info("GAME: Current TRUMP = " + trumpColor.getColorName() + " is not valid! Random color generating...");
             int randomNr = new SecureRandom().nextInt(3);
 
             switch (randomNr) {
@@ -146,10 +159,11 @@ public class Game {
             }
         }
 
-        if (trumpColor != null) {
+        if (currentRound < totalRounds) {
             server.broadcastMessage(new TextMessage("Current Trump is " + trumpColor.getColorName()));
+            info("GAME: Current TRUMP = " + trumpColor.getColorName());
         } else {
-            server.broadcastMessage(new TextMessage("Last round has no Trump!"));
+            server.broadcastMessage(new TextMessage("LAST ROUND HAS NO TRUMP!"));
         }
 
         return trumpColor;
@@ -174,6 +188,7 @@ public class Game {
             info(table.getCards().get(i) + " is now on Table!");
         }
         server.sentTo(activePlayerID, new HandMessage(playerHands[activePlayerIndex], clearBetTricks));
+        cheatDetector.update(cardToPutOnTable);
 
         checkCurrentTrickRound();
         updateDealerAndActivePlayer();
@@ -214,12 +229,7 @@ public class Game {
             info("GAME: Trick complete. Table cleared - new trickRound starting.");
 
             // wait some time before sending cleared table
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                error("Error while waiting to send \"cleared table\". Trick complete but current round is still incomplete.", e);
-                Thread.currentThread().interrupt();
-            }
+            waitSafe(WizardConstants.TIME_TO_WAIT_SHORT);
             broadcastGameState();
 
             // trick is complete, current round is over
@@ -235,17 +245,12 @@ public class Game {
             table.clear();
 
             // wait some time before sending cleared table
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                error("Error while waiting to send \"cleared table\". Trick complete and current round is over.", e);
-                Thread.currentThread().interrupt();
-            }
-
+            waitSafe(WizardConstants.TIME_TO_WAIT_SHORT);
+            cheatDetector.reset(); // Cheating can be checked for every round (roundwise), so reset to nobody is cheating at end of round
             broadcastGameState();
 
             // check if round was the last round of the game
-            if (currentRound < 20) {
+            if (currentRound < totalRounds) {
                 currentRound++;
                 dealer = players.get((currentRound - 1) % (players.size())).getConnectionID();
                 dealCards();
@@ -253,13 +258,7 @@ public class Game {
                 info("GAME: Last round played, Game is complete.");
                 server.broadcastMessage(new TextMessage("Last round played, Game is complete."));
 
-                // wait some time before sending Action END
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    error("Error while waiting to send \"Action END\".", e);
-                    Thread.currentThread().interrupt();
-                }
+                waitSafe(WizardConstants.TIME_TO_WAIT_MEDIUM);
                 // End-Msg should trigger the client going to Endscreen Activity
                 server.broadcastMessage(new ActionMessage(END));
             }
@@ -285,7 +284,7 @@ public class Game {
             }
 
             // if current highest card has not trump color but compared card has trump color
-            else if ((currentRound != 20) && (highestCard.getColor() != trump) &&
+            else if ((currentRound != totalRounds) && (highestCard.getColor() != trump) &&
                     (card.getColor() == trump)) {
                 highestCard = card;
             }
@@ -296,7 +295,7 @@ public class Game {
                 highestCard = card;
             }
         }
-        String trickWinner = "Card: " + highestCard.toString() + " played by " + players.get(highestCard.getPlayedBy()).getName()
+        String trickWinner = highestCard.toString() + " played by " + players.get(highestCard.getPlayedBy()).getName()
                 + " has won the last trick";
         info("GAME: " + trickWinner);
         server.broadcastMessage(new TextMessage(trickWinner));
@@ -329,22 +328,20 @@ public class Game {
         int pointsPerPlayerPerRound;
         for (int i = 0; i < players.size(); i++) {
             if (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1] == scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]) {
-                pointsPerPlayerPerRound = (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
+                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[i][currentRound-1];
+                pointsPerPlayerPerRound = previousPointsPerPlayerPerRound + (scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) * WizardConstants.MULTIPLIER_TOOK_TRICKS + WizardConstants.ADDEND_BET_TRICKS_CORRECTLY;
                 info("IF Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
+                scores.setPointsPerPlayerPerRound(i, pointsPerPlayerPerRound, currentRound);
                 info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
-                scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
             } else {
-                pointsPerPlayerPerRound = (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]));
+                int previousPointsPerPlayerPerRound = scores.getPointsPerPlayerPerRound()[i][currentRound-1];
+                pointsPerPlayerPerRound = previousPointsPerPlayerPerRound + (-1) * WizardConstants.MULTIPLIER_TOOK_TRICKS * Math.abs((scores.getBetTricksPerPlayerPerRound()[i][currentRound - 1]) - (scores.getTookTricksPerPlayerPerRound()[i][currentRound - 1]));
                 info("ELSE Player " + players.get(i).getName() + " with PlayerID: " + i + " made " + pointsPerPlayerPerRound + " points!");
+                scores.setPointsPerPlayerPerRound(i, pointsPerPlayerPerRound, currentRound);
                 info(Arrays.deepToString(scores.getPointsPerPlayerPerRound()));
-                scores.setPointsPerPlayerPerRound(players.get(i).getConnectionID() - 1, pointsPerPlayerPerRound, currentRound);
             }
         }
         server.broadcastMessage(new NotePadMessage(this.scores));
-    }
-
-    boolean isGamerunning() {
-        return gamerunning;
     }
 
     //checks if bet is allowed
@@ -370,6 +367,183 @@ public class Game {
     //checks if player is last player of this trickround
     boolean checkBetTricksCounter() {
         return betTricksCounter < players.size() - 1;
+    }
+
+    void waitSafe(long timeToWait) {
+        try {
+            Thread.sleep(timeToWait);
+        } catch (InterruptedException e) {
+            error("GAME: Error while waiting.", e);
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public Color getActiveColor() {
+        List<Card> cardsOnTable = table.getCards();
+        if (cardsOnTable != null) {
+            Card[] cardsToCheck = cardsOnTable.toArray(new Card[0]);
+            Color activeColor = findActiveColor(cardsToCheck);
+            info("=============> CHEATING: active color = " + activeColor);
+            return activeColor;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Return active color of the current round /cards on table
+     * @param cardsOnTable
+     * @return
+     * Returns color of first card if first card is not a wizard or jester.
+     * Returns null in case first card is wizard, since active color doesn't matter. Wizard already won the round.
+     * In case first card in a jester, look at second card. If this is again a jester look for 3rd card. And so on.
+     */
+    private Color findActiveColor(Card[] cardsOnTable) {
+        Color activeColor = null;
+        if (cardsOnTable.length != 0) {
+            if (cardsOnTable[0].getValue() != Value.JESTER && cardsOnTable[0].getValue() != Value.WIZARD) {
+                activeColor = cardsOnTable[0].getColor();
+            } else if (cardsOnTable[0].getValue() == Value.WIZARD) {
+                activeColor = null;
+            } else if (cardsOnTable[0].getValue() == Value.JESTER) {
+                activeColor = findActiveColor(Arrays.copyOfRange(cardsOnTable, 1, cardsOnTable.length));
+            }
+        }
+        return activeColor;
+    }
+
+    /**
+     * Update scoreboard with penalty and bonus for cheater and checker
+     * @param isCheating boolean, if suspected player is actually cheating or not
+     * @param playerSuspectedOfCheating, String of the playerName suspected to be cheating
+     * @param playerChecking, String of the playerName checking if the other one is cheating
+     */
+    public void updateScoresCheating(boolean isCheating, String playerSuspectedOfCheating, String playerChecking) {
+        int playerCheatingIdx = matchPlayerNameToPlayerIdx(playerSuspectedOfCheating);
+        int playerCheckingIdx = matchPlayerNameToPlayerIdx(playerChecking);
+        if (isCheating) { // Punish cheater and bonus for checker
+            int newscoreCheater = scores.getPointsPerPlayerPerRound()[playerCheatingIdx][currentRound-1] - WizardConstants.CHEAT_PENALTY;
+            int newscoreChecker = scores.getPointsPerPlayerPerRound()[playerCheckingIdx][currentRound-1] + WizardConstants.CHEAT_DETECTION_BONUS;
+            scores.setPointsPerPlayerPerRound(playerCheatingIdx, newscoreCheater, currentRound);
+            scores.setPointsPerPlayerPerRound(playerCheckingIdx, newscoreChecker, currentRound);
+        } else { // Punish checker
+            int newscoreChecker = scores.getPointsPerPlayerPerRound()[playerCheckingIdx][currentRound-1] - WizardConstants.CHEAT_PENALTY;
+            scores.setPointsPerPlayerPerRound(playerCheckingIdx, newscoreChecker, currentRound);
+        }
+    }
+
+    public int matchPlayerNameToPlayerIdx(String playerToMatch) {
+        int playerIdx = -1;
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getName().equals(playerToMatch)) {
+                playerIdx = i;
+            }
+        }
+        return playerIdx;
+    }
+
+    // ########################### GETTERS BELOW
+
+    public int getActivePlayerIndex() {
+        return activePlayerIndex;
+    }
+
+    public int getActivePlayerID() {
+        return activePlayerID;
+    }
+
+    public int getBetTricksCounter() {
+        return betTricksCounter;
+    }
+
+    public int getCurrentRound() {
+        return currentRound;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public Notepad getScores() {
+        return scores;
+    }
+
+    public Hand[] getPlayerHands() {
+        return playerHands;
+    }
+
+    public Color getTrump() {
+        return trump;
+    }
+
+    public CheatDetector getCheatDetector() {
+        return cheatDetector;
+    }
+
+    public int getTotalRounds() {
+        return totalRounds;
+    }
+
+    public int getTrickRoundTurn() {
+        return trickRoundTurn;
+    }
+
+    public boolean isGamerunning() {
+        return gamerunning;
+    }
+
+    // ########################### SETTERS BELOW
+
+    public void setGamerunning(boolean gamerunning) {
+        this.gamerunning = gamerunning;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
+    }
+
+    public void setTable(Hand table) {
+        this.table = table;
+    }
+
+    public void setScores(Notepad scores) {
+        this.scores = scores;
+    }
+
+    public void setCurrentRound(int currentRound) {
+        this.currentRound = currentRound;
+    }
+
+    public void setPlayerHands(Hand[] playerHands) {
+        this.playerHands = playerHands;
+    }
+
+    public void setTrump(Color trump) {
+        this.trump = trump;
+    }
+
+    public void setDealer(int dealer) {
+        this.dealer = dealer;
+    }
+
+    public void setActivePlayerIndex(int activePlayerIndex) {
+        this.activePlayerIndex = activePlayerIndex;
+    }
+
+    public void setTrickRoundTurn(int trickRoundTurn) {
+        this.trickRoundTurn = trickRoundTurn;
+    }
+
+    public void setBetTricksCounter(int betTricksCounter) {
+        this.betTricksCounter = betTricksCounter;
+    }
+
+    public void setCheatDetector(CheatDetector cheatDetector) {
+        this.cheatDetector = cheatDetector;
     }
 }
 

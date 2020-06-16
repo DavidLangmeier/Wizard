@@ -7,66 +7,68 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Notepad;
 
-public class GameData {
+class GameData {
     private Hand table;
     private Hand myHand;
     private Notepad scores;
     private Color trump;
     private int roundsLeft;
-    private int dealer;
     private int activePlayer;
     private int betTricksCounter;
+    private int activePlayerIndex;
 
-    public GameData() {}
+    GameData() {
+    }
 
-    public void updateState(StateMessage stateMessage) {
+    void updateState(StateMessage stateMessage) {
         this.table = stateMessage.getTable();
         this.scores = stateMessage.getScores();
         this.trump = stateMessage.getTrump();
         this.roundsLeft = stateMessage.getRoundsLeft();
-        this.dealer = stateMessage.getDealer();
         this.activePlayer = stateMessage.getActivePlayer();
         this.betTricksCounter = stateMessage.getBetTricksCounter();
+        this.activePlayerIndex = stateMessage.getActivePlayerIndex();
     }
 
-    public void setMyHand(HandMessage handMessage) {
+    void setMyHand(HandMessage handMessage) {
         this.myHand = handMessage.getHand();
     }
 
-    public void setScores(NotePadMessage notePadMessage) {
+    void setScores(NotePadMessage notePadMessage) {
         this.scores = notePadMessage.getScores();
     }
 
-    public Hand getTable() {
+    Hand getTable() {
         return table;
     }
 
-    public Hand getMyHand() {
+    Hand getMyHand() {
         return myHand;
     }
 
-    public Notepad getScores() {
+    Notepad getScores() {
         return scores;
     }
 
-    public Color getTrump() {
+    Color getTrump() {
         return trump;
     }
 
-    public int getRoundsLeft() {
+    int getRoundsLeft() {
         return roundsLeft;
     }
 
-    public int getDealer() {
-        return dealer;
-    }
 
-    public int getActivePlayer() {
+    int getActivePlayer() {
         return activePlayer;
     }
 
-    public int getBetTricksCounter() {
+    int getBetTricksCounter() {
         return betTricksCounter;
+    }
+
+    int getActivePlayerIndex() {
+        return activePlayerIndex;
     }
 }
 

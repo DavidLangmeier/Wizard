@@ -3,12 +3,12 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classe
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Card {
+public class Card implements Comparable<Card>{
 
     private Color color;
     private Value value;
     static AtomicInteger nextID = new AtomicInteger();
-    private int card_id;
+    private int cardId;
     private int playedBy;
 
     public Card() {}
@@ -16,9 +16,21 @@ public class Card {
     public Card(Color color, Value value) {
         this.color = color;
         this.value = value;
-        this.card_id = nextID.incrementAndGet() -1;
+        this.cardId = nextID.incrementAndGet() -1;
     }
-//To find out the ID für Drafwable: jps combination  Color &Zero & Name
+
+    @Override
+    public int compareTo(Card card) {
+        if (this.cardId < card.getCardId()) {
+            return -1;
+        } else if (this.cardId > card.getCardId()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    //To find out the ID für Drafwable: jps combination  Color &Zero & Name
     public String getPictureFileId(){
         String fileIDPicture="";
         fileIDPicture=color.getColorName().toLowerCase()+"0"+value.getValueName().toLowerCase();
@@ -41,8 +53,8 @@ public class Card {
         this.playedBy = playedBy;
     }
 
-    public int getCard_id() {
-        return card_id;
+    public int getCardId() {
+        return cardId;
     }
 
     public String toString() {

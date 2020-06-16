@@ -1,16 +1,15 @@
 package at.aau.ase.wizard;
 
-import android.content.Context;
+
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
+
 
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -23,20 +22,20 @@ import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes
 public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderViewHolder> {
 
     private List<SliderItem> sliderItems;
-    private ViewPager2 viewPager2;
     private int selectedICard=0;
     private Card selectedCard;
+    private int positionIfnothingIsSelected;
 
-
-    SliderAdapter(List<SliderItem> sliderItems, ViewPager2 viewPager2) {
+    SliderAdapter(List<SliderItem> sliderItems) {
         this.sliderItems = sliderItems;
-        this.viewPager2 = viewPager2;
     }
 
 
     @NonNull
     @Override
     public SliderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //Spielt die Karte aus die Gelb Hinterlegt ist
+        selectedCard=sliderItems.get(positionIfnothingIsSelected).getSelectedCard();
         return new SliderViewHolder(
                 LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.slide_card_container,
@@ -52,9 +51,9 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
         //Hintergrundfarbe bei Auswählen Bild  GELB
         if(selectedICard==position){
-            holder.imageView.setBackgroundColor(Color.parseColor("#fcdb19"));
+            holder.imageView.setBackgroundColor(Color.parseColor("#fffff0"));
         }else{
-            holder.imageView.setBackgroundColor(Color.parseColor("#3c822f"));
+            holder.imageView.setBackgroundColor(Color.parseColor("#197331")); //#197331 3c822f
         }
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,8 +61,9 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                 int previousSelectetItem=selectedICard;
                 selectedICard=position;
                 notifyItemChanged(previousSelectetItem);
-                holder.imageView.setBackgroundColor(Color.parseColor("#fcdb19"));
+                holder.imageView.setBackgroundColor(Color.parseColor("#fffff0"));  //fcdb19
                 selectedCard = sliderItems.get(position).getSelectedCard();
+                positionIfnothingIsSelected =position;
             }
         });
     }

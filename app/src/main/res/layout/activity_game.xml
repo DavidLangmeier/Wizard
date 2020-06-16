@@ -4,11 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#197331"
+    android:background="@drawable/background_green"
     tools:context=".GameActivity">
-
-
-
 
 
     <androidx.viewpager2.widget.ViewPager2
@@ -19,12 +16,11 @@
         android:layout_marginBottom="198dp"
         android:paddingStart="160dp"
         android:paddingEnd="158dp"
-        android:scaleType="fitXY"
+        android:scaleType="fitStart"
         app:layout_constraintBottom_toTopOf="@+id/play_Card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.499"
-        app:layout_constraintStart_toStartOf="parent">
-    </androidx.viewpager2.widget.ViewPager2>
+        app:layout_constraintStart_toStartOf="parent"></androidx.viewpager2.widget.ViewPager2>
 
 
     <TextView
@@ -36,7 +32,6 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
         android:scaleType="fitXY"
-        android:text="@string/game_textView_title"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,46 +41,18 @@
         android:id="@+id/play_Card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/game_btn_dealOutCards"
-        android:layout_alignStart="@+id/game_btn_dealOutCards"
-        android:layout_alignEnd="@+id/game_btn_dealOutCards"
+        android:layout_above="@id/game_btn_showNodepad"
+        android:layout_alignStart="@id/game_btn_showNodepad"
+        android:layout_alignEnd="@id/game_btn_showNodepad"
         android:layout_marginStart="19dp"
         android:layout_marginEnd="21dp"
         android:layout_marginBottom="12dp"
         android:scaleType="fitXY"
         android:text="@string/play_card"
-        app:layout_constraintBottom_toTopOf="@+id/game_btn_dealOutCards"
+        android:background="@drawable/buttonstyls_custom"
+        app:layout_constraintBottom_toTopOf="@id/game_btn_showNodepad"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.371"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/game_btn_dealOutCards"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="135dp"
-        android:layout_marginEnd="138dp"
-        android:layout_marginBottom="54dp"
-        android:scaleType="fitXY"
-        android:text="@string/game_btn_dealOutCards"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.38"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/viewTrumpCard"
-        android:layout_width="57dp"
-        android:layout_height="59dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="332dp"
-        android:layout_marginBottom="13dp"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
@@ -97,6 +64,7 @@
         android:layout_marginStart="49dp"
         android:layout_marginTop="119dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/tablecard1"
         android:scaleType="fitXY" />
 
     <ImageView
@@ -108,6 +76,7 @@
         android:layout_marginStart="89dp"
         android:layout_marginTop="119dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/tablecard2"
         android:scaleType="fitXY" />
 
     <ImageView
@@ -119,6 +88,7 @@
         android:layout_marginStart="129dp"
         android:layout_marginTop="119dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/tablecard3"
         android:scaleType="fitXY" />
 
     <ImageView
@@ -130,6 +100,7 @@
         android:layout_marginStart="169dp"
         android:layout_marginTop="119dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/tablecard4"
         android:scaleType="fitXY" />
 
     <ImageView
@@ -141,6 +112,7 @@
         android:layout_marginStart="219dp"
         android:layout_marginTop="119dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/tablecard5"
         android:scaleType="fitXY" />
 
     <ImageView
@@ -152,7 +124,10 @@
         android:layout_marginStart="259dp"
         android:layout_marginTop="119dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/tablecard6"
         android:scaleType="fitXY" />
+
+    <!--button Nodepade -->
 
     <EditText
         android:id="@+id/etn_Vorhersage"
@@ -161,41 +136,22 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="132dp"
-        android:scaleType="fitXY"
+        android:layout_marginEnd="290dp"
+        android:layout_marginBottom="63dp"
+        android:autofillHints="             "
         android:digits="0123456789"
         android:ems="10"
         android:hint="@string/str_vorhersage"
         android:inputType="number"
         android:maxLength="2"
+        android:scaleType="fitXY"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.937"
         app:layout_constraintStart_toEndOf="@+id/play_Card"
         app:layout_constraintTop_toBottomOf="@+id/viewPagerImageSlieder" />
 
-    <TextView
-        android:id="@+id/tv_trumpftext"
-        android:layout_width="78dp"
-        android:layout_height="56dp"
-        android:layout_alignStart="@+id/viewTrumpCard"
-        android:layout_alignEnd="@+id/viewTrumpCard"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="-11dp"
-        android:layout_marginTop="55dp"
-        android:layout_marginEnd="-10dp"
-        android:layout_marginBottom="72dp"
-        android:scaleType="fitXY"
-        android:text="11 Green"
-        android:textColor="#FFFF00"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/viewTrumpCard"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewPagerImageSlieder" />
-
-    <!--button Nodepade -->
     <Button
-        android:onClick="showNodepad"
         android:id="@+id/game_btn_showNodepad"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -205,7 +161,86 @@
         android:layout_marginStart="135dp"
         android:layout_marginEnd="138dp"
         android:layout_marginBottom="1dp"
-        android:background="@drawable/buttonsstyls"
-        android:text="Block of Truth" />
+        android:background="@drawable/buttonstyls_custom"
+        android:text="@string/block_of_truth" />
+
+    <TextView
+        android:id="@+id/tv_p1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_p2"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="2dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:text="@string/namep1" />
+
+    <TextView
+        android:id="@+id/tv_p2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_p3"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="2dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:text="@string/namep2" />
+
+    <TextView
+        android:id="@+id/tv_p3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_p4"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="2dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:text="@string/namep3" />
+
+    <TextView
+        android:id="@+id/tv_p4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_p5"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="2dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:text="@string/namep4" />
+
+    <TextView
+        android:id="@+id/tv_p5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_p6"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="2dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:text="@string/namep5" />
+
+    <TextView
+        android:id="@+id/tv_p6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="2dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:text="@string/namep6" />
+
+    <TextView
+        android:id="@+id/tv_TrumpColor"
+        android:layout_width="112dp"
+        android:layout_height="36dp"
+        android:layout_alignStart="@id/etn_Vorhersage"
+        android:layout_alignTop="@id/game_btn_showNodepad" />
 
 </android.widget.RelativeLayout>

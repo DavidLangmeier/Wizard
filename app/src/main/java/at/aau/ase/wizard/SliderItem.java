@@ -8,9 +8,6 @@ public class SliderItem {
     private int image;
     private Card selectedCard;
 
-    /*SliderItem(int image) {
-        this.image = image;
-    }*/
 
     SliderItem(int image, Card gameCard) {
         this.image = image;

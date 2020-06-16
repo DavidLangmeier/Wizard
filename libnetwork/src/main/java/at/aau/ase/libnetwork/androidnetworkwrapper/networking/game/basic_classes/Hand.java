@@ -1,13 +1,14 @@
 package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Hand {
-    private ArrayList<Card> playerCards;
+    private List<Card> playerCards;
 
     public Hand() {
-        this.playerCards = new ArrayList<Card>();
+        this.playerCards = new ArrayList<>();
     }
 
     public void clear() {
@@ -19,23 +20,21 @@ public class Hand {
     }
 
     public String showCardsInHand() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (Card c : playerCards) {
-            s += c.toString() + "\n";
+            s.append(c.toString() + "\n");
         }
-        return s;
+        return s.toString();
     }
 
     public boolean dealCard(Card card, Hand otherHand) {
         boolean cardFound = false;
-        int cardID = card.getCard_id();
+        int cardID = card.getCardId();
 
-        int indexOfCardToRemove;
-        for (int i = 0; i < playerCards.size(); i++) {
-            if (playerCards.get(i).getCard_id() == cardID) {
-                indexOfCardToRemove = i;
-                //removing playerCard by Index
-                playerCards.remove(indexOfCardToRemove);
+        for (Iterator<Card> iterator = playerCards.iterator(); iterator.hasNext();) {
+            Card currentCard = iterator.next();
+            if (currentCard.getCardId() == cardID) {
+                iterator.remove();
                 otherHand.add(card);
                 cardFound = true;
             }
@@ -43,11 +42,11 @@ public class Hand {
         return cardFound;
     }
 
-    public ArrayList<Card> getCards() {
+    public List<Card> getCards() {
         return playerCards;
     }
 
-    public void setCards(ArrayList<Card> cards) {
+    public void setCards(List<Card> cards) {
         this.playerCards = cards;
     }
 }

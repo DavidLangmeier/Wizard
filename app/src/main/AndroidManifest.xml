@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".LobbyActivity" />
-        <activity android:name=".howto_playpdfActivity"/>
+        <activity android:name=".PlayPdfActivity"/>
         <activity android:name=".ScrollableTablePopup" />
     </application>
 

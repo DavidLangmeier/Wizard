@@ -1,6 +1,6 @@
 package at.aau.ase.libnetwork.androidnetworkwrapper.networking.dto.game_objects;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Card;
 import at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classes.Hand;
@@ -24,7 +24,7 @@ public class HandMessage extends BaseMessage {
         this.hand = hand;
     }
 
-    public ArrayList <Card> getCardsInHand(){
+    public List<Card> getCardsInHand(){
         return hand.getCards();
     }
 

@@ -2,12 +2,13 @@ package at.aau.ase.libnetwork.androidnetworkwrapper.networking.game.basic_classe
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Notepad {
 
     private static int round = 0;
     private int[][] pointsPerPlayerPerRound;
-    public ArrayList<String> playerNamesList;
+    private List<String> playerNamesList;
 
     private int[][] betTricksPerPlayerPerRound;
     private int[][] tookTricksPerPlayerPerRound;
@@ -35,6 +36,14 @@ public class Notepad {
             }
 
         }
+        return totalPoints;
+    }
+    public int[][] setTotalPointsPerPlayer(int[][] totalPointsPerPlayer){
+        int[][]totalPoints = new int[totalPointsPerPlayer.length][1];
+        for (int i = 0; i < totalPointsPerPlayer.length; i++) {
+            totalPoints[i][0] = totalPointsPerPlayer[i][0];
+        }
+        this.pointsPerPlayerPerRound = totalPoints;
         return totalPoints;
     }
 
@@ -66,11 +75,19 @@ public class Notepad {
         return tookTricksPerPlayerPerRound;
     }
 
+    public List<String> getPlayerNamesList() {
+        return playerNamesList;
+    }
+
+    public void setPlayerNamesList(List<String> playerNamesList) {
+        this.playerNamesList = playerNamesList;
+    }
+
     //brauche Notpade classe die mir werte gibt funktion
     public void testFillPointsPlayerround() {
         int count = 1;
         for (int i = 0; i < pointsPerPlayerPerRound.length; i++) {
-            // playerNames[i]="name"+i;
+
             playerNamesList.add("name" + i);
             for (int j = 0; j < pointsPerPlayerPerRound[i].length; j++) {
                 pointsPerPlayerPerRound[i][j] = count;
@@ -84,7 +101,7 @@ public class Notepad {
     public void testFillPointsPlayerround2() {
         int count2 = 1;
         for (int i = 0; i < pointsPerPlayerPerRound.length; i++) {
-            // playerNames[i]="name"+i;
+
             playerNamesList.add("name" + i);
             for (int j = 0; j < pointsPerPlayerPerRound[i].length; j++) {
                 pointsPerPlayerPerRound[i][j] = count2;
@@ -94,5 +111,6 @@ public class Notepad {
         }
 
     }
+
 
 }
